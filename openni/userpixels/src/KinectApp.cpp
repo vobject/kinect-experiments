@@ -54,7 +54,7 @@ void KinectApp::EventLoop()
 
    SdlWindow wnd(mKinect.GetXRes(), mKinect.GetYRes());
 
-   VlcPlayer video_player(wnd, "K:\\_aktenordner\\l33tstuff\\Revolution OS.avi");
+   VlcPlayer video_player(wnd, "screen://");
    VlcRemote video_remote(&mKinect, wnd, video_player);
 
    // Several observers.
