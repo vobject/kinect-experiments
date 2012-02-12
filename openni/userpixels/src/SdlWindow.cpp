@@ -92,7 +92,7 @@ void SdlWindow::DrawRect(
    const Uint32 color /* = 0xffffffff */
 ) const
 {
-   SDL_Rect rect = { x_pos - (size / 2), y_pos - (size / 2), size, size };
+   SDL_Rect rect = { (Sint16)(x_pos - (size / 2)), (Sint16)(y_pos - (size / 2)), size, size };
 
    SDL_FillRect(mSurface, &rect, color);
 }
