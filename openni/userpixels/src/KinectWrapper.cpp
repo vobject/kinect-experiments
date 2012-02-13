@@ -39,8 +39,7 @@ void KinectWrapper::InitPlayback( const std::string& file )
 
 void KinectWrapper::Shutdown()
 {
-   mUserTracking.Shutdown();
-   mContext.Shutdown();
+
 }
 
 void KinectWrapper::InitOpenNI( const std::string& file )
@@ -52,15 +51,13 @@ void KinectWrapper::InitOpenNI( const std::string& file )
 
    if (!file.empty())
    {
-      rc = mContext.OpenFileRecording(file.c_str());
+      rc = mContext.OpenFileRecording(file.c_str(), mPlayer);
       assert(XN_STATUS_OK == rc);
 
       // Try to find data for image and depths generator in the recording.
       rc = mContext.FindExistingNode(XN_NODE_TYPE_DEPTH, mDepthGen);
       assert(XN_STATUS_OK == rc);
       rc = mContext.FindExistingNode(XN_NODE_TYPE_IMAGE, mImageGen);
-      assert(XN_STATUS_OK == rc);
-      rc = mContext.FindExistingNode(XN_NODE_TYPE_PLAYER, mPlayer);
       assert(XN_STATUS_OK == rc);
    }
    else

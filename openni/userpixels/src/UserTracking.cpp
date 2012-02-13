@@ -1,6 +1,22 @@
 #include "UserTracking.h"
 #include "Log.h"
 
+// Callback functions for xn::UserGenerator class.
+void XN_CALLBACK_TYPE UserFoundCB(xn::UserGenerator& gen, XnUserID id, void* cookie);
+void XN_CALLBACK_TYPE UserLostCB(xn::UserGenerator& gen, XnUserID id, void* cookie);
+
+// Callback functions for xn::PoseDetectionCapability class.
+void XN_CALLBACK_TYPE PoseStartCB(xn::PoseDetectionCapability& gen,
+                                  const XnChar* pose, XnUserID id, void* cookie);
+void XN_CALLBACK_TYPE PoseEndCB(xn::PoseDetectionCapability& gen,
+                                const XnChar* pose, XnUserID id, void* cookie);
+
+// Callback functions for xn::SkeletonCapability class.
+void XN_CALLBACK_TYPE CalibStartCB(xn::SkeletonCapability& gen,
+                                   XnUserID id, void* cookie);
+void XN_CALLBACK_TYPE CalibEndCB(xn::SkeletonCapability& gen, XnUserID id,
+                                 XnCalibrationStatus calibrationError, void* cookie);
+
 UserTracking::UserTracking()
 {
 
@@ -8,7 +24,7 @@ UserTracking::UserTracking()
 
 UserTracking::~UserTracking()
 {
-   Shutdown();
+
 }
 
 void UserTracking::Init( xn::Context& ctx )
@@ -23,17 +39,13 @@ void UserTracking::Init( xn::Context& ctx )
    mUserGen.RegisterUserCallbacks(UserFoundCB, UserLostCB, &mCallbackArgs, mUserGenCB);
 
    xn::PoseDetectionCapability pose_cap = mUserGen.GetPoseDetectionCap();
-   pose_cap.RegisterToPoseCallbacks(PoseStartCB, PoseEndCB, &mCallbackArgs, mPoseCB);
-// 	pose_cap.RegisterToPoseDetected();
+   pose_cap.RegisterToPoseDetected(PoseStartCB, &mCallbackArgs, mPoseStartCB);
+   pose_cap.RegisterToOutOfPose(PoseEndCB, &mCallbackArgs, mPoseEndCB);
 
    xn::SkeletonCapability skel_cap = mUserGen.GetSkeletonCap();
-   skel_cap.RegisterCalibrationCallbacks(CalibStartCB, CalibEndCB, &mCallbackArgs, mCalibCB);
+   skel_cap.RegisterToCalibrationStart(CalibStartCB, &mCallbackArgs, mCalibStartCB);
+   skel_cap.RegisterToCalibrationComplete(CalibEndCB, &mCallbackArgs, mCalibEndCB);
    skel_cap.SetSkeletonProfile(XN_SKEL_PROFILE_ALL);
-}
-
-void UserTracking::Shutdown()
-{
-
 }
 
 size_t UserTracking::GetUsers(std::vector<UserData>& users) const
@@ -145,13 +157,13 @@ void XN_CALLBACK_TYPE CalibStartCB(
 void XN_CALLBACK_TYPE CalibEndCB(
    xn::SkeletonCapability& /*cap*/,
    XnUserID id,
-   XnBool success,
+   XnCalibrationStatus calibrationError,
    void* cookie
 )
 {
    UserTrackerCallbackArgs* args = static_cast<UserTrackerCallbackArgs*>(cookie);
 
-   if (success)
+   if (XN_CALIBRATION_STATUS_OK == calibrationError)
    {
       LOG(logDEBUG) << "User successfully calibrated.";
       args->user_gen->GetSkeletonCap().StartTracking(id);

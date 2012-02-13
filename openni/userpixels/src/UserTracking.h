@@ -34,8 +34,10 @@ private:
    xn::UserGenerator mUserGen;
 
    XnCallbackHandle mUserGenCB;
-   XnCallbackHandle mPoseCB;
-   XnCallbackHandle mCalibCB;
+   XnCallbackHandle mPoseStartCB;
+   XnCallbackHandle mPoseEndCB;
+   XnCallbackHandle mCalibStartCB;
+   XnCallbackHandle mCalibEndCB;
 
    UserTrackerCallbackArgs mCallbackArgs;
 
@@ -43,21 +45,5 @@ private:
    UserTracking(const UserTracking&);
    UserTracking& operator=(const UserTracking&);
 };
-
-// Callback functions for xn::UserGenerator class.
-void XN_CALLBACK_TYPE UserFoundCB(xn::UserGenerator& gen, XnUserID id, void* cookie);
-void XN_CALLBACK_TYPE UserLostCB(xn::UserGenerator& gen, XnUserID id, void* cookie);
-
-// Callback functions for xn::PoseDetectionCapability class.
-void XN_CALLBACK_TYPE PoseStartCB(xn::PoseDetectionCapability& gen, 
-                                  const XnChar* pose, XnUserID id, void* cookie);
-void XN_CALLBACK_TYPE PoseEndCB(xn::PoseDetectionCapability& gen, 
-                                const XnChar* pose, XnUserID id, void* cookie);
-
-// Callback functions for xn::SkeletonCapability class.
-void XN_CALLBACK_TYPE CalibStartCB(xn::SkeletonCapability& gen, 
-                                   XnUserID id, void* cookie);
-void XN_CALLBACK_TYPE CalibEndCB(xn::SkeletonCapability& gen, XnUserID id,
-                                 XnBool success, void* cookie);
 
 #endif // USER_TRACKING_H

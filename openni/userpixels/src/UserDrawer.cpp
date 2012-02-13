@@ -27,7 +27,9 @@ void UserDrawer::Update( const Subject* updated_subject )
    std::vector<UserData> users;
    mSubject->GetUsers(users);
 
-   for (auto user_iter = users.begin(); user_iter != users.end(); ++user_iter)
+   for (std::vector<UserData>::const_iterator user_iter = users.begin();
+        user_iter != users.end();
+        user_iter++)
    {
       switch (mUserPaintMode)
       {
@@ -137,7 +139,7 @@ void UserDrawer::DrawDots(const UserData& user) const
 {
    const std::map<int, XnPoint3D> joints = user.GetRealWorldJoints();
 
-   for (auto joint_iter = joints.begin();
+   for (std::map<int, XnPoint3D>::const_iterator joint_iter = joints.begin();
         joint_iter != joints.end();
         ++joint_iter)
    {
@@ -157,7 +159,7 @@ void UserDrawer::DrawPixels(const UserData& user) const
    SdlSurface surface = mWindow.GetSurface();
    XnRGB24Pixel* screen_buf = (XnRGB24Pixel*)surface->pixels;
 
-   for (auto pix_iter = begin;
+   for (std::vector<bool>::const_iterator pix_iter = begin;
         pix_iter != end;
         ++pix_iter, ++screen_buf)
    {
@@ -180,7 +182,7 @@ void UserDrawer::DrawReal(const UserData& user) const
    XnRGB24Pixel* screen_buf = (XnRGB24Pixel*)surface->pixels;
    const XnRGB24Pixel* rgb_buf = mSubject->GetImageData();
 
-   for (auto pix_iter = begin;
+   for (std::vector<bool>::const_iterator pix_iter = begin;
         pix_iter != end;
         ++pix_iter, ++screen_buf, ++rgb_buf)
    {
