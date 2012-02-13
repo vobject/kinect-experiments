@@ -27,7 +27,6 @@ public:
    ~UserTracking();
 
    void Init(xn::Context& ctx);
-   void Shutdown();
    size_t GetUsers(std::vector<UserData>& users) const;
 
 private:

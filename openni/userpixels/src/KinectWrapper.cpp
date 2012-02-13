@@ -10,13 +10,11 @@ KinectWrapper::KinectWrapper()
 
 KinectWrapper::~KinectWrapper()
 {
-   Shutdown();
+
 }
 
 void KinectWrapper::Init()
 {
-   Shutdown();
-
    InitOpenNI("");
    mUserTracking.Init(mContext);
    mContext.StartGeneratingAll();
@@ -24,8 +22,6 @@ void KinectWrapper::Init()
 
 void KinectWrapper::InitPlayback( const std::string& file )
 {
-   Shutdown();
-
    // Check if the given filepath is accessible.
    if ((-1 == access(file.c_str(), 0))) {
       throw "The given file does not exist.";
@@ -35,11 +31,6 @@ void KinectWrapper::InitPlayback( const std::string& file )
    InitOpenNI(file);
    mUserTracking.Init(mContext);
    mContext.StartGeneratingAll();
-}
-
-void KinectWrapper::Shutdown()
-{
-
 }
 
 void KinectWrapper::InitOpenNI( const std::string& file )

@@ -19,7 +19,6 @@ public:
 
    void Init();
    void InitPlayback(const std::string& file);
-   void Shutdown();
 
    void NextFrame();
 

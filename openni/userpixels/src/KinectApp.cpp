@@ -24,7 +24,7 @@ KinectApp::KinectApp(const std::string& path)
 
 KinectApp::~KinectApp()
 {
-   mKinect.Shutdown();
+
 }
 
 void KinectApp::PrintCommands() const
