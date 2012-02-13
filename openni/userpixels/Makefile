@@ -3,10 +3,8 @@
 ########################################################
 
 
-# Compile with GCC:
-# CFLAGS+=' -std=c++0x -D__x86_64__ -Dlinux -DXN_DEPRECATED_WARNING_IDS=0' make
-
-OSTYPE := $(shell uname -s)
+# Compile with gcc: make
+# Compile with clang: CXX=clang++ make 
 
 BIN_DIR = ./bin
 
@@ -18,6 +16,8 @@ EXE_NAME = userpixels
 
 
 USED_LIBS += SDL SDL_ttf vlc OpenNI
+
+CFLAGS += -D__x86_64__ -Dlinux
 
 
 
@@ -112,9 +112,6 @@ OUTPUT_FILE = $(OUT_DIR)/$(OUTPUT_NAME)
 # take this file's dir
 COMMON_MAK_DIR = $(dir $(lastword $(MAKEFILE_LIST)))
 
-# get the OS type
-OSTYPE := $(shell uname -s)
-
 # platform specific args
 #include $(COMMON_MAK_DIR)Platform.$(PLATFORM)
 
@@ -136,12 +133,6 @@ export GLUT_SUPPORTED=1
 
 ifndef SSE_GENERATION
 	SSE_GENERATION = 3
-endif
-
-ifeq ("$(OSTYPE)","Darwin")
-	# Making the binary a universal one (x86 + x64)
-	CFLAGS += -arch i386 -arch x86_64
-	LDFLAGS += -arch i386 -arch x86_64
 endif
 
 ifeq ($(SSE_GENERATION), 2)
@@ -214,15 +205,9 @@ LDFLAGS += $(LIB_DIRS_OPTION) $(USED_LIBS_OPTION)
 ifneq "$(LIB_NAME)" ""
 	OUTPUT_NAME = lib$(LIB_NAME).so
 	CFLAGS += -fPIC -fvisibility=hidden
-	ifneq ("$(OSTYPE)","Darwin")
-		LDFLAGS += -Wl,--no-undefined
-		OUTPUT_NAME = lib$(LIB_NAME).so
-		OUTPUT_COMMAND = $(CXX) -o $(OUTPUT_FILE) $(OBJ_FILES) $(LDFLAGS) -shared
-	else
-		LDFLAGS += -undefined error
-		OUTPUT_NAME = lib$(LIB_NAME).dylib
-		OUTPUT_COMMAND = $(CXX) -o $(OUTPUT_FILE) $(OBJ_FILES) $(LDFLAGS) -dynamiclib -headerpad_max_install_names
-	endif
+	LDFLAGS += -Wl,--no-undefined
+	OUTPUT_NAME = lib$(LIB_NAME).so
+	OUTPUT_COMMAND = $(CXX) -o $(OUTPUT_FILE) $(OBJ_FILES) $(LDFLAGS) -shared
 endif
 ifneq "$(EXE_NAME)" ""
 	OUTPUT_NAME = $(EXE_NAME)
@@ -237,13 +222,8 @@ endif
 define CREATE_SRC_TARGETS
 # create a target for the object file (the CXX command creates both an .o file
 # and a .d file)
-ifneq ("$(OSTYPE)","Darwin")
 $(call SRC_TO_OBJ,$1) : $1 | $(INT_DIR)
 	$(CXX) -MD -MP -MT "$(call SRC_TO_DEP,$1) $$@" -c $(CFLAGS) -o $$@ $$<
-else
-$(call SRC_TO_OBJ,$1) : $1 | $(INT_DIR)
-	$(CXX) -c $(CFLAGS) -o $$@ $$<
-endif
 endef
 
 #############################################################################
