@@ -6,9 +6,18 @@ SdlWindowDrawer::SdlWindowDrawer(KinectWrapper* subject, const SdlWindow& wnd)
    , mWindow(wnd)
    , mXRes(mSubject->GetXRes())
    , mYRes(mSubject->GetYRes())
+   , mSurface(NULL)
    , mDisplayMode(dm_Image)
    , mMaxDepth(3000)
 {
+   mSurface = SDL_CreateRGBSurface(SDL_SWSURFACE,
+                                   wnd.GetXRes(),
+                                   wnd.GetYRes(),
+                                   24, 0, 0, 0, 0);
+   if (!mSurface) {
+      throw "SDL_CreateRGBSurface() failed.";
+   }
+
    mSubject->Subscribe(this);
 }
 
@@ -17,6 +26,8 @@ SdlWindowDrawer::~SdlWindowDrawer()
    if (mSubject) {
       mSubject->Unsubscribe(this);
    }
+
+   SDL_FreeSurface(mSurface);
 }
 
 void SdlWindowDrawer::Update( const Subject* updated_subject )
@@ -36,10 +47,10 @@ void SdlWindowDrawer::Update( const Subject* updated_subject )
    }
    else
    {
-      // Black out screen.
-      SdlSurface surface = mWindow.GetSurface();
-      memset(surface->pixels, 0, mXRes * mYRes * sizeof(XnRGB24Pixel));
+      SDL_FillRect(mSurface, NULL, 0xff0000);
    }
+
+   mWindow.Blit(mSurface);
 }
 
 DisplayMode SdlWindowDrawer::SwitchDisplayMode()
@@ -60,13 +71,13 @@ int SdlWindowDrawer::DecreaseDepth( const int minus /*= 200*/ )
 
 void SdlWindowDrawer::DrawImage()
 {
-   SdlSurface surface = mWindow.GetSurface();
-   memcpy(surface->pixels, mSubject->GetImageData(), mXRes * mYRes * sizeof(XnRGB24Pixel));
+   SdlSurface surface(mSurface);
+   memcpy(surface->pixels, mSubject->GetImageData(), mXRes * mYRes * 3);
 }
 
 void SdlWindowDrawer::DrawDepthMap()
 {
-   SdlSurface surface = mWindow.GetSurface();
+   SdlSurface surface(mSurface);
 
    // Get a pointer/iterator for the depth data from the generator.
    const XnDepthPixel* pDepthBuf = mSubject->GetDepthData();
