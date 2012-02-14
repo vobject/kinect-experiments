@@ -182,15 +182,19 @@ void UserDrawer::DrawReal(const UserData& user) const
    XnRGB24Pixel* screen_buf = (XnRGB24Pixel*)surface->pixels;
    const XnRGB24Pixel* rgb_buf = mSubject->GetImageData();
 
+   const float torso_x_pos = user.GetRealWorldJoints()[XN_SKEL_TORSO].X;
+   const int scene_delta = (torso_x_pos < 0) ? (-torso_x_pos * .005f + 10)
+                                             : (-(torso_x_pos * .040f - 10));
+
    for (std::vector<bool>::const_iterator pix_iter = begin;
         pix_iter != end;
         ++pix_iter, ++screen_buf, ++rgb_buf)
    {
       if (*pix_iter)
       {
-         screen_buf->nRed = (rgb_buf + 0)->nBlue;
-         screen_buf->nGreen = (rgb_buf + 0)->nGreen;
-         screen_buf->nBlue = (rgb_buf + 0)->nRed;
+         screen_buf->nRed = (rgb_buf + scene_delta)->nBlue;
+         screen_buf->nGreen = (rgb_buf + scene_delta)->nGreen;
+         screen_buf->nBlue = (rgb_buf + scene_delta)->nRed;
       }
    }
 }
