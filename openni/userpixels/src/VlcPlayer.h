@@ -3,13 +3,8 @@
 
 #include <vlc/vlc.h>
 
-#if defined(WIN32)
 #include <SDL.h>
 #include <SDL_mutex.h>
-#elif defined (__linux__)
-#include <SDL/SDL.h>
-#include <SDL/SDL_mutex.h>
-#endif
 
 #include <string>
 

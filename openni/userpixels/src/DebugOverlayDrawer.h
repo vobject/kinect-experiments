@@ -4,11 +4,7 @@
 #include "Observer.h"
 #include "KinectWrapper.h"
 
-#if defined(WIN32)
 #include <SDL.h>
-#elif defined (__linux__)
-#include <SDL/SDL.h>
-#endif
 
 #include <sstream>
 

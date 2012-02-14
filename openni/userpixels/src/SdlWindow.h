@@ -1,13 +1,8 @@
 #ifndef SDL_WINDOW_H
 #define SDL_WINDOW_H
 
-#if defined(WIN32)
 #include <SDL.h>
 #include <SDL_ttf.h>
-#elif defined (__linux__)
-#include <SDL/SDL.h>
-#include <SDL/SDL_ttf.h>
-#endif
 
 #include <string>
 
