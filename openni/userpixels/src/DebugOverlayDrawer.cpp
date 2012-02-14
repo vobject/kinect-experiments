@@ -4,7 +4,7 @@
 DebugOverlayDrawer::DebugOverlayDrawer(KinectWrapper* subject, const SdlWindow& wnd)
    : mSubject(subject)
    , mWindow(wnd)
-   , mOverlayMode(dom_JointsRealWorld)
+   , mOverlayMode(dom_None)
 {
    mSubject->Subscribe(this);
 
