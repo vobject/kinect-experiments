@@ -8,11 +8,8 @@
 #include "DebugOverlayDrawer.h"
 #include "FpsDrawer.h"
 
-#if defined(WIN32)
 #include <SDL.h>
-#elif defined (__linux__)
-#include <SDL/SDL.h>
-#endif
+#include <SDL_image.h>
 
 #include <iostream>
 
@@ -150,6 +147,7 @@ void KinectApp::EventLoop()
 
       // Request new frame from OpenNI.
       mKinect.NextFrame();
+
       // Show the result.
       wnd.Flip();
    }
