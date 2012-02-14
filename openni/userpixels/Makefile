@@ -8,17 +8,18 @@
 
 BIN_DIR = ./bin
 
-INC_DIRS = /usr/include/ni/
-
 SRC_FILES = ./src/*.cpp
+
+CFLAGS += -I/usr/include/ni `pkg-config --cflags sdl SDL_ttf SDL_image`
+LDFLAGS += -lOpenNI -lvlc `pkg-config --libs sdl SDL_ttf SDL_image`
+
 
 EXE_NAME = userpixels
 
-
-USED_LIBS += SDL SDL_ttf vlc OpenNI
-
 CFLAGS += -D__x86_64__ -Dlinux
 
+#CFG = Debug
+CFG = Release
 
 
 
@@ -169,17 +170,8 @@ SRC_TO_DEP = $(addprefix ./$(INT_DIR)/,$(addsuffix .d,$(notdir $(basename $1))))
 # create a list of all dependency files
 DEP_FILES = $(call SRC_TO_DEP,$(SRC_FILES_LIST))
 
-# older version of gcc doesn't support the '=' symbol in include dirs, so we replace it ourselves with sysroot
-INC_DIRS_FROM_SYSROOT = $(patsubst =/%,$(TARGET_SYS_ROOT)/%,$(INC_DIRS))
-
-# append the -I switch to each include directory
-INC_DIRS_OPTION = $(foreach dir,$(INC_DIRS_FROM_SYSROOT),-I$(dir))
-
 # append the -L switch to each library directory
 LIB_DIRS_OPTION = $(foreach dir,$(LIB_DIRS),-L$(dir)) -L$(OUT_DIR)
-
-# append the -l switch to each library used
-USED_LIBS_OPTION = $(foreach lib,$(USED_LIBS),-l$(lib))
 
 # append the -D switch to each define
 DEFINES_OPTION = $(foreach def,$(DEFINES),-D$(def))
@@ -198,8 +190,8 @@ ifeq "$(CFG)" "Release"
 	CFLAGS += -O2 -DNDEBUG
 endif
 
-CFLAGS += $(INC_DIRS_OPTION) $(DEFINES_OPTION)
-LDFLAGS += $(LIB_DIRS_OPTION) $(USED_LIBS_OPTION)
+CFLAGS += $(DEFINES_OPTION)
+LDFLAGS += $(LIB_DIRS_OPTION)
 
 # some lib / exe specifics
 ifneq "$(LIB_NAME)" ""
