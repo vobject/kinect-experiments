@@ -47,6 +47,8 @@ SdlWindow::SdlWindow( const int xres, const int yres )
       TTF_Quit();
       throw "TTF_OpenFont() failed!";
    }
+
+   SDL_WM_SetCaption("userpixels", NULL);
 }
 
 SdlWindow::~SdlWindow()

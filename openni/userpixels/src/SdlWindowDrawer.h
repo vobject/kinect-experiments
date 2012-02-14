@@ -4,6 +4,8 @@
 #include "Observer.h"
 #include "KinectWrapper.h"
 
+#include <SDL.h>
+
 class SdlWindow;
 
 enum DisplayMode
@@ -35,9 +37,12 @@ private:
    const int mXRes;
    const int mYRes;
 
+   SDL_Surface* mSurface;
+
    DisplayMode mDisplayMode;
    size_t mMaxDepth; // Distance in millimeters for depth mode.
 
+   SdlWindowDrawer(const SdlWindowDrawer&);
    SdlWindowDrawer& operator=(const SdlWindowDrawer&);
 };
 
