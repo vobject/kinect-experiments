@@ -10,9 +10,15 @@ The note above does not appy for the content of the folder "external". It
 includes third party libraries. They are licensed under their own lincese.
 Check their subfolders for details.
 
-TODO: Write a README.
+
+openni/userpixels:
+SDL, libVLC, OpenNI GetUserpixels() API, basic gesture recognition
+
+openni/sprites:
+SDL, combination of GetUserpixels() and sprite animation
+
 
 Enjoy!
 	vobject@gmail.com
-    
-(2012-02-08)
+
+(2012-02-15)
