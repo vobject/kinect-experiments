@@ -1,3 +1,6 @@
+blood_pack_1:
+- http://powstudios.com/content/blood-animation-pack-1
+
 freeglut-2.8.0:
 - http://www.transmissionzero.co.uk/software/freeglut-devel/
 - http://files.transmissionzero.co.uk/software/development/GLUT/freeglut-MSVC.zip
