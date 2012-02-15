@@ -22,6 +22,7 @@ private:
    const SdlWindow& mWindow;
 
    SpriteAnimation mBloodA;
+   SpriteAnimation mBloodD;
 
    SpriteDrawer& operator=(const SpriteDrawer&);
 };

@@ -6,7 +6,8 @@
 
 SpriteAnimation::SpriteAnimation()
    : mCurrentFrame(0)
-   , mFrameCycle(100)
+   , mUpdateRate(DEFAULT_UDATE_RATE)
+   , mLastFrameTime(0)
 {
    if (0 == IMG_Init(IMG_INIT_JPG | IMG_INIT_PNG)) {
       throw "Failed to initialize SDL_image";
@@ -42,21 +43,46 @@ void SpriteAnimation::AddFrame(const std::string& file)
    mFrames.push_back(img_compat);
 }
 
-void SpriteAnimation::NextFrame()
+void SpriteAnimation::Init(int update_rate /*=DEFAULT_UDATE_RATE*/)
 {
-   // TODO: Take care of framecycle!
+   mCurrentFrame = 0;
+   mUpdateRate = update_rate;
+}
 
-   mCurrentFrame = (mCurrentFrame + 1) % mFrames.size();
+bool SpriteAnimation::IsPlaying() const
+{
+   return (mCurrentFrame != (mFrames.size() - 1));
+}
+
+void SpriteAnimation::Stop()
+{
+   mCurrentFrame = mFrames.size() - 1;
 }
 
 void SpriteAnimation::RenderFrame(const SdlWindow& wnd, SDL_Rect* const dest)
 {
+   if (!IsPlaying()) {
+      return;
+   }
+
+   NextFrame();
+
    SDL_Surface* frame = mFrames.at(mCurrentFrame);
-   SDL_Rect dest_rect = { dest->x - (frame->w / 2), dest->y - (frame->h / 2), dest->h, dest->w };
+   SDL_Rect dest_rect = { dest->x - (frame->w / 2),
+                          dest->y - (frame->h / 2),
+                          dest->h,
+                          dest->w };
+
    wnd.Blit(frame, NULL, &dest_rect);
 }
 
-void SpriteAnimation::SetFrameCycle(int ms)
+void SpriteAnimation::NextFrame()
 {
-   mFrameCycle = ms;
+   const int currentTime = SDL_GetTicks();
+
+   if ((currentTime - mLastFrameTime) > mUpdateRate)
+   {
+      mCurrentFrame = (mCurrentFrame + 1) % mFrames.size();
+      mLastFrameTime = currentTime;
+   }
 }
