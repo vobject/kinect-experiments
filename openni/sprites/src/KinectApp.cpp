@@ -1,19 +1,22 @@
 #include "KinectApp.h"
 #include "Log.h"
-#include "SdlWindow.h"
-#include "SdlWindowDrawer.h"
-#include "UserDrawer.h"
-#include "DebugOverlayDrawer.h"
-#include "FpsDrawer.h"
-#include "SpriteDrawer.h"
+#include "Kinect.h"
+#include "KinectBackground.h"
+#include "BloodAnimation.h"
 
-#include <SDL.h>
-#include <SDL_image.h>
+#include <allegro5/allegro.h>
+#include <allegro5/allegro_image.h>
+#include <allegro5/allegro_font.h>
+#include <allegro5/allegro_ttf.h>
 
 #include <iostream>
 
 KinectApp::KinectApp(const std::string& path)
    : mPath(path)
+   , mDisplay(NULL)
+   , mFont18(NULL)
+   , mEventQueue(NULL)
+   , mFpsTimer(NULL)
    , mMainloopDone(false)
 {
    Log::ReportingLevel() = logDEBUG;
@@ -21,97 +24,159 @@ KinectApp::KinectApp(const std::string& path)
 
 KinectApp::~KinectApp()
 {
+   for(std::list<SceneObject*>::const_iterator it = mSceneObjects.begin();
+       it != mSceneObjects.end();
+       it++)
+   {
+      delete *it;
+   }
 
+   al_destroy_timer(mFpsTimer);
+   al_destroy_event_queue(mEventQueue);
+   al_destroy_font(mFont18);
+   al_destroy_display(mDisplay);
 }
 
 void KinectApp::PrintCommands() const
 {
    std::cout << "Commands:\n"
-             << "\tm - Toggle image/depth mode\n"
-             << "\tf - Seek 100 frames forward\n"
-             << "\tb - Seek 100 frames backward\n"
-             << "\ti - Increase depth by 20cm\n"
-             << "\to - Decrease depth by 20cm\n"
-             << "\tu - Toggle user tracking mode\n"
-             << "\td - Toggle debug overlay mode\n"
-             << "\th - Print this help message\n"
+//             << "\tm - Toggle image/depth mode\n"
+//             << "\tf - Seek 100 frames forward\n"
+//             << "\tb - Seek 100 frames backward\n"
+//             << "\ti - Increase depth by 20cm\n"
+//             << "\to - Decrease depth by 20cm\n"
+//             << "\tu - Toggle user tracking mode\n"
+//             << "\td - Toggle debug overlay mode\n"
+//             << "\th - Print this help message\n"
              << "\tESC - Exit program\n"
              << std::endl;
 }
 
+void KinectApp::Start()
+{
+   Setup();
+
+   mSceneObjects.push_back(new KinectBackground(mKinect));
+   mSceneObjects.push_back(new BloodAnimation(100, 100, al_current_time() + 3.0));
+   Mainloop();
+}
+
+void KinectApp::Setup()
+{
+   mKinect.Init();
+
+   if(!al_init()) {
+      throw "Failed to initialize allegro";
+   }
+
+   al_init_font_addon();
+   al_init_ttf_addon();
+   al_init_image_addon();
+
+   mDisplay = al_create_display(mKinect.GetXRes(), mKinect.GetYRes());
+   if (NULL == mDisplay) {
+      throw "Failed to create an allegro display";
+   }
+   al_set_window_title(mDisplay, "sprite - kinect-experiments");
+
+   mFont18 = al_load_font("VeraMono.ttf", 18, 0);
+   if (NULL == mFont18) {
+      throw "Failed to load VeraMono.ttf font";
+   }
+
+   al_install_keyboard();
+   mFpsTimer = al_create_timer(1.0 / 60);
+   mEventQueue = al_create_event_queue();
+
+   al_register_event_source(mEventQueue, al_get_display_event_source(mDisplay));
+   al_register_event_source(mEventQueue, al_get_keyboard_event_source());
+   al_register_event_source(mEventQueue, al_get_timer_event_source(mFpsTimer));
+}
+
+void KinectApp::UpdateScene()
+{
+   for(std::list<SceneObject*>::iterator it = mSceneObjects.begin();
+       it != mSceneObjects.end();)
+   {
+      if ((*it)->IsDone())
+      {
+         delete *it;
+         it = mSceneObjects.erase(it);
+      }
+      else
+      {
+         it++;
+      }
+   }
+
+   for(std::list<SceneObject*>::const_iterator it = mSceneObjects.begin();
+       it != mSceneObjects.end();
+       it++)
+   {
+      (*it)->Update();
+   }
+}
+
+void KinectApp::RenderScene()
+{
+   for(std::list<SceneObject*>::const_iterator it = mSceneObjects.begin();
+       it != mSceneObjects.end();
+       it++)
+   {
+      (*it)->Render();
+   }
+
+   al_flip_display();
+}
+
 void KinectApp::Mainloop()
 {
-   if (mPath.empty()) {
-      mKinect.Init();
-   }
-   else {
-      mKinect.InitPlayback(mPath);
-   }
+   al_start_timer(mFpsTimer);
 
-   SdlWindow wnd(mKinect.GetXRes(), mKinect.GetYRes());
+   float gameTime = al_current_time();
+   int frames = 0;
+   int gameFPS = 0;
+   bool render = false;
+   ALLEGRO_EVENT ev;
 
-   SdlWindowDrawer wnd_observer(&mKinect, wnd);
-   UserDrawer user_observer(&mKinect, wnd);
-   SpriteDrawer sprite_observer(&mKinect, wnd);
-   FpsDrawer fps_observer(&mKinect, wnd);
-   DebugOverlayDrawer debug_observer(&mKinect, wnd);
-
-   SDL_Event ev;
-
-   // The message pump:
-   //  1. Process the SDL event if there is one present.
-   //  2. Grab the next frame from the generators and display it.
    while(!mMainloopDone)
    {
-      while (SDL_PollEvent(&ev))
+      if (render && al_is_event_queue_empty(mEventQueue))
       {
-         // Quit the message pump if the user closed the window or pressed ESC.
-         if((SDL_QUIT == ev.type) || (SDLK_ESCAPE == ev.key.keysym.sym))
+         RenderScene();
+         render = false;
+      }
+
+      al_wait_for_event(mEventQueue, &ev);
+
+      if (ALLEGRO_EVENT_TIMER == ev.type)
+      {
+         frames++;
+
+         if(al_current_time() - gameTime >= 1)
          {
+            gameTime = al_current_time();
+            gameFPS = frames;
+            frames = 0;
+         }
+
+         UpdateScene();
+         render = true;
+      }
+      else if (ALLEGRO_EVENT_KEY_DOWN == ev.type)
+      {
+         switch(ev.keyboard.keycode)
+         {
+         case ALLEGRO_KEY_ESCAPE:
             mMainloopDone = true;
             break;
          }
-
-         if (SDL_KEYDOWN == ev.type)
-         {
-            switch (ev.key.keysym.sym)
-            {
-            case SDLK_h:
-               PrintCommands();
-               break;
-            case SDLK_m: // Switch to the next DisplayMode.
-               LOG(logDEBUG) << "Switching display mode to "
-                             << wnd_observer.SwitchDisplayMode();
-               break;
-            case SDLK_u: // Switch to the next UserPaintMode.
-               LOG(logDEBUG) << "Switching user paint mode to "
-                             << user_observer.SwitchUserPaintMode();
-               break;
-            case SDLK_i: // Increase depth by 20cm.
-               LOG(logDEBUG) << "Setting depth to "
-                              << wnd_observer.IncreaseDepth();
-               break;
-            case SDLK_o: // Decrease depth by 20cm.
-               LOG(logDEBUG) << "Setting depth to "
-                             << wnd_observer.DecreaseDepth();
-               break;
-            case SDLK_f: // Seek forward.
-               mKinect.SeekForward();
-               break;
-            case SDLK_b: // Seek backward.
-               mKinect.SeekBackward();
-               break;
-            case SDLK_d: // Switch to the next DebugOverlayMode.
-               LOG(logDEBUG) << "Switching debug overlay mode to "
-                             << debug_observer.SwitchOverlayMode();
-               break;
-            default:
-               break;
-            }
-         }
       }
-
-      mKinect.NextFrame();
-      wnd.Flip();
+      else if (ALLEGRO_EVENT_DISPLAY_CLOSE == ev.type)
+      {
+         mMainloopDone = true;
+      }
    }
+
+   al_stop_timer(mFpsTimer);
 }

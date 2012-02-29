@@ -1,26 +1,26 @@
-#include "KinectWrapper.h"
+#include "Kinect.h"
 
 #include <cassert>
 
-KinectWrapper::KinectWrapper()
+Kinect::Kinect()
    : mPlaybackMode(false)
 {
 
 }
 
-KinectWrapper::~KinectWrapper()
+Kinect::~Kinect()
 {
 
 }
 
-void KinectWrapper::Init()
+void Kinect::Init()
 {
    InitOpenNI("");
    mUserTracking.Init(mContext);
    mContext.StartGeneratingAll();
 }
 
-void KinectWrapper::InitPlayback( const std::string& file )
+void Kinect::InitPlayback( const std::string& file )
 {
    // Check if the given filepath is accessible.
    if ((-1 == access(file.c_str(), 0))) {
@@ -33,7 +33,7 @@ void KinectWrapper::InitPlayback( const std::string& file )
    mContext.StartGeneratingAll();
 }
 
-void KinectWrapper::InitOpenNI( const std::string& file )
+void Kinect::InitOpenNI( const std::string& file )
 {
    // TODO: Better (real!) error handling for OpenNI API failures.
 
@@ -78,18 +78,16 @@ void KinectWrapper::InitOpenNI( const std::string& file )
    }
 }
 
-void KinectWrapper::NextFrame()
+void Kinect::NextFrame()
 {
    // Read a new frame from the recording.
-   const XnStatus rc = mContext.WaitAnyUpdateAll();
+   const XnStatus rc = mContext.WaitNoneUpdateAll();
    if (XN_STATUS_OK != rc) {
       throw "xn::Context::WaitAnyUpdateAll() failed";
    }
-
-   Notify();
 }
 
-void KinectWrapper::SeekForward( const int frames /*= 100*/ )
+void Kinect::SeekForward( const int frames /*= 100*/ )
 {
    if (mPlaybackMode)
    {
@@ -97,7 +95,7 @@ void KinectWrapper::SeekForward( const int frames /*= 100*/ )
    }
 }
 
-void KinectWrapper::SeekBackward( const int frames /*= -100*/ )
+void Kinect::SeekBackward( const int frames /*= -100*/ )
 {
    if (mPlaybackMode)
    {
@@ -105,17 +103,17 @@ void KinectWrapper::SeekBackward( const int frames /*= -100*/ )
    }
 }
 
-int KinectWrapper::GetXRes() const
+int Kinect::GetXRes() const
 {
    return mDepthGenMD.FullXRes();
 }
 
-int KinectWrapper::GetYRes() const
+int Kinect::GetYRes() const
 {
    return mDepthGenMD.FullYRes();
 }
 
-const XnRGB24Pixel* KinectWrapper::GetImageData()
+const XnRGB24Pixel* Kinect::GetImageData()
 {
    // TODO: Find out why it is necessary to update the metadata
    //  object for each run. The playback still works if we comment this line
@@ -125,10 +123,9 @@ const XnRGB24Pixel* KinectWrapper::GetImageData()
    
    // Return a pointer to the image data from the generator.
    return mImageGenMD.RGB24Data();
-   
 }
 
-const XnDepthPixel* KinectWrapper::GetDepthData()
+const XnDepthPixel* Kinect::GetDepthData()
 {
    mDepthGen.GetMetaData(mDepthGenMD);
 
@@ -136,19 +133,19 @@ const XnDepthPixel* KinectWrapper::GetDepthData()
    return mDepthGenMD.Data();
 }
 
-size_t KinectWrapper::GetUsers( std::vector<UserData>& users ) const
+size_t Kinect::GetUsers( std::vector<UserData>& users ) const
 {
    return mUserTracking.GetUsers(users);
 }
 
-XnPoint3D KinectWrapper::RealWorldToProjective( const XnPoint3D& pos ) const
+XnPoint3D Kinect::RealWorldToProjective( const XnPoint3D& pos ) const
 {
    XnPoint3D tmp;
    mDepthGen.ConvertRealWorldToProjective(1, &pos, &tmp);
    return tmp;
 }
 
-XnPoint3D KinectWrapper::ProjectiveToRealWorld( const XnPoint3D& pos ) const
+XnPoint3D Kinect::ProjectiveToRealWorld( const XnPoint3D& pos ) const
 {
    XnPoint3D tmp;
    mDepthGen.ConvertProjectiveToRealWorld(1, &pos, &tmp);

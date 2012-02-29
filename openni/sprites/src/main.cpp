@@ -10,7 +10,7 @@ int main(int argc, char* argv[])
 
       KinectApp app((argc > 1) ? argv[1] : "");
       app.PrintCommands();
-      app.Mainloop();
+      app.Start();
    }
    catch (const char* e)
    {

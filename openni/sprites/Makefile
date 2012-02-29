@@ -10,16 +10,16 @@ BIN_DIR = ./bin
 
 SRC_FILES = ./src/*.cpp
 
-CFLAGS += -I/usr/include/ni `pkg-config --cflags sdl SDL_ttf SDL_image`
-LDFLAGS += -lOpenNI -lvlc `pkg-config --libs sdl SDL_ttf SDL_image`
+CFLAGS += -I/usr/include/ni `pkg-config --cflags allegro-5.0 allegro_font-5.0 allegro_ttf-5.0`
+LDFLAGS += -lOpenNI `pkg-config --libs allegro-5.0 allegro_font-5.0 allegro_ttf-5.0 allegro_image-5.0`
 
 
 EXE_NAME = sprites
 
 CFLAGS += -D__x86_64__ -Dlinux
 
-#CFG = Debug
-CFG = Release
+CFG = Debug
+#CFG = Release
 
 
 

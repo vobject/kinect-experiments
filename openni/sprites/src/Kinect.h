@@ -1,7 +1,6 @@
-#ifndef KINECT_WRAPPER_H
-#define KINECT_WRAPPER_H
+#ifndef KINECT_H
+#define KINECT_H
 
-#include "Subject.h"
 #include "UserData.h"
 #include "UserTracking.h"
 
@@ -11,11 +10,11 @@
 #include <string>
 #include <vector>
 
-class KinectWrapper : public Subject
+class Kinect
 {
 public:
-   KinectWrapper();
-   virtual ~KinectWrapper();
+   Kinect();
+   ~Kinect();
 
    void Init();
    void InitPlayback(const std::string& file);
@@ -51,9 +50,8 @@ private:
    
    bool mPlaybackMode;
 
-   // Stuff we do not need atm.
-   KinectWrapper(const KinectWrapper&);
-   KinectWrapper& operator=(const KinectWrapper&);
+   Kinect(const Kinect&);
+   Kinect& operator=(const Kinect&);
 };
 
-#endif // KINECT_WRAPPER_H
+#endif // KINECT_H
