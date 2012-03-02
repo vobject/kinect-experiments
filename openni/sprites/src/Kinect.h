@@ -30,7 +30,7 @@ public:
    const XnRGB24Pixel* GetImageData();
    const XnDepthPixel* GetDepthData();
 
-   size_t GetUsers(std::vector<UserData>& users) const;
+   size_t GetUsers(std::vector<UserData*>& users) const;
 
    XnPoint3D RealWorldToProjective(const XnPoint3D& pos) const;
    XnPoint3D ProjectiveToRealWorld(const XnPoint3D& pos) const;

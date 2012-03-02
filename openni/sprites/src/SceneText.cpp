@@ -2,15 +2,11 @@
 
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_font.h>
-#include <allegro5/allegro_ttf.h>
 
 SceneText::SceneText(int x_pos, int y_pos, int size)
    : mFontSize(size)
    , mFont(NULL)
 {
-   al_init_font_addon();
-   al_init_ttf_addon();
-
    mFont = al_load_font("VeraMono.ttf", mFontSize, 0);
    if (NULL == mFont) {
       throw "Failed to load VeraMono.ttf font";

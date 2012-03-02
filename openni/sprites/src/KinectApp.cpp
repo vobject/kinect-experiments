@@ -5,12 +5,17 @@
 #include "EmptyBackground.h"
 #include "BitmapBackground.h"
 #include "KinectBackground.h"
+#include "KinectPlayer.h"
 
-#include "SceneOverlay.h"
+//#include "SceneOverlay.h"
 #include "SceneText.h"
 //#include "BloodAnimation.h"
 
 #include <allegro5/allegro.h>
+#include <allegro5/allegro_image.h>
+#include <allegro5/allegro_primitives.h>
+#include <allegro5/allegro_font.h>
+#include <allegro5/allegro_ttf.h>
 
 #include <iostream>
 #include <sstream>
@@ -24,6 +29,7 @@ KinectApp::KinectApp(const std::string& path)
    , mDisplay(NULL)
    , mEventQueue(NULL)
    , mFpsTimer(NULL)
+   , mKinectPlayer(NULL)
    , mFpsText(NULL)
 {
    Log::ReportingLevel() = logDEBUG;
@@ -80,6 +86,7 @@ void KinectApp::Start()
 
    InitBackground();
    InitOverlay();
+   mKinectPlayer.reset(new KinectPlayer(mKinect));
    mFpsText.reset(new SceneText(5, 5, 20));
 //   mSceneObjects.push_back(new KinectBackground(mKinect));
 //   mSceneObjects.push_back(new BloodAnimation(100, 100, al_current_time() + 3.0));
@@ -92,6 +99,11 @@ void KinectApp::Setup()
    if(!al_init()) {
       throw "Failed to initialize allegro";
    }
+
+   al_init_image_addon();
+   al_init_primitives_addon();
+   al_init_font_addon();
+   al_init_ttf_addon();
 
    al_set_new_display_flags(ALLEGRO_RESIZABLE);
    mDisplay = al_create_display(WINDOW_WIDTH, WINDOW_HEIGHT);
@@ -113,7 +125,10 @@ void KinectApp::Setup()
 
 void KinectApp::UpdateScene()
 {
+   mKinect.NextFrame();
+
    (*mCurrentBackground)->Update();
+   mKinectPlayer->Update();
 
 //   for (OverlayVec::const_iterator iter = mOverlays.begin();
 //        iter != mOverlays.end();
@@ -131,6 +146,7 @@ void KinectApp::RenderScene()
    al_clear_to_color(al_map_rgb(0x00, 0x00, 0x00));
 
    (*mCurrentBackground)->Render();
+   mKinectPlayer->Render();
 
 //   for (OverlayVec::const_iterator iter = mOverlays.begin();
 //        iter != mOverlays.end();
@@ -218,6 +234,7 @@ std::string KinectApp::GetFpsMsg() const
 void KinectApp::InitBackground()
 {
    mBackgrounds.push_back(new KinectBackground(mKinect));
+   mBackgrounds.push_back(new BitmapBackground("/home/pzy/Downloads/tumblr_lgf3t0Lgbs1qarrk2o1_500.png"));
    mBackgrounds.push_back(new BitmapBackground("/home/pzy/Downloads/smw.jpg"));
    mBackgrounds.push_back(new BitmapBackground("/home/pzy/Downloads/Super-Mario-World-Wallpaper.png"));
    mBackgrounds.push_back(new EmptyBackground());

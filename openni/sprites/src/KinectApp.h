@@ -15,7 +15,7 @@ class ALLEGRO_EVENT_QUEUE;
 class ALLEGRO_TIMER;
 
 class Background;
-class SceneOverlay;
+class KinectPlayer;
 class SceneText;
 
 //enum BackgroundMode
@@ -82,6 +82,8 @@ private:
 
    BackgroundVec mBackgrounds;
    BackgroundVec::iterator mCurrentBackground;
+
+   std::auto_ptr<KinectPlayer> mKinectPlayer;
 
 //   OverlayVec mOverlays;
 

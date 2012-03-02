@@ -15,9 +15,10 @@ public:
 
    XnUserID GetId() const;
 
-   size_t GetPixelIterator(std::vector<bool>::const_iterator& begin, 
-                           std::vector<bool>::const_iterator& end) const;
-   void SetPixels(const std::vector<bool>& pixels);
+//   size_t GetPixelIterator(std::vector<bool>::const_iterator& begin,
+//                           std::vector<bool>::const_iterator& end) const;
+   const XnLabel* GetPixels() const;
+   void SetPixels(const XnLabel* pixels);
 
    std::map<int, XnPoint3D> GetRealWorldJoints() const;
    void SetRealWorldJoints(int joint, const XnPoint3D& pos);
@@ -26,7 +27,7 @@ public:
 
 protected:
    XnUserID mId;
-   std::vector<bool> mPixels;
+   const XnLabel* mPixels;
    std::map<int, XnPoint3D> mRealWorldJoints;
 
 private:

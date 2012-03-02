@@ -4,6 +4,7 @@
 
 UserData::UserData(XnUserID id)
    : mId(id)
+   , mPixels(NULL)
 {
    // TODO: This lookup table shout be outsourced.
    mJointNames[XN_SKEL_HEAD] = "HEAD";
@@ -46,17 +47,22 @@ XnUserID UserData::GetId() const
    return mId;
 }
 
-size_t UserData::GetPixelIterator(
-   std::vector<bool>::const_iterator& begin, 
-   std::vector<bool>::const_iterator& end) const
-{
-   begin = mPixels.begin();
-   end = mPixels.end();
+//size_t UserData::GetPixelIterator(
+//   std::vector<bool>::const_iterator& begin,
+//   std::vector<bool>::const_iterator& end) const
+//{
+//   begin = mPixels.begin();
+//   end = mPixels.end();
+//
+//   return mPixels.size();
+//}
 
-   return mPixels.size();
+const XnLabel* UserData::GetPixels() const
+{
+   return mPixels;
 }
 
-void UserData::SetPixels(const std::vector<bool>& pixels)
+void UserData::SetPixels(const XnLabel* pixels)
 {
    mPixels = pixels;
 }

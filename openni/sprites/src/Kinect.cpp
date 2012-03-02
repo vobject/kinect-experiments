@@ -133,7 +133,7 @@ const XnDepthPixel* Kinect::GetDepthData()
    return mDepthGenMD.Data();
 }
 
-size_t Kinect::GetUsers( std::vector<UserData>& users ) const
+size_t Kinect::GetUsers( std::vector<UserData*>& users ) const
 {
    return mUserTracking.GetUsers(users);
 }

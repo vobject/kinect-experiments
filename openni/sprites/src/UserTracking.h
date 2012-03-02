@@ -27,7 +27,7 @@ public:
    ~UserTracking();
 
    void Init(xn::Context& ctx);
-   size_t GetUsers(std::vector<UserData>& users) const;
+   size_t GetUsers(std::vector<UserData*>& users) const;
 
 private:
    xn::UserGenerator mUserGen;

@@ -14,8 +14,6 @@
 //   , mScrollType(None)
 //   , mSpeed(speed)
 //{
-//   al_init_image_addon();
-//
 //   mBitmap = al_load_bitmap(bitmap.c_str());
 //   if (NULL == mBitmap) {
 //      throw "Failed to load overlay bitmap";

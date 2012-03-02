@@ -48,7 +48,7 @@ void UserTracking::Init( xn::Context& ctx )
    skel_cap.SetSkeletonProfile(XN_SKEL_PROFILE_ALL);
 }
 
-size_t UserTracking::GetUsers(std::vector<UserData>& users) const
+size_t UserTracking::GetUsers(std::vector<UserData*>& users) const
 {
    XnUserID userBuf[16];
    XnUInt16 userMax = 16;
@@ -66,24 +66,27 @@ size_t UserTracking::GetUsers(std::vector<UserData>& users) const
          continue;
       }
 
-      UserData user(userBuf[id]);
+      UserData* user = new UserData(userBuf[id]);
 
       // User pixels
       xn::SceneMetaData scene_meta;
       mUserGen.GetUserPixels(userBuf[id], scene_meta);
 
-      const XnLabel* pLabelBuf = scene_meta.Data();
       const size_t pixel_count = scene_meta.YRes() * scene_meta.XRes();
-      std::vector<bool> user_pixels(pixel_count, false);
+      XnLabel* user_pixels = new XnLabel[pixel_count];
+      const XnLabel* pLabelBuf = scene_meta.Data();
 
-      for (XnUInt i = 0; i < pixel_count; ++i, ++pLabelBuf)
-      {
-         if (*pLabelBuf == userBuf[id])
-         {
-            user_pixels[i] = true;
-         }
-      }
-      user.SetPixels(user_pixels);
+//      std::vector<bool> user_pixels(pixel_count, false);
+//
+//      for (XnUInt i = 0; i < pixel_count; ++i, ++pLabelBuf)
+//      {
+//         if (*pLabelBuf == userBuf[id])
+//         {
+//            user_pixels[i] = true;
+//         }
+//      }
+      memcpy(user_pixels, pLabelBuf, pixel_count * sizeof(XnLabel));
+      user->SetPixels(user_pixels);
 
       // Show skeleton points.
       XnSkeletonJointPosition pos;
@@ -93,7 +96,7 @@ size_t UserTracking::GetUsers(std::vector<UserData>& users) const
          if (0.5 > pos.fConfidence) {
             continue;
          }
-         user.SetRealWorldJoints(joint, pos.position);
+         user->SetRealWorldJoints(joint, pos.position);
       }
 
       users.push_back(user);
