@@ -18,28 +18,30 @@ class Background;
 class SceneOverlay;
 class SceneText;
 
-enum BackgroundMode
-{
-   bm_None,
-   bm_Kinect,
-   bm_Mario,
-   bm_Mario2,
-   BACKGROUND_MODE_COUNT
-};
+//enum BackgroundMode
+//{
+//   bm_None,
+//   bm_Kinect,
+//   bm_Mario,
+//   bm_Mario2,
+//   BACKGROUND_MODE_COUNT
+//};
 
-enum OverlayMode
-{
-   om_None,
-   om_Stars,
-   om_Planets,
-   om_StarsAndPlanets,
-   OVERLAY_MODE_COUNT
-};
+//enum OverlayMode
+//{
+//   om_None,
+//   om_Stars,
+//   om_Planets,
+//   om_StarsAndPlanets,
+//   OVERLAY_MODE_COUNT
+//};
 
 class KinectApp
 {
 public:
    static const int FRAMES_PER_SECOND = 60;
+   static const int WINDOW_WIDTH = 800;
+   static const int WINDOW_HEIGHT = 600;
 
    explicit KinectApp(const std::string& path);
    virtual ~KinectApp();
@@ -67,19 +69,21 @@ private:
    bool mMainloopDone;
    int mFpsCount;
 
-   BackgroundMode mCurrentBackgroundMode;
-   OverlayMode mCurrentOverlayMode;
+//   BackgroundMode mCurrentBackgroundMode;
+//   OverlayMode mCurrentOverlayMode;
 
    ALLEGRO_DISPLAY* mDisplay;
    ALLEGRO_EVENT_QUEUE* mEventQueue;
    ALLEGRO_TIMER* mFpsTimer;
    Kinect mKinect;
 
-   typedef std::vector< std::pair<Background*, bool> > BackgroundVec;
-   typedef std::vector< std::pair<SceneOverlay*, bool> > OverlayVec;
+   typedef std::vector<Background*> BackgroundVec;
+//   typedef std::vector< std::pair<SceneOverlay*, bool> > OverlayVec;
 
    BackgroundVec mBackgrounds;
-   OverlayVec mOverlays;
+   BackgroundVec::iterator mCurrentBackground;
+
+//   OverlayVec mOverlays;
 
    std::auto_ptr<SceneText> mFpsText;
 //   std::list<SceneObject*> mSceneObjects;

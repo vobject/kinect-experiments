@@ -4,6 +4,7 @@
 #include "Background.h"
 
 class Kinect;
+class ALLEGRO_BITMAP;
 
 class KinectBackground : public Background
 {
@@ -16,6 +17,7 @@ public:
 
 private:
    Kinect& mKinect;
+   ALLEGRO_BITMAP* mBitmap;
 };
 
 #endif // KINECT_BACKGROUND_H

@@ -1,9 +1,10 @@
 #include "SceneObject.h"
 
-SceneObject::SceneObject(int x_pos, int y_pos)
-   : mXPos(x_pos)
-   , mYPos(y_pos)
-//   , mEndTime(end_time)
+SceneObject::SceneObject()
+   : mXPos(0)
+   , mYPos(0)
+   , mWidth(0)
+   , mHeight(0)
 {
 
 }
@@ -23,12 +24,24 @@ int SceneObject::GetYPos() const
    return mYPos;
 }
 
-void SceneObject::SetXPos(int x_pos)
+void SceneObject::SetPos(const int x_pos, const int y_pos)
 {
    mXPos = x_pos;
+   mYPos = y_pos;
 }
 
-void SceneObject::SetYPos(int y_pos)
+int SceneObject::GetWidth() const
 {
-   mYPos = y_pos;
+   return mWidth;
+}
+
+int SceneObject::GetHeight() const
+{
+   return mHeight;
+}
+
+void SceneObject::SetSize(const int width, const int height)
+{
+   mWidth = width;
+   mHeight = height;
 }

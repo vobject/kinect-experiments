@@ -4,26 +4,30 @@
 class SceneObject
 {
 public:
-   SceneObject(int x_pos, int y_pos);
+   SceneObject();
    virtual ~SceneObject();
 
 //   virtual SceneObject* Create() = 0;
 //   virtual SceneObject* Clone() = 0;
 //   virtual void Destroy();
 
-   int GetXPos() const;
-   int GetYPos() const;
-
-   void SetXPos(int x_pos);
-   void SetYPos(int y_pos);
-
    virtual bool IsAlive() = 0;
    virtual void Update() = 0;
    virtual void Render() = 0;
 
-protected:
+   int GetXPos() const;
+   int GetYPos() const;
+   void SetPos(int x_pos, int y_pos);
+
+   int GetWidth() const;
+   int GetHeight() const;
+   void SetSize(int width, int height);
+
+private:
    int mXPos;
    int mYPos;
+   int mWidth;
+   int mHeight;
 };
 
 #endif // SCENE_OBJECT_H

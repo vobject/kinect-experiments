@@ -1,7 +1,6 @@
 #include "Background.h"
 
 Background::Background()
-   : SceneObject(0, 0)
 {
 
 }

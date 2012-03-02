@@ -19,8 +19,8 @@ KinectApp::KinectApp(const std::string& path)
    : mPath(path)
    , mMainloopDone(false)
    , mFpsCount(0)
-   , mCurrentBackgroundMode(bm_Kinect)
-   , mCurrentOverlayMode(om_None)
+//   , mCurrentBackgroundMode(bm_Kinect)
+//   , mCurrentOverlayMode(om_None)
    , mDisplay(NULL)
    , mEventQueue(NULL)
    , mFpsTimer(NULL)
@@ -31,19 +31,21 @@ KinectApp::KinectApp(const std::string& path)
 
 KinectApp::~KinectApp()
 {
+   mCurrentBackground = mBackgrounds.end();
+
    for (BackgroundVec::const_iterator iter = mBackgrounds.begin();
         iter != mBackgrounds.end();
         iter++)
    {
-      delete iter->first;
+      delete *iter;
    }
 
-   for (OverlayVec::const_iterator iter = mOverlays.begin();
-        iter != mOverlays.end();
-        iter++)
-   {
-      delete iter->first;
-   }
+//   for (OverlayVec::const_iterator iter = mOverlays.begin();
+//        iter != mOverlays.end();
+//        iter++)
+//   {
+//      delete iter->first;
+//   }
 
 //   for(std::list<SceneObject*>::const_iterator it = mSceneObjects.begin();
 //       it != mSceneObjects.end();
@@ -81,18 +83,18 @@ void KinectApp::Start()
    mFpsText.reset(new SceneText(5, 5, 20));
 //   mSceneObjects.push_back(new KinectBackground(mKinect));
 //   mSceneObjects.push_back(new BloodAnimation(100, 100, al_current_time() + 3.0));
+
    Mainloop();
 }
 
 void KinectApp::Setup()
 {
-   mKinect.Init();
-
    if(!al_init()) {
       throw "Failed to initialize allegro";
    }
 
-   mDisplay = al_create_display(mKinect.GetXRes(), mKinect.GetYRes());
+   al_set_new_display_flags(ALLEGRO_RESIZABLE);
+   mDisplay = al_create_display(WINDOW_WIDTH, WINDOW_HEIGHT);
    if (NULL == mDisplay) {
       throw "Failed to create an allegro display";
    }
@@ -105,50 +107,39 @@ void KinectApp::Setup()
    al_register_event_source(mEventQueue, al_get_display_event_source(mDisplay));
    al_register_event_source(mEventQueue, al_get_keyboard_event_source());
    al_register_event_source(mEventQueue, al_get_timer_event_source(mFpsTimer));
+
+   mKinect.Init();
 }
 
 void KinectApp::UpdateScene()
 {
-   for (BackgroundVec::const_iterator iter = mBackgrounds.begin();
-        iter != mBackgrounds.end();
-        iter++)
-   {
-      if (iter->second) {
-         iter->first->Update();
-      }
-   }
+   (*mCurrentBackground)->Update();
 
-   for (OverlayVec::const_iterator iter = mOverlays.begin();
-        iter != mOverlays.end();
-        iter++)
-   {
-      if (iter->second) {
-         iter->first->Update();
-      }
-   }
+//   for (OverlayVec::const_iterator iter = mOverlays.begin();
+//        iter != mOverlays.end();
+//        iter++)
+//   {
+//      if (iter->second) {
+//         iter->first->Update();
+//      }
+//   }
 }
 
 void KinectApp::RenderScene()
 {
+   al_set_target_bitmap(al_get_backbuffer(al_get_current_display()));
    al_clear_to_color(al_map_rgb(0x00, 0x00, 0x00));
 
-   for (BackgroundVec::const_iterator iter = mBackgrounds.begin();
-        iter != mBackgrounds.end();
-        iter++)
-   {
-      if (iter->second) {
-         iter->first->Render();
-      }
-   }
+   (*mCurrentBackground)->Render();
 
-   for (OverlayVec::const_iterator iter = mOverlays.begin();
-        iter != mOverlays.end();
-        iter++)
-   {
-      if (iter->second) {
-         iter->first->Render();
-      }
-   }
+//   for (OverlayVec::const_iterator iter = mOverlays.begin();
+//        iter != mOverlays.end();
+//        iter++)
+//   {
+//      if (iter->second) {
+//         iter->first->Render();
+//      }
+//   }
 
    mFpsText->SetText(GetFpsMsg());
    mFpsText->Render();
@@ -204,6 +195,10 @@ void KinectApp::Mainloop()
             break;
          }
       }
+      else if (ALLEGRO_EVENT_DISPLAY_RESIZE == ev.type)
+      {
+         al_acknowledge_resize(mDisplay);
+      }
       else if (ALLEGRO_EVENT_DISPLAY_CLOSE == ev.type)
       {
          mMainloopDone = true;
@@ -222,79 +217,87 @@ std::string KinectApp::GetFpsMsg() const
 
 void KinectApp::InitBackground()
 {
-   mBackgrounds.push_back(std::make_pair(new EmptyBackground(), false));
-   mBackgrounds.push_back(std::make_pair(new KinectBackground(mKinect), true));
-   mBackgrounds.push_back(std::make_pair(new BitmapBackground("/home/pzy/Downloads/smw.jpg"), false));
-   mBackgrounds.push_back(std::make_pair(new BitmapBackground("/home/pzy/Downloads/Super-Mario-World-Wallpaper.png"), false));
+   mBackgrounds.push_back(new KinectBackground(mKinect));
+   mBackgrounds.push_back(new BitmapBackground("/home/pzy/Downloads/smw.jpg"));
+   mBackgrounds.push_back(new BitmapBackground("/home/pzy/Downloads/Super-Mario-World-Wallpaper.png"));
+   mBackgrounds.push_back(new EmptyBackground());
+   mCurrentBackground = mBackgrounds.begin();
 }
 
 void KinectApp::InitOverlay()
 {
-   mOverlays.push_back(std::make_pair(
-         new SceneOverlay("/home/pzy/Downloads/starBG.png", SceneOverlay::None, 2),
-      false));
-
-   mOverlays.push_back(std::make_pair(
-         new SceneOverlay("/home/pzy/Downloads/starMG.png", SceneOverlay::None, 6),
-      false));
+//   mOverlays.push_back(std::make_pair(
+//         new SceneOverlay("/home/pzy/Downloads/starBG.png", SceneOverlay::None, 2),
+//      false));
+//
+//   mOverlays.push_back(std::make_pair(
+//         new SceneOverlay("/home/pzy/Downloads/starMG.png", SceneOverlay::None, 6),
+//      false));
 }
 
 void KinectApp::ToggleBackgroundMode()
 {
-   // HACK
+   mCurrentBackground++;
 
-   for (BackgroundVec::iterator iter = mBackgrounds.begin();
-        iter != mBackgrounds.end();
-        iter++)
-   {
-      iter->second = false;
+   if (mCurrentBackground == mBackgrounds.end()) {
+      mCurrentBackground = mBackgrounds.begin();
    }
-
-   mCurrentBackgroundMode = (BackgroundMode)((mCurrentBackgroundMode + 1) % BACKGROUND_MODE_COUNT);
-   mBackgrounds[mCurrentBackgroundMode].second = true;
+//
+//
+//   // HACK
+//
+//   for (BackgroundVec::iterator iter = mBackgrounds.begin();
+//        iter != mBackgrounds.end();
+//        iter++)
+//   {
+//      iter->second = false;
+//   }
+//
+//   mCurrentBackgroundMode = (BackgroundMode)((mCurrentBackgroundMode + 1) % BACKGROUND_MODE_COUNT);
+//   mBackgrounds[mCurrentBackgroundMode].second = true;
 }
 
 void KinectApp::ToggleOverlayMode()
 {
    // HACK
 
-   mCurrentOverlayMode = (OverlayMode)((mCurrentOverlayMode + 1) % OVERLAY_MODE_COUNT);
-
-   switch (mCurrentOverlayMode)
-   {
-      case om_None:
-      {
-         for (OverlayVec::iterator iter = mOverlays.begin();
-              iter != mOverlays.end();
-              iter++)
-         {
-            iter->second = false;
-         }
-      }
-      break;
-
-      case om_Stars:
-      {
-         mOverlays[0].second = true;
-         mOverlays[1].second = false;
-      }
-      break;
-
-      case om_Planets:
-      {
-         mOverlays[0].second = false;
-         mOverlays[1].second = true;
-      }
-      break;
-
-      case om_StarsAndPlanets:
-      {
-         mOverlays[0].second = true;
-         mOverlays[1].second = true;
-      }
-      break;
-
-      default:
-         break;
-   }
+//   mCurrentOverlayMode = (OverlayMode)((mCurrentOverlayMode + 1) % OVERLAY_MODE_COUNT);
+//
+//   switch (mCurrentOverlayMode)
+//   {
+//      case om_None:
+//      {
+//         for (OverlayVec::iterator iter = mOverlays.begin();
+//              iter != mOverlays.end();
+//              iter++)
+//         {
+//            iter->second = false;
+//         }
+//      }
+//      break;
+//
+//      case om_Stars:
+//      {
+//         mOverlays[0].second = true;
+//         mOverlays[1].second = false;
+//      }
+//      break;
+//
+//      case om_Planets:
+//      {
+//         mOverlays[0].second = false;
+//         mOverlays[1].second = true;
+//      }
+//      break;
+//
+//      case om_StarsAndPlanets:
+//      {
+//         mOverlays[0].second = true;
+//         mOverlays[1].second = true;
+//      }
+//      break;
+//
+//      default:
+//         break;
+//   }
 }
