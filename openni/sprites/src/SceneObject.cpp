@@ -1,9 +1,9 @@
 #include "SceneObject.h"
 
-SceneObject::SceneObject(int x_pos, int y_pos, float end_time)
+SceneObject::SceneObject(int x_pos, int y_pos)
    : mXPos(x_pos)
    , mYPos(y_pos)
-   , mEndTime(end_time)
+//   , mEndTime(end_time)
 {
 
 }

@@ -4,7 +4,7 @@
 class SceneObject
 {
 public:
-   SceneObject(int x_pos, int y_pos, float end_time);
+   SceneObject(int x_pos, int y_pos);
    virtual ~SceneObject();
 
 //   virtual SceneObject* Create() = 0;
@@ -17,14 +17,13 @@ public:
    void SetXPos(int x_pos);
    void SetYPos(int y_pos);
 
-   virtual bool IsDone() = 0;
+   virtual bool IsAlive() = 0;
    virtual void Update() = 0;
    virtual void Render() = 0;
 
 protected:
    int mXPos;
    int mYPos;
-   float mEndTime;
 };
 
 #endif // SCENE_OBJECT_H

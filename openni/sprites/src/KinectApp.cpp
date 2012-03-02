@@ -1,39 +1,59 @@
 #include "KinectApp.h"
 #include "Log.h"
 #include "Kinect.h"
+
+#include "EmptyBackground.h"
+#include "BitmapBackground.h"
 #include "KinectBackground.h"
-#include "BloodAnimation.h"
+
+#include "SceneOverlay.h"
+#include "SceneText.h"
+//#include "BloodAnimation.h"
 
 #include <allegro5/allegro.h>
-#include <allegro5/allegro_image.h>
-#include <allegro5/allegro_font.h>
-#include <allegro5/allegro_ttf.h>
 
 #include <iostream>
+#include <sstream>
 
 KinectApp::KinectApp(const std::string& path)
    : mPath(path)
+   , mMainloopDone(false)
+   , mFpsCount(0)
+   , mCurrentBackgroundMode(bm_Kinect)
+   , mCurrentOverlayMode(om_None)
    , mDisplay(NULL)
-   , mFont18(NULL)
    , mEventQueue(NULL)
    , mFpsTimer(NULL)
-   , mMainloopDone(false)
+   , mFpsText(NULL)
 {
    Log::ReportingLevel() = logDEBUG;
 }
 
 KinectApp::~KinectApp()
 {
-   for(std::list<SceneObject*>::const_iterator it = mSceneObjects.begin();
-       it != mSceneObjects.end();
-       it++)
+   for (BackgroundVec::const_iterator iter = mBackgrounds.begin();
+        iter != mBackgrounds.end();
+        iter++)
    {
-      delete *it;
+      delete iter->first;
    }
+
+   for (OverlayVec::const_iterator iter = mOverlays.begin();
+        iter != mOverlays.end();
+        iter++)
+   {
+      delete iter->first;
+   }
+
+//   for(std::list<SceneObject*>::const_iterator it = mSceneObjects.begin();
+//       it != mSceneObjects.end();
+//       it++)
+//   {
+//      delete *it;
+//   }
 
    al_destroy_timer(mFpsTimer);
    al_destroy_event_queue(mEventQueue);
-   al_destroy_font(mFont18);
    al_destroy_display(mDisplay);
 }
 
@@ -56,8 +76,11 @@ void KinectApp::Start()
 {
    Setup();
 
-   mSceneObjects.push_back(new KinectBackground(mKinect));
-   mSceneObjects.push_back(new BloodAnimation(100, 100, al_current_time() + 3.0));
+   InitBackground();
+   InitOverlay();
+   mFpsText.reset(new SceneText(5, 5, 20));
+//   mSceneObjects.push_back(new KinectBackground(mKinect));
+//   mSceneObjects.push_back(new BloodAnimation(100, 100, al_current_time() + 3.0));
    Mainloop();
 }
 
@@ -69,23 +92,14 @@ void KinectApp::Setup()
       throw "Failed to initialize allegro";
    }
 
-   al_init_font_addon();
-   al_init_ttf_addon();
-   al_init_image_addon();
-
    mDisplay = al_create_display(mKinect.GetXRes(), mKinect.GetYRes());
    if (NULL == mDisplay) {
       throw "Failed to create an allegro display";
    }
    al_set_window_title(mDisplay, "sprite - kinect-experiments");
 
-   mFont18 = al_load_font("VeraMono.ttf", 18, 0);
-   if (NULL == mFont18) {
-      throw "Failed to load VeraMono.ttf font";
-   }
-
    al_install_keyboard();
-   mFpsTimer = al_create_timer(1.0 / 60);
+   mFpsTimer = al_create_timer(1.0 / FRAMES_PER_SECOND);
    mEventQueue = al_create_event_queue();
 
    al_register_event_source(mEventQueue, al_get_display_event_source(mDisplay));
@@ -95,36 +109,49 @@ void KinectApp::Setup()
 
 void KinectApp::UpdateScene()
 {
-   for(std::list<SceneObject*>::iterator it = mSceneObjects.begin();
-       it != mSceneObjects.end();)
+   for (BackgroundVec::const_iterator iter = mBackgrounds.begin();
+        iter != mBackgrounds.end();
+        iter++)
    {
-      if ((*it)->IsDone())
-      {
-         delete *it;
-         it = mSceneObjects.erase(it);
-      }
-      else
-      {
-         it++;
+      if (iter->second) {
+         iter->first->Update();
       }
    }
 
-   for(std::list<SceneObject*>::const_iterator it = mSceneObjects.begin();
-       it != mSceneObjects.end();
-       it++)
+   for (OverlayVec::const_iterator iter = mOverlays.begin();
+        iter != mOverlays.end();
+        iter++)
    {
-      (*it)->Update();
+      if (iter->second) {
+         iter->first->Update();
+      }
    }
 }
 
 void KinectApp::RenderScene()
 {
-   for(std::list<SceneObject*>::const_iterator it = mSceneObjects.begin();
-       it != mSceneObjects.end();
-       it++)
+   al_clear_to_color(al_map_rgb(0x00, 0x00, 0x00));
+
+   for (BackgroundVec::const_iterator iter = mBackgrounds.begin();
+        iter != mBackgrounds.end();
+        iter++)
    {
-      (*it)->Render();
+      if (iter->second) {
+         iter->first->Render();
+      }
    }
+
+   for (OverlayVec::const_iterator iter = mOverlays.begin();
+        iter != mOverlays.end();
+        iter++)
+   {
+      if (iter->second) {
+         iter->first->Render();
+      }
+   }
+
+   mFpsText->SetText(GetFpsMsg());
+   mFpsText->Render();
 
    al_flip_display();
 }
@@ -135,7 +162,6 @@ void KinectApp::Mainloop()
 
    float gameTime = al_current_time();
    int frames = 0;
-   int gameFPS = 0;
    bool render = false;
    ALLEGRO_EVENT ev;
 
@@ -156,7 +182,7 @@ void KinectApp::Mainloop()
          if(al_current_time() - gameTime >= 1)
          {
             gameTime = al_current_time();
-            gameFPS = frames;
+            mFpsCount = frames;
             frames = 0;
          }
 
@@ -170,6 +196,12 @@ void KinectApp::Mainloop()
          case ALLEGRO_KEY_ESCAPE:
             mMainloopDone = true;
             break;
+         case ALLEGRO_KEY_B:
+            ToggleBackgroundMode();
+            break;
+         case ALLEGRO_KEY_O:
+            ToggleOverlayMode();
+            break;
          }
       }
       else if (ALLEGRO_EVENT_DISPLAY_CLOSE == ev.type)
@@ -179,4 +211,90 @@ void KinectApp::Mainloop()
    }
 
    al_stop_timer(mFpsTimer);
+}
+
+std::string KinectApp::GetFpsMsg() const
+{
+   std::stringstream os;
+   os << "FPS: " << mFpsCount;
+   return os.str();
+}
+
+void KinectApp::InitBackground()
+{
+   mBackgrounds.push_back(std::make_pair(new EmptyBackground(), false));
+   mBackgrounds.push_back(std::make_pair(new KinectBackground(mKinect), true));
+   mBackgrounds.push_back(std::make_pair(new BitmapBackground("/home/pzy/Downloads/smw.jpg"), false));
+   mBackgrounds.push_back(std::make_pair(new BitmapBackground("/home/pzy/Downloads/Super-Mario-World-Wallpaper.png"), false));
+}
+
+void KinectApp::InitOverlay()
+{
+   mOverlays.push_back(std::make_pair(
+         new SceneOverlay("/home/pzy/Downloads/starBG.png", SceneOverlay::None, 2),
+      false));
+
+   mOverlays.push_back(std::make_pair(
+         new SceneOverlay("/home/pzy/Downloads/starMG.png", SceneOverlay::None, 6),
+      false));
+}
+
+void KinectApp::ToggleBackgroundMode()
+{
+   // HACK
+
+   for (BackgroundVec::iterator iter = mBackgrounds.begin();
+        iter != mBackgrounds.end();
+        iter++)
+   {
+      iter->second = false;
+   }
+
+   mCurrentBackgroundMode = (BackgroundMode)((mCurrentBackgroundMode + 1) % BACKGROUND_MODE_COUNT);
+   mBackgrounds[mCurrentBackgroundMode].second = true;
+}
+
+void KinectApp::ToggleOverlayMode()
+{
+   // HACK
+
+   mCurrentOverlayMode = (OverlayMode)((mCurrentOverlayMode + 1) % OVERLAY_MODE_COUNT);
+
+   switch (mCurrentOverlayMode)
+   {
+      case om_None:
+      {
+         for (OverlayVec::iterator iter = mOverlays.begin();
+              iter != mOverlays.end();
+              iter++)
+         {
+            iter->second = false;
+         }
+      }
+      break;
+
+      case om_Stars:
+      {
+         mOverlays[0].second = true;
+         mOverlays[1].second = false;
+      }
+      break;
+
+      case om_Planets:
+      {
+         mOverlays[0].second = false;
+         mOverlays[1].second = true;
+      }
+      break;
+
+      case om_StarsAndPlanets:
+      {
+         mOverlays[0].second = true;
+         mOverlays[1].second = true;
+      }
+      break;
+
+      default:
+         break;
+   }
 }

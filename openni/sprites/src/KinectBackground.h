@@ -1,17 +1,16 @@
 #ifndef KINECT_BACKGROUND_H
 #define KINECT_BACKGROUND_H
 
-#include "SceneObject.h"
+#include "Background.h"
 
 class Kinect;
 
-class KinectBackground : public SceneObject
+class KinectBackground : public Background
 {
 public:
    KinectBackground(Kinect& kinect);
    virtual ~KinectBackground();
 
-   virtual bool IsDone();
    virtual void Update();
    virtual void Render();
 

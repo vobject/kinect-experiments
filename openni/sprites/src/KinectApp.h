@@ -3,20 +3,44 @@
 
 #include "Kinect.h"
 
+#include <memory>
 #include <string>
 #include <vector>
 #include <list>
+#include <map>
 
 class ALLEGRO_DISPLAY;
 class ALLEGRO_FONT;
 class ALLEGRO_EVENT_QUEUE;
 class ALLEGRO_TIMER;
 
-class SceneObject;
+class Background;
+class SceneOverlay;
+class SceneText;
+
+enum BackgroundMode
+{
+   bm_None,
+   bm_Kinect,
+   bm_Mario,
+   bm_Mario2,
+   BACKGROUND_MODE_COUNT
+};
+
+enum OverlayMode
+{
+   om_None,
+   om_Stars,
+   om_Planets,
+   om_StarsAndPlanets,
+   OVERLAY_MODE_COUNT
+};
 
 class KinectApp
 {
 public:
+   static const int FRAMES_PER_SECOND = 60;
+
    explicit KinectApp(const std::string& path);
    virtual ~KinectApp();
 
@@ -30,17 +54,35 @@ protected:
    virtual void Mainloop();
 
 private:
+   void InitBackground();
+   void InitOverlay();
+
+   void ToggleBackgroundMode();
+   void ToggleOverlayMode();
+
+   std::string GetFpsMsg() const;
+
    const std::string mPath;
 
    bool mMainloopDone;
+   int mFpsCount;
+
+   BackgroundMode mCurrentBackgroundMode;
+   OverlayMode mCurrentOverlayMode;
 
    ALLEGRO_DISPLAY* mDisplay;
-   ALLEGRO_FONT* mFont18;
    ALLEGRO_EVENT_QUEUE* mEventQueue;
    ALLEGRO_TIMER* mFpsTimer;
    Kinect mKinect;
 
-   std::list<SceneObject*> mSceneObjects;
+   typedef std::vector< std::pair<Background*, bool> > BackgroundVec;
+   typedef std::vector< std::pair<SceneOverlay*, bool> > OverlayVec;
+
+   BackgroundVec mBackgrounds;
+   OverlayVec mOverlays;
+
+   std::auto_ptr<SceneText> mFpsText;
+//   std::list<SceneObject*> mSceneObjects;
 
    KinectApp(const KinectApp&);
    KinectApp& operator=(const KinectApp&);
