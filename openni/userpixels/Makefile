@@ -10,8 +10,8 @@ BIN_DIR = ./bin
 
 SRC_FILES = ./src/*.cpp
 
-CFLAGS += -I/usr/include/ni `pkg-config --cflags sdl SDL_ttf SDL_image`
-LDFLAGS += -lOpenNI -lvlc `pkg-config --libs sdl SDL_ttf SDL_image`
+CFLAGS += -I/usr/include/ni `sdl-config --cflags`
+LDFLAGS += -lOpenNI -lvlc `sdl-config --libs` -lSDL_ttf
 
 
 EXE_NAME = userpixels
@@ -237,6 +237,7 @@ endef
 
 # define the target 'all' (it is first, and so, default)
 all: $(OUTPUT_FILE)
+	cp ../../external/ttf-bitstream-vera-1.10/VeraMono.ttf $(OUT_DIR)
 
 # Intermediate directory
 $(INT_DIR):
