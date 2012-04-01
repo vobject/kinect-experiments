@@ -15,7 +15,10 @@ openni/userpixels:
 SDL, libVLC, OpenNI GetUserpixels() API, basic gesture recognition
 
 openni/sprites:
-SDL, combination of GetUserpixels() and sprite animation
+allegro5, combination of GetUserpixels() and sprite animation
+
+openni/scroll:
+scrolling environment
 
 
 Enjoy!

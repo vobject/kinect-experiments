@@ -10,16 +10,16 @@ BIN_DIR = ./bin
 
 SRC_FILES = ./src/*.cpp
 
-CFLAGS += -I/usr/include/ni `sdl-config --cflags`
-LDFLAGS += -lOpenNI -lvlc `sdl-config --libs` -lSDL_ttf
+CFLAGS += -I/usr/include/ni
+LDFLAGS += -lOpenNI
 
 
-EXE_NAME = userpixels
+EXE_NAME = scroll
 
-CFLAGS += -D__x86_64__ -Dlinux
+CFLAGS += -D__x86_64__ -Dlinux -std=c++0x
 
-#CFG = Debug
-CFG = Release
+CFG = Debug
+#CFG = Release
 
 
 
