@@ -4,7 +4,7 @@
 
 UserData::UserData(XnUserID id)
    : mId(id)
-   , mPixels(NULL)
+//   , mPixels(NULL)
 {
    // TODO: This lookup table shout be outsourced.
    mJointNames[XN_SKEL_HEAD] = "HEAD";
@@ -57,15 +57,15 @@ XnUserID UserData::GetId() const
 //   return mPixels.size();
 //}
 
-const XnLabel* UserData::GetPixels() const
-{
-   return mPixels;
-}
-
-void UserData::SetPixels(const XnLabel* pixels)
-{
-   mPixels = pixels;
-}
+//const XnLabel* UserData::GetPixels() const
+//{
+//   return mPixels;
+//}
+//
+//void UserData::SetPixels(const XnLabel* pixels)
+//{
+//   mPixels = pixels;
+//}
 
 std::map<int, XnPoint3D> UserData::GetRealWorldJoints() const
 {

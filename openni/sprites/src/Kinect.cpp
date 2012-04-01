@@ -16,7 +16,7 @@ Kinect::~Kinect()
 void Kinect::Init()
 {
    InitOpenNI("");
-   mUserTracking.Init(mContext);
+//   mUserTracking.Init(mContext);
    mContext.StartGeneratingAll();
 }
 
@@ -29,7 +29,7 @@ void Kinect::InitPlayback( const std::string& file )
    mPlaybackMode = true;
 
    InitOpenNI(file);
-   mUserTracking.Init(mContext);
+//   mUserTracking.Init(mContext);
    mContext.StartGeneratingAll();
 }
 
@@ -113,7 +113,7 @@ int Kinect::GetYRes() const
    return mDepthGenMD.FullYRes();
 }
 
-const XnRGB24Pixel* Kinect::GetImageData()
+const XnRGB24Pixel* Kinect::GetImageData() const
 {
    // TODO: Find out why it is necessary to update the metadata
    //  object for each run. The playback still works if we comment this line
@@ -125,17 +125,12 @@ const XnRGB24Pixel* Kinect::GetImageData()
    return mImageGenMD.RGB24Data();
 }
 
-const XnDepthPixel* Kinect::GetDepthData()
+const XnDepthPixel* Kinect::GetDepthData() const
 {
    mDepthGen.GetMetaData(mDepthGenMD);
 
    // Return a pointer to the depth data from the generator.
    return mDepthGenMD.Data();
-}
-
-size_t Kinect::GetUsers( std::vector<UserData*>& users ) const
-{
-   return mUserTracking.GetUsers(users);
 }
 
 XnPoint3D Kinect::RealWorldToProjective( const XnPoint3D& pos ) const

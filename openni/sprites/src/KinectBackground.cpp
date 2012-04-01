@@ -31,15 +31,15 @@ void KinectBackground::Render()
                                                 al_get_bitmap_format(mBitmap),
                                                 ALLEGRO_LOCK_WRITEONLY);
    al_set_target_bitmap(mBitmap);
-   const XnRGB24Pixel* pDepthBuf = mKinect.GetImageData();
+   const XnRGB24Pixel* pRgbBuf = mKinect.GetImageData();
 
    for (int y = 0; y < GetHeight(); y++)
    {
-      for (int x = 0; x < GetWidth(); x++, pDepthBuf++)
+      for (int x = 0; x < GetWidth(); x++, pRgbBuf++)
       {
-         al_put_pixel(x, y, al_map_rgb(pDepthBuf->nRed,
-                                       pDepthBuf->nGreen,
-                                       pDepthBuf->nBlue));
+         al_put_pixel(x, y, al_map_rgb(pRgbBuf->nRed,
+                                       pRgbBuf->nGreen,
+                                       pRgbBuf->nBlue));
       }
    }
    al_unlock_bitmap(mBitmap);

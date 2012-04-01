@@ -1,6 +1,10 @@
 #include "UserTracking.h"
 #include "Log.h"
 
+#include "Kinect.h"
+
+#include <allegro5/allegro.h>
+
 // Callback functions for xn::UserGenerator class.
 void XN_CALLBACK_TYPE UserFoundCB(xn::UserGenerator& gen, XnUserID id, void* cookie);
 void XN_CALLBACK_TYPE UserLostCB(xn::UserGenerator& gen, XnUserID id, void* cookie);
@@ -27,11 +31,13 @@ UserTracking::~UserTracking()
 
 }
 
-void UserTracking::Init( xn::Context& ctx )
+void UserTracking::Init(Kinect& kinect)
 {
-   if (XN_STATUS_OK != mUserGen.Create(ctx)) {
+   kinect.mContext.StopGeneratingAll();
+   if (XN_STATUS_OK != mUserGen.Create(kinect.mContext)) {
       throw "xn::UserGenerator could not be inizialized. Does the context support it?";
    }
+   kinect.mContext.StartGeneratingAll();
 
    mCallbackArgs.user_gen = &mUserGen;
 
@@ -48,7 +54,7 @@ void UserTracking::Init( xn::Context& ctx )
    skel_cap.SetSkeletonProfile(XN_SKEL_PROFILE_ALL);
 }
 
-size_t UserTracking::GetUsers(std::vector<UserData*>& users) const
+size_t UserTracking::GetUsers(std::vector<UserData>& users) const
 {
    XnUserID userBuf[16];
    XnUInt16 userMax = 16;
@@ -66,29 +72,8 @@ size_t UserTracking::GetUsers(std::vector<UserData*>& users) const
          continue;
       }
 
-      UserData* user = new UserData(userBuf[id]);
+      UserData user(userBuf[id]);
 
-      // User pixels
-      xn::SceneMetaData scene_meta;
-      mUserGen.GetUserPixels(userBuf[id], scene_meta);
-
-      const size_t pixel_count = scene_meta.YRes() * scene_meta.XRes();
-      XnLabel* user_pixels = new XnLabel[pixel_count];
-      const XnLabel* pLabelBuf = scene_meta.Data();
-
-//      std::vector<bool> user_pixels(pixel_count, false);
-//
-//      for (XnUInt i = 0; i < pixel_count; ++i, ++pLabelBuf)
-//      {
-//         if (*pLabelBuf == userBuf[id])
-//         {
-//            user_pixels[i] = true;
-//         }
-//      }
-      memcpy(user_pixels, pLabelBuf, pixel_count * sizeof(XnLabel));
-      user->SetPixels(user_pixels);
-
-      // Show skeleton points.
       XnSkeletonJointPosition pos;
       for (int joint = XN_SKEL_HEAD; joint <= XN_SKEL_RIGHT_FOOT; ++joint)
       {
@@ -96,12 +81,35 @@ size_t UserTracking::GetUsers(std::vector<UserData*>& users) const
          if (0.5 > pos.fConfidence) {
             continue;
          }
-         user->SetRealWorldJoints(joint, pos.position);
+         user.SetRealWorldJoints(joint, pos.position);
       }
 
       users.push_back(user);
    }
    return users.size();
+}
+
+void UserTracking::GetUserPixels(const UserData& user, xn::SceneMetaData& meta) const
+{
+      mUserGen.GetUserPixels(user.GetId(), meta);
+
+
+
+//      const size_t pixel_count = scene_meta.YRes() * scene_meta.XRes();
+//      XnLabel* user_pixels = new XnLabel[pixel_count];
+//      const XnLabel* pLabelBuf = scene_meta.Data();
+//
+////      std::vector<bool> user_pixels(pixel_count, false);
+////
+////      for (XnUInt i = 0; i < pixel_count; ++i, ++pLabelBuf)
+////      {
+////         if (*pLabelBuf == userBuf[id])
+////         {
+////            user_pixels[i] = true;
+////         }
+////      }
+//      memcpy(user_pixels, pLabelBuf, pixel_count * sizeof(XnLabel));
+//      user->SetPixels(user_pixels);
 }
 
 void XN_CALLBACK_TYPE UserFoundCB(

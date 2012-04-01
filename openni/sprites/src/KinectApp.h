@@ -2,6 +2,7 @@
 #define KINENOID_APP_H
 
 #include "Kinect.h"
+#include "UserTracking.h"
 
 #include <memory>
 #include <string>
@@ -76,6 +77,7 @@ private:
    ALLEGRO_EVENT_QUEUE* mEventQueue;
    ALLEGRO_TIMER* mFpsTimer;
    Kinect mKinect;
+   UserTracking mUserTracking;
 
    typedef std::vector<Background*> BackgroundVec;
 //   typedef std::vector< std::pair<SceneOverlay*, bool> > OverlayVec;

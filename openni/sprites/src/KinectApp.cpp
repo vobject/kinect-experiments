@@ -1,6 +1,8 @@
 #include "KinectApp.h"
 #include "Log.h"
+
 #include "Kinect.h"
+#include "UserTracking.h"
 
 #include "EmptyBackground.h"
 #include "BitmapBackground.h"
@@ -86,7 +88,7 @@ void KinectApp::Start()
 
    InitBackground();
    InitOverlay();
-   mKinectPlayer.reset(new KinectPlayer(mKinect));
+   mKinectPlayer.reset(new KinectPlayer(mKinect, mUserTracking));
    mFpsText.reset(new SceneText(5, 5, 20));
 //   mSceneObjects.push_back(new KinectBackground(mKinect));
 //   mSceneObjects.push_back(new BloodAnimation(100, 100, al_current_time() + 3.0));
@@ -121,6 +123,7 @@ void KinectApp::Setup()
    al_register_event_source(mEventQueue, al_get_timer_event_source(mFpsTimer));
 
    mKinect.Init();
+   mUserTracking.Init(mKinect);
 }
 
 void KinectApp::UpdateScene()
@@ -233,7 +236,7 @@ std::string KinectApp::GetFpsMsg() const
 
 void KinectApp::InitBackground()
 {
-   mBackgrounds.push_back(new KinectBackground(mKinect));
+//   mBackgrounds.push_back(new KinectBackground(mKinect));
    mBackgrounds.push_back(new BitmapBackground("/home/pzy/Downloads/tumblr_lgf3t0Lgbs1qarrk2o1_500.png"));
    mBackgrounds.push_back(new BitmapBackground("/home/pzy/Downloads/smw.jpg"));
    mBackgrounds.push_back(new BitmapBackground("/home/pzy/Downloads/Super-Mario-World-Wallpaper.png"));

@@ -18,8 +18,8 @@ EXE_NAME = sprites
 
 CFLAGS += -D__x86_64__ -Dlinux
 
-#CFG = Debug
-CFG = Release
+CFG = Debug
+#CFG = Release
 
 
 

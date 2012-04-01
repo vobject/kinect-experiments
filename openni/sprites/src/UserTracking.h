@@ -8,6 +8,9 @@
 
 #include <vector>
 
+class Kinect;
+class ALLEGRO_BITMAP;
+
 // A pointer to this struct is passed as the "cookie" argument to the CB functions.
 struct UserTrackerCallbackArgs
 {
@@ -26,8 +29,9 @@ public:
    UserTracking();
    ~UserTracking();
 
-   void Init(xn::Context& ctx);
-   size_t GetUsers(std::vector<UserData*>& users) const;
+   void Init(Kinect& kinect);
+   size_t GetUsers(std::vector<UserData>& users) const;
+   void GetUserPixels(const UserData& user, xn::SceneMetaData& meta) const;
 
 private:
    xn::UserGenerator mUserGen;

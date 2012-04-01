@@ -1,9 +1,6 @@
 #ifndef KINECT_H
 #define KINECT_H
 
-#include "UserData.h"
-#include "UserTracking.h"
-
 #include <XnOS.h>
 #include <XnCppWrapper.h>
 
@@ -12,6 +9,8 @@
 
 class Kinect
 {
+   friend class UserTracking;
+
 public:
    Kinect();
    ~Kinect();
@@ -27,10 +26,8 @@ public:
    int GetXRes() const;
    int GetYRes() const;
 
-   const XnRGB24Pixel* GetImageData();
-   const XnDepthPixel* GetDepthData();
-
-   size_t GetUsers(std::vector<UserData*>& users) const;
+   const XnRGB24Pixel* GetImageData() const;
+   const XnDepthPixel* GetDepthData() const;
 
    XnPoint3D RealWorldToProjective(const XnPoint3D& pos) const;
    XnPoint3D ProjectiveToRealWorld(const XnPoint3D& pos) const;
@@ -42,11 +39,9 @@ private:
    xn::Context mContext;
    xn::DepthGenerator mDepthGen;
    xn::ImageGenerator mImageGen;
-   xn::DepthMetaData mDepthGenMD;
-   xn::ImageMetaData mImageGenMD;
+   mutable xn::DepthMetaData mDepthGenMD;
+   mutable xn::ImageMetaData mImageGenMD;
    xn::Player mPlayer;
-
-   UserTracking mUserTracking;
    
    bool mPlaybackMode;
 
