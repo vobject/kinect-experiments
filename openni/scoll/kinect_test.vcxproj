@@ -1,0 +1,151 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\DebugOverlayDrawer.cpp" />
+    <ClCompile Include="src\FpsDrawer.cpp" />
+    <ClCompile Include="src\UserDrawer.cpp" />
+    <ClCompile Include="src\Observer.cpp" />
+    <ClCompile Include="src\KinectWrapper.cpp" />
+    <ClCompile Include="src\KinectApp.cpp" />
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\VlcPlayer.cpp" />
+    <ClCompile Include="src\SdlWindow.cpp" />
+    <ClCompile Include="src\SdlWindowDrawer.cpp" />
+    <ClCompile Include="src\Subject.cpp" />
+    <ClCompile Include="src\UserData.cpp" />
+    <ClCompile Include="src\UserTracking.cpp" />
+    <ClCompile Include="src\VlcRemote.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\DebugOverlayDrawer.h" />
+    <ClInclude Include="src\FpsDrawer.h" />
+    <ClInclude Include="src\UserDrawer.h" />
+    <ClInclude Include="src\Observer.h" />
+    <ClInclude Include="src\KinectWrapper.h" />
+    <ClInclude Include="src\Log.h" />
+    <ClInclude Include="src\KinectApp.h" />
+    <ClInclude Include="src\VlcPlayer.h" />
+    <ClInclude Include="src\SdlWindow.h" />
+    <ClInclude Include="src\SdlWindowDrawer.h" />
+    <ClInclude Include="src\Subject.h" />
+    <ClInclude Include="src\UserData.h" />
+    <ClInclude Include="src\UserTracking.h" />
+    <ClInclude Include="src\VlcRemote.h" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{782A0A1C-537D-4FE8-BBD9-E1E6E4AD208E}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>kinect_test</RootNamespace>
+    <ProjectName>kinect_test</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>bin/$(Configuration)\</OutDir>
+    <IntDir>$(Platform)$(Configuration)\</IntDir>
+    <LibraryPath>..\..\external\SDL-1.2.15\lib\x86;..\..\external\SDL_ttf-2.0.11\lib\x86;..\..\external\vlc-1.1.11-win32-lib;$(OPEN_NI_LIB);$(LibraryPath)</LibraryPath>
+    <IncludePath>..\..\external\msinttypes;..\..\external\SDL-1.2.15\include;..\..\external\SDL_ttf-2.0.11\include;..\..\external\vlc-1.1.11\sdk\include;$(OPEN_NI_INCLUDE);$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>bin/$(Configuration)\</OutDir>
+    <IntDir>$(Platform)$(Configuration)\</IntDir>
+    <IncludePath>..\..\external\msinttypes;..\..\external\SDL-1.2.15\include;..\..\external\SDL_ttf-2.0.11\include;..\..\external\vlc-1.1.11\sdk\include;$(OPEN_NI_INCLUDE);$(IncludePath)</IncludePath>
+    <LibraryPath>..\..\external\SDL-1.2.15\lib\x86;..\..\external\SDL_ttf-2.0.11\lib\x86;..\..\external\vlc-1.1.11-win32-lib;$(OPEN_NI_LIB);$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level4</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_WIN32_WINNT=0x0601;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <UseFullPaths>false</UseFullPaths>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <ShowIncludes>false</ShowIncludes>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>SDL.lib;SDLmain.lib;SDL_ttf.lib;OpenNI.lib;libvlc.lib</AdditionalDependencies>
+    </Link>
+    <PostBuildEvent>
+      <Command>copy ..\..\external\SDL-1.2.15\lib\x86\SDL.dll bin\$(Configuration)\SDL.dll
+copy ..\..\external\SDL_ttf-2.0.11\lib\x86\SDL_ttf.dll bin\$(Configuration)\SDL_ttf.dll
+copy ..\..\external\SDL_ttf-2.0.11\lib\x86\libfreetype-6.dll bin\$(Configuration)\libfreetype-6.dll
+copy ..\..\external\SDL_ttf-2.0.11\lib\x86\zlib1.dll bin\$(Configuration)\zlib1.dll
+copy ..\..\external\vlc-1.1.11\libvlc.dll bin\$(Configuration)\libvlc.dll
+copy ..\..\external\vlc-1.1.11\libvlc.dll.manifest bin\$(Configuration)\libvlc.dll.manifest
+copy ..\..\external\vlc-1.1.11\libvlccore.dll bin\$(Configuration)\libvlccore.dll
+copy ..\..\external\ttf-bitstream-vera-1.10\VeraMono.ttf bin\$(Configuration)\VeraMono.ttf
+</Command>
+      <Message>Copy dependencies into target folder...</Message>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level4</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_WIN32_WINNT=0x0601;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>SDL.lib;SDLmain.lib;SDL_ttf.lib;OpenNI.lib;libvlc.lib</AdditionalDependencies>
+    </Link>
+    <PostBuildEvent>
+      <Command>copy ..\..\external\SDL-1.2.15\lib\x86\SDL.dll bin\$(Configuration)\SDL.dll
+copy ..\..\external\SDL_ttf-2.0.11\lib\x86\SDL_ttf.dll bin\$(Configuration)\SDL_ttf.dll
+copy ..\..\external\SDL_ttf-2.0.11\lib\x86\libfreetype-6.dll bin\$(Configuration)\libfreetype-6.dll
+copy ..\..\external\SDL_ttf-2.0.11\lib\x86\zlib1.dll bin\$(Configuration)\zlib1.dll
+copy ..\..\external\vlc-1.1.11\libvlc.dll bin\$(Configuration)\libvlc.dll
+copy ..\..\external\vlc-1.1.11\libvlc.dll.manifest bin\$(Configuration)\libvlc.dll.manifest
+copy ..\..\external\vlc-1.1.11\libvlccore.dll bin\$(Configuration)\libvlccore.dll
+copy ..\..\external\ttf-bitstream-vera-1.10\VeraMono.ttf bin\$(Configuration)\VeraMono.ttf
+</Command>
+    </PostBuildEvent>
+    <PostBuildEvent>
+      <Message>Copy dependencies into target folder...</Message>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
