@@ -8,7 +8,7 @@
 #include <vector>
 #include <list>
 
-//class SceneObject;
+class SdlWindow;
 class Renderer;
 class Logic;
 
@@ -18,7 +18,6 @@ public:
    KinectApp();
    virtual ~KinectApp();
 
-   void PrintCommands() const;
    void Start(const std::string& path);
 
 protected:
@@ -32,6 +31,7 @@ private:
    std::string mPath;
    bool mQuitRequested;
 
+   std::shared_ptr<SdlWindow> mWindow;
    std::shared_ptr<Renderer> mRenderer;
    std::shared_ptr<Logic> mLogic;
 //   std::shared_ptr<EventManager> mEventManager;

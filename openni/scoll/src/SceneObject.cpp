@@ -21,6 +21,16 @@ bool SceneObject::operator<(const SceneObject& other)
    return GetZOrder() < other.GetZOrder();
 }
 
+std::string SceneObject::GetResource() const
+{
+   return mResource;
+}
+
+void SceneObject::SetResource(const std::string& resource)
+{
+   mResource = resource;
+}
+
 int SceneObject::GetXPos() const
 {
    return mXPos;

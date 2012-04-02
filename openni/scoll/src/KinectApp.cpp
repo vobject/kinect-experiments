@@ -1,11 +1,10 @@
 #include "KinectApp.h"
+#include "SdlWindow.h"
 #include "Renderer.h"
 #include "Logic.h"
 #include "Log.h"
 
 #include <SDL.h>
-
-#include <iostream>
 
 KinectApp::KinectApp()
    : mQuitRequested(false)
@@ -15,32 +14,7 @@ KinectApp::KinectApp()
 
 KinectApp::~KinectApp()
 {
-//   for(std::list<SceneObject*>::const_iterator it = mSceneObjects.begin();
-//       it != mSceneObjects.end();
-//       it++)
-//   {
-//      delete *it;
-//   }
-//
-//   al_destroy_timer(mFpsTimer);
-//   al_destroy_event_queue(mEventQueue);
-//   al_destroy_font(mFont18);
-//   al_destroy_display(mDisplay);
-}
 
-void KinectApp::PrintCommands() const
-{
-   std::cout << "Commands:\n"
-//             << "\tm - Toggle image/depth mode\n"
-//             << "\tf - Seek 100 frames forward\n"
-//             << "\tb - Seek 100 frames backward\n"
-//             << "\ti - Increase depth by 20cm\n"
-//             << "\to - Decrease depth by 20cm\n"
-//             << "\tu - Toggle user tracking mode\n"
-//             << "\td - Toggle debug overlay mode\n"
-//             << "\th - Print this help message\n"
-             << "\tESC - Exit program\n"
-             << std::endl;
 }
 
 void KinectApp::Start(const std::string& path)
@@ -52,7 +26,8 @@ void KinectApp::Start(const std::string& path)
 void KinectApp::Initialize(const std::string& path)
 {
    mPath = path;
-   mRenderer.reset(new Renderer());
+   mWindow.reset(new SdlWindow(640, 480));
+   mRenderer.reset(new Renderer(mWindow));
    mLogic.reset(new Logic(mRenderer));
 }
 
@@ -69,16 +44,14 @@ void KinectApp::UpdateScene(const int game_time, const int elapsed_time)
          return;
       }
 
-      if (SDL_KEYDOWN == ev.type)
+      switch (ev.type)
       {
-         switch (ev.key.keysym.sym)
-         {
-         case SDLK_h:
-            PrintCommands();
+         case SDL_KEYDOWN:
+         case SDL_KEYUP:
+            mLogic->ProcessInput(ev.key);
             break;
          default:
             break;
-         }
       }
    }
 
@@ -88,6 +61,7 @@ void KinectApp::UpdateScene(const int game_time, const int elapsed_time)
 void KinectApp::RenderScene()
 {
    mLogic->Render();
+   mWindow->Flip();
 }
 
 void KinectApp::Mainloop()

@@ -1,6 +1,8 @@
 #ifndef SCENE_OBJECT_H
 #define SCENE_OBJECT_H
 
+#include <string>
+
 class SceneObject
 {
 public:
@@ -10,8 +12,10 @@ public:
    virtual bool operator<(const SceneObject& other);
 
    virtual void Update(int elapsed_time) = 0;
-   virtual void Render() = 0;
-   virtual void Restore() = 0;
+//   virtual void Restore() = 0;
+
+   std::string GetResource() const;
+   void SetResource(const std::string& resource);
 
    int GetXPos() const;
    int GetYPos() const;
@@ -32,6 +36,7 @@ public:
 //   virtual void Destroy();
 
 private:
+   std::string mResource;
    int mXPos;
    int mYPos;
    int mWidth;

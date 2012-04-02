@@ -16,6 +16,9 @@ public:
    virtual void Update(int elapsed_time);
    virtual void Render();
 
+   void AddObject(std::shared_ptr<SceneObject> obj);
+   void RemoveObject(std::shared_ptr<SceneObject> obj);
+
 private:
    std::shared_ptr<Renderer> mRenderer;
    std::list<std::shared_ptr<SceneObject>> mSceneObjects;
