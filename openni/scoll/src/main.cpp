@@ -9,7 +9,6 @@ int main(int argc, char* argv[])
       // TODO: Introduce real command line argument handling, e.g. with boost.
 
       KinectApp app;
-      app.PrintCommands();
       app.Start((argc > 1) ? argv[1] : "");
    }
    catch (const char* e)

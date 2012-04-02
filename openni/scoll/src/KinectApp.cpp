@@ -1,17 +1,13 @@
 #include "KinectApp.h"
+#include "Renderer.h"
+#include "Logic.h"
 #include "Log.h"
-//#include "Kinect.h"
-//#include "KinectBackground.h"
-//#include "BloodAnimation.h"
+
+#include <SDL.h>
 
 #include <iostream>
 
 KinectApp::KinectApp()
-//   : mDisplay(NULL)
-//   , mFont18(NULL)
-//   , mEventQueue(NULL)
-//   , mFpsTimer(NULL)
-//   , mMainloopDone(false)
    : mQuitRequested(false)
 {
    Log::ReportingLevel() = logDEBUG;
@@ -50,129 +46,72 @@ void KinectApp::PrintCommands() const
 void KinectApp::Start(const std::string& path)
 {
    Initialize(path);
-
-//   mSceneObjects.push_back(new KinectBackground(mKinect));
-//   mSceneObjects.push_back(new BloodAnimation(100, 100, al_current_time() + 3.0));
    Mainloop();
 }
 
 void KinectApp::Initialize(const std::string& path)
 {
    mPath = path;
-//   mKinect.Init();
-//
-//   if(!al_init()) {
-//      throw "Failed to initialize allegro";
-//   }
-//
-//   al_init_font_addon();
-//   al_init_ttf_addon();
-//   al_init_image_addon();
-//
-//   mDisplay = al_create_display(mKinect.GetXRes(), mKinect.GetYRes());
-//   if (NULL == mDisplay) {
-//      throw "Failed to create an allegro display";
-//   }
-//   al_set_window_title(mDisplay, "sprite - kinect-experiments");
-//
-//   mFont18 = al_load_font("VeraMono.ttf", 18, 0);
-//   if (NULL == mFont18) {
-//      throw "Failed to load VeraMono.ttf font";
-//   }
-//
-//   al_install_keyboard();
-//   mFpsTimer = al_create_timer(1.0 / 60);
-//   mEventQueue = al_create_event_queue();
-//
-//   al_register_event_source(mEventQueue, al_get_display_event_source(mDisplay));
-//   al_register_event_source(mEventQueue, al_get_keyboard_event_source());
-//   al_register_event_source(mEventQueue, al_get_timer_event_source(mFpsTimer));
+   mRenderer.reset(new Renderer());
+   mLogic.reset(new Logic(mRenderer));
 }
 
-void KinectApp::UpdateScene()
+void KinectApp::UpdateScene(const int game_time, const int elapsed_time)
 {
-//   for(std::list<SceneObject*>::iterator it = mSceneObjects.begin();
-//       it != mSceneObjects.end();)
-//   {
-//      if ((*it)->IsDone())
-//      {
-//         delete *it;
-//         it = mSceneObjects.erase(it);
-//      }
-//      else
-//      {
-//         it++;
-//      }
-//   }
-//
-//   for(std::list<SceneObject*>::const_iterator it = mSceneObjects.begin();
-//       it != mSceneObjects.end();
-//       it++)
-//   {
-//      (*it)->Update();
-//   }
+   SDL_Event ev;
+
+   if (SDL_PollEvent(&ev))
+   {
+      if((SDL_QUIT == ev.type) || (SDLK_ESCAPE == ev.key.keysym.sym))
+      {
+         // Quit if the user closed the window or pressed ESC.
+         mQuitRequested = true;
+         return;
+      }
+
+      if (SDL_KEYDOWN == ev.type)
+      {
+         switch (ev.key.keysym.sym)
+         {
+         case SDLK_h:
+            PrintCommands();
+            break;
+         default:
+            break;
+         }
+      }
+   }
+
+   mLogic->Update(game_time, elapsed_time);
 }
 
 void KinectApp::RenderScene()
 {
-//   for(std::list<SceneObject*>::const_iterator it = mSceneObjects.begin();
-//       it != mSceneObjects.end();
-//       it++)
-//   {
-//      (*it)->Render();
-//   }
-//
-//   al_flip_display();
+   mLogic->Render();
 }
 
 void KinectApp::Mainloop()
 {
-//   al_start_timer(mFpsTimer);
-//
-//   float gameTime = al_current_time();
-//   int frames = 0;
-//   int gameFPS = 0;
-//   bool render = false;
-//   ALLEGRO_EVENT ev;
-//
-//   while(!mQuitRequested)
-//   {
-//      if (render && al_is_event_queue_empty(mEventQueue))
-//      {
-//         RenderScene();
-//         render = false;
-//      }
-//
-//      al_wait_for_event(mEventQueue, &ev);
-//
-//      if (ALLEGRO_EVENT_TIMER == ev.type)
-//      {
-//         frames++;
-//
-//         if(al_current_time() - gameTime >= 1)
-//         {
-//            gameTime = al_current_time();
-//            gameFPS = frames;
-//            frames = 0;
-//         }
-//
-//         UpdateScene();
-//         render = true;
-//      }
-//      else if (ALLEGRO_EVENT_KEY_DOWN == ev.type)
-//      {
-//         switch(ev.keyboard.keycode)
-//         {
-//         case ALLEGRO_KEY_ESCAPE:
-//            mQuitRequested = true;
-//            break;
-//         }
-//      }
-//      else if (ALLEGRO_EVENT_DISPLAY_CLOSE == ev.type)
-//      {
-//         mQuitRequested = true;
-//      }
-//   }
-//
-//   al_stop_timer(mFpsTimer);
+   const int delta_time = 1000 / 60;
+   int current_time = SDL_GetTicks();
+   int game_time = 0;
+   int accumulator = 0;
+
+   while(!mQuitRequested)
+   {
+      int new_time = SDL_GetTicks();
+      int frame_time = new_time - current_time;
+
+      current_time = new_time;
+      accumulator += frame_time;
+
+      while (accumulator >= delta_time)
+      {
+         UpdateScene(game_time, delta_time);
+         accumulator -= delta_time;
+         game_time += delta_time;
+      }
+
+      RenderScene();
+   }
 }

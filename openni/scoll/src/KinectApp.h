@@ -3,11 +3,14 @@
 
 //#include "Kinect.h"
 
+#include <memory>
 #include <string>
 #include <vector>
 #include <list>
 
 //class SceneObject;
+class Renderer;
+class Logic;
 
 class KinectApp
 {
@@ -20,13 +23,18 @@ public:
 
 protected:
    virtual void Initialize(const std::string& path);
-   virtual void UpdateScene();
-   virtual void RenderScene();
    virtual void Mainloop();
+
+   virtual void UpdateScene(int game_time, int elapsed_time);
+   virtual void RenderScene();
 
 private:
    std::string mPath;
    bool mQuitRequested;
+
+   std::shared_ptr<Renderer> mRenderer;
+   std::shared_ptr<Logic> mLogic;
+//   std::shared_ptr<EventManager> mEventManager;
 
 //   ALLEGRO_DISPLAY* mDisplay;
 //   ALLEGRO_FONT* mFont18;
@@ -37,7 +45,7 @@ private:
 //   std::list<SceneObject*> mSceneObjects;
 
    KinectApp(const KinectApp&);
-   KinectApp& operator=(const KinectApp&);
+   const KinectApp& operator=(const KinectApp&);
 };
 
 #endif // KINENOID_APP_H
