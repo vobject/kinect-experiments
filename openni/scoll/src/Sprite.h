@@ -10,6 +10,8 @@ public:
    virtual ~Sprite();
 
    virtual void Update(int elapsed_time);
+
+   void SetFrameCount(int frame_cnt);
 //   virtual void Restore();
 
 //   void SetAnimation(bool is_paused, bool is_looping);

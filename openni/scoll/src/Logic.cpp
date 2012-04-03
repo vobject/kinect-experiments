@@ -1,6 +1,8 @@
 #include "Logic.h"
+#include "Kinect.h"
 #include "View.h"
 #include "Sprite.h"
+#include "Background.h"
 #include "Log.h"
 
 #include <iostream>
@@ -8,22 +10,19 @@
 static void print_commands()
 {
    std::cout << "Commands:\n"
-//             << "\tm - Toggle image/depth mode\n"
-//             << "\tf - Seek 100 frames forward\n"
-//             << "\tb - Seek 100 frames backward\n"
-//             << "\ti - Increase depth by 20cm\n"
-//             << "\to - Decrease depth by 20cm\n"
-//             << "\tu - Toggle user tracking mode\n"
-//             << "\td - Toggle debug overlay mode\n"
-//             << "\th - Print this help message\n"
              << "\tESC - Exit program\n"
              << std::endl;
 }
 
-Logic::Logic(std::shared_ptr<Renderer> renderer)
+Logic::Logic(std::shared_ptr<Renderer> renderer, std::shared_ptr<Kinect> kinect)
    : mView(new View(renderer))
+   , mKinect(kinect)
 {
+   std::shared_ptr<SceneObject> bg(new Background());
+   mView->AddObject(bg);
 
+//   std::shared_ptr<SceneObject> act(new Actor());
+//   mView->AddObject(act);
 }
 
 Logic::~Logic()
@@ -40,35 +39,6 @@ void Logic::ProcessInput(const SDL_KeyboardEvent& ev)
       case SDLK_h:
          print_commands();
          break;
-
-      case SDLK_f:
-         {
-            static int i = 10;
-            i += 10;
-
-            std::shared_ptr<SceneObject> obj(new Sprite());
-            obj->SetResourceId("Rectangle");
-            obj->SetPos(i, i);
-            obj->SetSize(i, i);
-            obj->SetZOrder(1);
-            mView->AddObject(obj);
-         }
-         break;
-
-      case SDLK_g:
-         {
-            static int j = 20;
-            j += 20;
-
-            std::shared_ptr<SceneObject> obj(new Sprite());
-            obj->SetResourceId("blood_a_0001.png");
-            obj->SetPos(j, j);
-            obj->SetSize(j, j);
-            obj->SetZOrder(2);
-            mView->AddObject(obj);
-         }
-         break;
-
       default:
          break;
       }
@@ -80,6 +50,18 @@ void Logic::ProcessInput(const SDL_KeyboardEvent& ev)
       default:
          break;
       }
+   }
+}
+
+void Logic::ProcessInput(const SDL_MouseButtonEvent& ev)
+{
+   if ((SDL_MOUSEBUTTONUP == ev.type) && (SDL_BUTTON_LEFT == ev.button))
+   {
+      std::shared_ptr<Sprite> obj(new Sprite());
+      obj->SetResourceId("Rectangle");
+      obj->SetSize(20, 20);
+      obj->SetPos(ev.x - (obj->GetWidth() / 2), ev.y - (obj->GetHeight() / 2));
+      mView->AddObject(obj);
    }
 }
 

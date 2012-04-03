@@ -3,6 +3,15 @@
 
 #include <string>
 
+enum ZOrder
+{
+   zo_Background,
+   zo_Layer_1,
+   zo_Layer_2,
+   zo_Layer_3,
+   zo_Messagebox
+};
+
 class SceneObject
 {
 public:
@@ -25,8 +34,8 @@ public:
    int GetHeight() const;
    void SetSize(int width, int height);
 
-   int GetZOrder() const;
-   void SetZOrder(int order);
+   ZOrder GetZOrder() const;
+   void SetZOrder(ZOrder order);
 
    bool IsVisible() const;
    void SetVisible(bool visible);
@@ -41,7 +50,7 @@ private:
    int mYPos;
    int mWidth;
    int mHeight;
-   int mZOrder;
+   ZOrder mZOrder;
    bool mIsVisible;
 };
 

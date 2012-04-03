@@ -1,13 +1,12 @@
 #ifndef KINENOID_APP_H
 #define KINENOID_APP_H
 
-//#include "Kinect.h"
-
 #include <memory>
 #include <string>
 #include <vector>
 #include <list>
 
+class Kinect;
 class ResourceCache;
 class SdlWindow;
 class Renderer;
@@ -32,6 +31,8 @@ private:
    std::string mPath;
    bool mQuitRequested;
 
+   std::shared_ptr<Kinect> mKinect;
+
    std::shared_ptr<ResourceCache> mResCache;
    std::shared_ptr<SdlWindow> mWindow;
    std::shared_ptr<Renderer> mRenderer;
@@ -43,8 +44,6 @@ private:
 //   ALLEGRO_EVENT_QUEUE* mEventQueue;
 //   ALLEGRO_TIMER* mFpsTimer;
 //   Kinect mKinect;
-//
-//   std::list<SceneObject*> mSceneObjects;
 
    KinectApp(const KinectApp&);
    const KinectApp& operator=(const KinectApp&);

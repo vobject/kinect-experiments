@@ -1,10 +1,11 @@
 #ifndef SDL_WINDOW_H
 #define SDL_WINDOW_H
 
-#include <SDL.h>
+#include <SDL/SDL.h>
 #include <SDL_ttf.h>
 
 #include <string>
+#include <sstream>
 
 //class SdlSurface
 //{
@@ -46,6 +47,9 @@ public:
 
 
 private:
+   static Uint32 FrameTimerCallback(Uint32 interval, void *param);
+
+//   SDL_Surface *ScaleSurface(SDL_Surface *Surface, Uint16 Width, Uint16 Height);
 //   void DrawPixel(Uint32 x, Uint32 y, Uint32 color = 0xffffffff) const;
 
    const int mXRes;
@@ -55,7 +59,11 @@ private:
 
    TTF_Font* mFont;
 
-//   mutable int mLastFlipTime;
+   SDL_TimerID mFrameTimer;
+   mutable int mFrameCount;
+   int mFPS;
+   SDL_Color mTextColor;
+   mutable std::ostringstream mTextBuf;
 
    SdlWindow(const SdlWindow&);
    const SdlWindow& operator=(const SdlWindow&);

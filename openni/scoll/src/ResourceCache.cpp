@@ -12,6 +12,9 @@ ResourceCache::ResourceCache()
    if (0 == IMG_Init(IMG_INIT_JPG | IMG_INIT_PNG)) {
        throw "Failed to initialize SDL_image";
     }
+
+   // FIXME:
+   Load("res/background/smw.jpg", "smw");
 }
 
 ResourceCache::~ResourceCache()

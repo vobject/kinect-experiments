@@ -39,6 +39,11 @@ void Sprite::Update(const int elapsed_time)
    }
 }
 
+void Sprite::SetFrameCount(const int frame_cnt)
+{
+   mFrameCount = frame_cnt;
+}
+
 //void Sprite::Restore()
 //{
 //

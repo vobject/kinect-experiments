@@ -5,6 +5,7 @@
 
 #include <SDL_events.h>
 
+class Kinect;
 class Renderer;
 class View;
 
@@ -34,14 +35,16 @@ class View;
 class Logic
 {
 public:
-   Logic(std::shared_ptr<Renderer> renderer);
+   Logic(std::shared_ptr<Renderer> renderer, std::shared_ptr<Kinect> kinect);
    virtual ~Logic();
 
    virtual void ProcessInput(const SDL_KeyboardEvent& ev);
+   virtual void ProcessInput(const SDL_MouseButtonEvent& ev);
    virtual void Update(int game_time, int elapsed_time);
    virtual void Render();
 
 private:
+   std::shared_ptr<Kinect> mKinect;
 //   std::shared_ptr<Renderer> mRenderer;
    std::shared_ptr<View> mView;
 

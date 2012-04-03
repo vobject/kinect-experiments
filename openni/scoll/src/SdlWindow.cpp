@@ -1,20 +1,20 @@
 #include "SdlWindow.h"
 
-#include <sstream>
-
 SdlWindow::SdlWindow( const int xres, const int yres, const std::string& text)
    : mXRes(xres)
    , mYRes(yres)
    , mScreen(NULL)
    , mSurface(NULL)
    , mFont(NULL)
-//   , mLastFlipTime(0)
+   , mFrameTimer(NULL)
+   , mFrameCount(0)
+   , mFPS(0)
 {
    // Bring up SDL's video system...
 #ifdef WIN32
    if (0 > SDL_Init(SDL_INIT_VIDEO)) {
 #else
-   if (0 > SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTTHREAD)) {
+   if (0 > SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTTHREAD | SDL_INIT_TIMER)) {
 #endif
       throw "Cannot init SDL video subsystem.";
    }
@@ -23,7 +23,7 @@ SdlWindow::SdlWindow( const int xres, const int yres, const std::string& text)
    // ...and finally create the window.
    mScreen = SDL_SetVideoMode(mXRes,
                               mYRes,
-                              0,
+                              24,
                               SDL_ANYFORMAT |
                                  SDL_HWSURFACE |
                                  SDL_DOUBLEBUF);
@@ -49,12 +49,19 @@ SdlWindow::SdlWindow( const int xres, const int yres, const std::string& text)
       TTF_Quit();
       throw "TTF_OpenFont() failed!";
    }
-
    SDL_WM_SetCaption(text.c_str(), NULL);
+
+   mTextColor.r = 0xff;
+   mTextColor.g = 0xff;
+   mTextColor.b = 0xff;
+
+   mFrameTimer = SDL_AddTimer(1000, FrameTimerCallback, this);
 }
 
 SdlWindow::~SdlWindow()
 {
+   SDL_RemoveTimer(mFrameTimer);
+
    SDL_FreeSurface(mSurface);
    SDL_FreeSurface(mScreen);
 
@@ -72,25 +79,12 @@ int SdlWindow::GetYRes() const
    return mYRes;
 }
 
-//SdlSurface SdlWindow::GetSurface() const
-//{
-//   return SdlSurface(mSurface);
-//}
-
-//void SdlWindow::Blit(SDL_Surface* surface) const
-//{
-//   SDL_BlitSurface(surface, NULL, mSurface, NULL);
-//}
-
 void SdlWindow::Flip() const
 {
-//   const int current_time = SDL_GetTicks();
-//   const int fps = 1000 / (current_time - mLastFlipTime);
-//   std::ostringstream fps_text;
-//   fps_text << fps << " FPS";
-//   SDL_Color color = { 0xff, 0xff, 0xff };
-//   WriteText(5, 5, color, fps_text.str());
-//   mLastFlipTime = current_time;
+   mTextBuf.str("");
+   mTextBuf << mFPS << " FPS";
+   WriteText(0, 0, mTextColor, mTextBuf.str());
+   mFrameCount++;
 
    SDL_BlitSurface(mSurface, NULL, mScreen, NULL);
    SDL_Flip(mScreen);
@@ -195,3 +189,12 @@ void SdlWindow::WriteText(
 //   memcpy(static_cast<char*>(mSurface->pixels) + offset, &color, bpp);
 //   SDL_UnlockSurface(mSurface);
 //}
+
+Uint32 SdlWindow::FrameTimerCallback(const Uint32 interval, void* param)
+{
+   SdlWindow* obj = static_cast<SdlWindow*>(param);
+
+   obj->mFPS = (int)((obj->mFrameCount / (float)interval) * 1000);
+   obj->mFrameCount = 0;
+   return interval;
+}

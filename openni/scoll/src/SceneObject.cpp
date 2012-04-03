@@ -5,7 +5,7 @@ SceneObject::SceneObject()
    , mYPos(0)
    , mWidth(0)
    , mHeight(0)
-   , mZOrder(0)
+   , mZOrder(zo_Layer_1)
    , mIsVisible(true)
 {
 
@@ -63,12 +63,12 @@ void SceneObject::SetSize(const int width, const int height)
    mHeight = height;
 }
 
-int SceneObject::GetZOrder() const
+ZOrder SceneObject::GetZOrder() const
 {
    return mZOrder;
 }
 
-void SceneObject::SetZOrder(const int order)
+void SceneObject::SetZOrder(const ZOrder order)
 {
    mZOrder = order;
 }
