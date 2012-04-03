@@ -5,12 +5,13 @@
 #include <list>
 
 class SdlWindow;
+class ResourceCache;
 class SceneObject;
 
 class Renderer
 {
 public:
-   Renderer(std::shared_ptr<SdlWindow> window);
+   Renderer(std::shared_ptr<SdlWindow> window, std::shared_ptr<ResourceCache> resource);
    virtual ~Renderer();
 
    virtual void PreRender();
@@ -19,6 +20,7 @@ public:
 
 private:
    std::shared_ptr<SdlWindow> mWindow;
+   std::shared_ptr<ResourceCache> mResCache;
 
    Renderer(const Renderer&);
    const Renderer& operator=(const Renderer&);

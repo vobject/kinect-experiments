@@ -11,7 +11,7 @@ BIN_DIR = ./bin
 SRC_FILES = ./src/*.cpp
 
 CFLAGS += -I/usr/include/ni `sdl-config --cflags`
-LDFLAGS += -lOpenNI `sdl-config --libs` -lSDL_ttf
+LDFLAGS += -lOpenNI `sdl-config --libs` -lSDL_ttf -lSDL_image -lboost_system -lboost_filesystem
 
 
 EXE_NAME = scroll

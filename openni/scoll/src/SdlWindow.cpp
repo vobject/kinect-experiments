@@ -2,7 +2,7 @@
 
 #include <sstream>
 
-SdlWindow::SdlWindow( const int xres, const int yres )
+SdlWindow::SdlWindow( const int xres, const int yres, const std::string& text)
    : mXRes(xres)
    , mYRes(yres)
    , mScreen(NULL)
@@ -45,13 +45,12 @@ SdlWindow::SdlWindow( const int xres, const int yres )
    }
 
    mFont = TTF_OpenFont("VeraMono.ttf", 16);
-
    if (!mFont) {
       TTF_Quit();
       throw "TTF_OpenFont() failed!";
    }
 
-   SDL_WM_SetCaption("scroll", NULL);
+   SDL_WM_SetCaption(text.c_str(), NULL);
 }
 
 SdlWindow::~SdlWindow()

@@ -27,8 +27,10 @@
 
 class SdlWindow
 {
+   friend class Renderer;
+
 public:
-   SdlWindow(int xres, int yres);
+   SdlWindow(int xres, int yres, const std::string& text);
    virtual ~SdlWindow();
 
    int GetXRes() const;
@@ -42,7 +44,6 @@ public:
 //   void DrawLine(Uint32 x1, Uint32 y1, Uint32 x2, Uint32 y2, Uint32 color = 0xffffffff) const;
    void WriteText(Sint16 x_pos, Sint16 y_pos, SDL_Color color, const std::string& text) const;
 
-   SDL_Surface* mSurface;
 
 private:
 //   void DrawPixel(Uint32 x, Uint32 y, Uint32 color = 0xffffffff) const;
@@ -50,6 +51,7 @@ private:
    const int mXRes;
    const int mYRes;
    SDL_Surface* mScreen;
+   SDL_Surface* mSurface;
 
    TTF_Font* mFont;
 

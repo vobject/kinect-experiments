@@ -8,6 +8,7 @@
 #include <vector>
 #include <list>
 
+class ResourceCache;
 class SdlWindow;
 class Renderer;
 class Logic;
@@ -31,6 +32,7 @@ private:
    std::string mPath;
    bool mQuitRequested;
 
+   std::shared_ptr<ResourceCache> mResCache;
    std::shared_ptr<SdlWindow> mWindow;
    std::shared_ptr<Renderer> mRenderer;
    std::shared_ptr<Logic> mLogic;

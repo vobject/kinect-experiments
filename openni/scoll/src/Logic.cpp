@@ -40,19 +40,35 @@ void Logic::ProcessInput(const SDL_KeyboardEvent& ev)
       case SDLK_h:
          print_commands();
          break;
+
       case SDLK_f:
          {
             static int i = 10;
             i += 10;
 
             std::shared_ptr<SceneObject> obj(new Sprite());
-            obj->SetResource("Rectangle");
+            obj->SetResourceId("Rectangle");
             obj->SetPos(i, i);
             obj->SetSize(i, i);
             obj->SetZOrder(1);
             mView->AddObject(obj);
          }
          break;
+
+      case SDLK_g:
+         {
+            static int j = 20;
+            j += 20;
+
+            std::shared_ptr<SceneObject> obj(new Sprite());
+            obj->SetResourceId("blood_a_0001.png");
+            obj->SetPos(j, j);
+            obj->SetSize(j, j);
+            obj->SetZOrder(2);
+            mView->AddObject(obj);
+         }
+         break;
+
       default:
          break;
       }

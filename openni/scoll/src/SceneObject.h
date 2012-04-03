@@ -14,8 +14,8 @@ public:
    virtual void Update(int elapsed_time) = 0;
 //   virtual void Restore() = 0;
 
-   std::string GetResource() const;
-   void SetResource(const std::string& resource);
+   std::string GetResourceId() const;
+   void SetResourceId(const std::string& resource);
 
    int GetXPos() const;
    int GetYPos() const;

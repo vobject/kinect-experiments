@@ -1,4 +1,5 @@
 #include "KinectApp.h"
+#include "ResourceCache.h"
 #include "SdlWindow.h"
 #include "Renderer.h"
 #include "Logic.h"
@@ -26,8 +27,14 @@ void KinectApp::Start(const std::string& path)
 void KinectApp::Initialize(const std::string& path)
 {
    mPath = path;
-   mWindow.reset(new SdlWindow(640, 480));
-   mRenderer.reset(new Renderer(mWindow));
+
+   // This has to go first to determine display format.
+   mWindow.reset(new SdlWindow(640, 480, "scroll"));
+
+   mResCache.reset(new ResourceCache());
+   mResCache->AddDirectory("/home/pzy/Development/kinect-experiments/external/blood_pack_1/blood_a");
+
+   mRenderer.reset(new Renderer(mWindow, mResCache));
    mLogic.reset(new Logic(mRenderer));
 }
 
