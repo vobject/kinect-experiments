@@ -37,7 +37,7 @@ void Kinect::InitOpenNI( const std::string& file )
 {
    // TODO: Better (real!) error handling for OpenNI API failures.
 
-   XnStatus rc = mContext.Init();
+   auto rc = mContext.Init();
    assert(XN_STATUS_OK == rc);
 
    if (!file.empty())
@@ -81,7 +81,7 @@ void Kinect::InitOpenNI( const std::string& file )
 void Kinect::NextFrame()
 {
    // Read a new frame from the recording.
-   const XnStatus rc = mContext.WaitNoneUpdateAll();
+   const auto rc = mContext.WaitNoneUpdateAll();
    if (XN_STATUS_OK != rc) {
       throw "xn::Context::WaitAnyUpdateAll() failed";
    }

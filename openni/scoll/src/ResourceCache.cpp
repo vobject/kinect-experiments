@@ -14,7 +14,9 @@ ResourceCache::ResourceCache()
     }
 
    // FIXME:
-   Load("res/background/smw.jpg", "smw");
+//   Load("res/background/smw.jpg", "smw");
+//   Load("res/background/2zxr32b.png", "smw");
+   Load("res/background/2d_Level_Design_2_by_AdrianKJW.jpg", "smw");
 }
 
 ResourceCache::~ResourceCache()

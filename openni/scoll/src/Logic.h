@@ -8,6 +8,8 @@
 class Kinect;
 class Renderer;
 class View;
+class Background;
+class Actor;
 
 //enum InputType
 //{
@@ -35,18 +37,34 @@ class View;
 class Logic
 {
 public:
-   Logic(std::shared_ptr<Renderer> renderer, std::shared_ptr<Kinect> kinect);
+   Logic(const std::shared_ptr<Renderer>& renderer);
    virtual ~Logic();
 
    virtual void ProcessInput(const SDL_KeyboardEvent& ev);
    virtual void ProcessInput(const SDL_MouseButtonEvent& ev);
+   virtual void ProcessInput(const std::shared_ptr<Kinect>& kinect);
    virtual void Update(int game_time, int elapsed_time);
    virtual void Render();
 
+   // Needed to know the direction and speed of scrolling.
+   void SetScreenSize(int x_res, int y_res);
+
 private:
-   std::shared_ptr<Kinect> mKinect;
-//   std::shared_ptr<Renderer> mRenderer;
+   void ScrollBackground();
+
+//   std::shared_ptr<Kinect> mKinect;
    std::shared_ptr<View> mView;
+
+   std::shared_ptr<Background> mBackground;
+   std::shared_ptr<Actor> mActor;
+
+   int mXScreen;
+   int mYScreen;
+
+   // In milliseconds - Determines the minimum scroll speed.
+   const int BACKGROUND_UPDATE_DELTA = 1000 / 60;
+
+   int mLastBgUpdateTime;
 
 //   ProcessManager* m_pProcessManager;
 //   LevelManager* m_pLevelManager;

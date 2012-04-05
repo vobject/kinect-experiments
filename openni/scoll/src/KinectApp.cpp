@@ -29,45 +29,49 @@ void KinectApp::Initialize(const std::string& path)
 {
    mPath = path;
 
-   mKinect.reset(new Kinect());
+   mKinect = std::make_shared<Kinect>();
    mKinect->Init();
 
    // This has to go first to set the display format.
-   mWindow.reset(new SdlWindow(640, 480, "scroll"));
-   mResCache.reset(new ResourceCache());
-   mRenderer.reset(new Renderer(mWindow, mResCache, mKinect));
-   mLogic.reset(new Logic(mRenderer, mKinect));
+   mWindow = std::make_shared<SdlWindow>(640, 480, "scroll");
+   mResCache = std::make_shared<ResourceCache>();
+   mRenderer = std::make_shared<Renderer>(mWindow, mResCache, mKinect);
+   mLogic = std::make_shared<Logic>(mRenderer);
+   mLogic->SetScreenSize(mKinect->GetXRes(), mKinect->GetYRes());
 }
 
 void KinectApp::UpdateScene(const int game_time, const int elapsed_time)
 {
-   SDL_Event ev;
+   SDL_Event event;
 
-   if (SDL_PollEvent(&ev))
+   if (SDL_PollEvent(&event))
    {
-      if((SDL_QUIT == ev.type) || (SDLK_ESCAPE == ev.key.keysym.sym))
+      if((SDL_QUIT == event.type) || (SDLK_ESCAPE == event.key.keysym.sym))
       {
          // Quit if the user closed the window or pressed ESC.
          mQuitRequested = true;
          return;
       }
 
-      switch (ev.type)
+      switch (event.type)
       {
          case SDL_KEYDOWN:
          case SDL_KEYUP:
-            mLogic->ProcessInput(ev.key);
+            mLogic->ProcessInput(event.key);
             break;
          case SDL_MOUSEBUTTONDOWN:
          case SDL_MOUSEBUTTONUP:
-            mLogic->ProcessInput(ev.button);
+            mLogic->ProcessInput(event.button);
             break;
          default:
             break;
       }
    }
 
+   // Poll for kinect input on every update cycle.
    mKinect->NextFrame();
+   mLogic->ProcessInput(mKinect);
+
    mLogic->Update(game_time, elapsed_time);
 }
 

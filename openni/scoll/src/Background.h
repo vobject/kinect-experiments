@@ -11,7 +11,15 @@ public:
 
    virtual void Update(int elapsed_time);
 
+   void SetScreenSize(int x_res, int y_res);
+
+   void ScrollLeft(int speed);
+   void ScrollRight(int speed);
+
 private:
+   int mXScreen;
+   int mYScreen;
+
    Background(const Background&);
    const Background& operator=(const Background&);
 };

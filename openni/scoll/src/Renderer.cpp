@@ -9,7 +9,11 @@
 
 #include <string>
 
-Renderer::Renderer(std::shared_ptr<SdlWindow> window, std::shared_ptr<ResourceCache> resource, std::shared_ptr<Kinect> kinect)
+Renderer::Renderer(
+   std::shared_ptr<SdlWindow> window,
+   std::shared_ptr<ResourceCache> resource,
+   std::shared_ptr<Kinect> kinect
+)
    : mWindow(window)
    , mResCache(resource)
    , mKinect(kinect)
@@ -33,33 +37,34 @@ void Renderer::Render(const std::list<std::shared_ptr<SceneObject>>& objects)
 {
    for (auto& obj : objects)
    {
-      if (obj->IsVisible())
+      if (!obj->IsVisible()) {
+         continue;
+      }
+
+      // TODO: Get objects resources from resource manager
+      // TODO: Draw the objects resources in its current state to mSurface
+
+      SDL_Rect rect = { (Sint16)obj->GetXPos(), (Sint16)obj->GetYPos(),
+                        (Uint16)obj->GetWidth(), (Uint16)obj->GetHeight() };
+      const std::string resource_id = obj->GetResourceId();
+
+      if (resource_id == "Rectangle")
       {
-         // TODO: Get objects resources from resource manager
-         // TODO: Draw the objects resources in its current state to mSurface
-
-         SDL_Rect rect = { (Sint16)obj->GetXPos(), (Sint16)obj->GetYPos(),
-                           (Uint16)obj->GetWidth(), (Uint16)obj->GetHeight() };
-         const std::string resource_id = obj->GetResourceId();
-
-         if (resource_id == "Rectangle")
-         {
-            SDL_FillRect(mWindow->mSurface, &rect, 0);
-         }
-         else
-         {
-            SDL_Surface* res = mResCache->GetResource(resource_id);
-            SDL_BlitSurface(res, NULL, mWindow->mSurface, &rect);
-         }
+         SDL_FillRect(mWindow->mSurface, &rect, 0);
+      }
+      else
+      {
+         SDL_Surface* res = mResCache->GetResource(resource_id);
+         SDL_BlitSurface(res, NULL, mWindow->mSurface, &rect);
       }
    }
 
-   const std::vector<UserData> users = mKinect->GetUsers();
+   const auto users = mKinect->GetUsers();
    if (users.empty()) {
       return;
    }
 
-   std::shared_ptr<xn::SceneMetaData> scene_meta = mKinect->GetUserPixels(users[0]);
+   const auto scene_meta = mKinect->GetUserPixels(users[0]);
 
    SDL_LockSurface(mWindow->mSurface);
    XnRGB24Pixel* screen_buf = (XnRGB24Pixel*)mWindow->mSurface->pixels;

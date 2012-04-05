@@ -79,7 +79,7 @@ std::vector<UserData> UserTracking::GetUsers() const
          if (0.5 > pos.fConfidence) {
             continue;
          }
-         user.SetRealWorldJoints(joint, pos.position);
+         user.SetRealWorldJoint(joint, pos.position);
       }
 
       users.push_back(user);

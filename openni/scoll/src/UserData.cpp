@@ -2,7 +2,7 @@
 
 #include <XnCppWrapper.h>
 
-UserData::UserData(XnUserID id)
+UserData::UserData(const XnUserID id)
    : mId(id)
 {
    // TODO: This lookup table shout be outsourced.
@@ -41,6 +41,11 @@ UserData::~UserData()
 
 }
 
+const XnPoint3D& UserData::operator[] (const int joint_id) const
+{
+   return mRealWorldJoints[joint_id];
+}
+
 XnUserID UserData::GetId() const
 {
    return mId;
@@ -51,7 +56,7 @@ std::map<int, XnPoint3D> UserData::GetRealWorldJoints() const
    return mRealWorldJoints;
 }
 
-void UserData::SetRealWorldJoints( const int joint, const XnPoint3D& pos )
+void UserData::SetRealWorldJoint(const int joint, const XnPoint3D& pos)
 {
    mRealWorldJoints[joint] = pos;
 }

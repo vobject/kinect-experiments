@@ -3,6 +3,8 @@
 #include "SceneObject.h"
 #include "Log.h"
 
+#include <algorithm>
+
 template<class T>
 struct SortBy_SharedPtr_Content
 {
@@ -12,7 +14,7 @@ struct SortBy_SharedPtr_Content
    }
 };
 
-View::View(std::shared_ptr<Renderer> renderer)
+View::View(const std::shared_ptr<Renderer>& renderer)
    : mRenderer(renderer)
 {
 
@@ -40,12 +42,32 @@ void View::Render()
    mRenderer->PostRender();
 }
 
-void View::AddObject(std::shared_ptr<SceneObject> obj)
+//void View::SetBackground(const std::shared_ptr<SceneObject>& obj)
+//{
+//   mBackground = obj;
+//}
+//
+//void View::RemoveBackground()
+//{
+//   mBackground = nullptr;
+//}
+//
+//void View::SetActor(const std::shared_ptr<SceneObject>& obj)
+//{
+//   mActor = obj;
+//}
+//
+//void View::RemoveActor()
+//{
+//   mActor = nullptr;
+//}
+
+void View::AddObject(const std::shared_ptr<SceneObject>& obj)
 {
    mSceneObjects.push_front(obj);
 }
 
-void View::RemoveObject(std::shared_ptr<SceneObject> obj)
+void View::RemoveObject(const std::shared_ptr<SceneObject>& obj)
 {
    mSceneObjects.remove(obj);
 }
