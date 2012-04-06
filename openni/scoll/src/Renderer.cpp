@@ -3,6 +3,8 @@
 #include "SdlWindow.h"
 #include "ResourceCache.h"
 #include "SceneObject.h"
+#include "Background.h"
+#include "Actor.h"
 #include "Log.h"
 
 #include <SDL.h>
@@ -33,30 +35,23 @@ void Renderer::PreRender()
    // TODO: Lock mSurface?
 }
 
-void Renderer::Render(const std::list<std::shared_ptr<SceneObject>>& objects)
+void Renderer::Render(const std::shared_ptr<Background>& bg)
 {
-   for (auto& obj : objects)
-   {
-      if (!obj->IsVisible()) {
-         continue;
-      }
+   if (!bg->IsVisible()) {
+      return;
+   }
 
-      // TODO: Get objects resources from resource manager
-      // TODO: Draw the objects resources in its current state to mSurface
+   SDL_Surface* res = mResCache->GetResource(bg->GetResourceId());
+   SDL_Rect rect = { (Sint16)bg->GetXPos(), (Sint16)bg->GetYPos(),
+                     (Uint16)bg->GetWidth(), (Uint16)bg->GetHeight() };
 
-      SDL_Rect rect = { (Sint16)obj->GetXPos(), (Sint16)obj->GetYPos(),
-                        (Uint16)obj->GetWidth(), (Uint16)obj->GetHeight() };
-      const std::string resource_id = obj->GetResourceId();
+   SDL_BlitSurface(res, NULL, mWindow->mSurface, &rect);
+}
 
-      if (resource_id == "Rectangle")
-      {
-         SDL_FillRect(mWindow->mSurface, &rect, 0);
-      }
-      else
-      {
-         SDL_Surface* res = mResCache->GetResource(resource_id);
-         SDL_BlitSurface(res, NULL, mWindow->mSurface, &rect);
-      }
+void Renderer::Render(const std::shared_ptr<Actor>& actor)
+{
+   if (!actor->IsVisible()) {
+      return;
    }
 
    const auto users = mKinect->GetUsers();
@@ -84,6 +79,28 @@ void Renderer::Render(const std::list<std::shared_ptr<SceneObject>>& objects)
       }
    }
    SDL_UnlockSurface(mWindow->mSurface);
+}
+
+void Renderer::Render(const std::list<std::shared_ptr<SceneObject>>& objects)
+{
+   for (auto& obj : objects)
+   {
+      if (!obj->IsVisible()) {
+         continue;
+      }
+
+      // TODO: Get objects resources from resource manager
+      // TODO: Draw the objects resources in its current state to mSurface
+
+      const std::string resource_id = obj->GetResourceId();
+
+      if (resource_id == "Rectangle")
+      {
+         SDL_Rect rect = { (Sint16)obj->GetXPos(), (Sint16)obj->GetYPos(),
+                           (Uint16)obj->GetWidth(), (Uint16)obj->GetHeight() };
+         SDL_FillRect(mWindow->mSurface, &rect, 0xff55ff);
+      }
+   }
 }
 
 void Renderer::PostRender()

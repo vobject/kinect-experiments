@@ -8,6 +8,8 @@ class Kinect;
 class SdlWindow;
 class ResourceCache;
 class SceneObject;
+class Background;
+class Actor;
 
 class Renderer
 {
@@ -16,6 +18,8 @@ public:
    virtual ~Renderer();
 
    virtual void PreRender();
+   virtual void Render(const std::shared_ptr<Background>& bg);
+   virtual void Render(const std::shared_ptr<Actor>& actor);
    virtual void Render(const std::list<std::shared_ptr<SceneObject>>& objects);
    virtual void PostRender();
 

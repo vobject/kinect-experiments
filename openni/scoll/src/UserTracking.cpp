@@ -50,7 +50,7 @@ void UserTracking::Init(xn::Context& ctx)
    skel_cap.SetSkeletonProfile(XN_SKEL_PROFILE_ALL);
 }
 
-std::vector<UserData> UserTracking::GetUsers() const
+std::vector<UserData> UserTracking::GetUsers(const xn::DepthGenerator& gen) const
 {
    XnUserID userBuf[16];
    XnUInt16 userMax = 16;
@@ -73,13 +73,17 @@ std::vector<UserData> UserTracking::GetUsers() const
       UserData user(userBuf[id]);
 
       XnSkeletonJointPosition pos;
+      XnPoint3D perspective_pos;
       for (int joint = XN_SKEL_HEAD; joint <= XN_SKEL_RIGHT_FOOT; joint++)
       {
          mUserGen.GetSkeletonCap().GetSkeletonJointPosition(userBuf[id], (XnSkeletonJoint)joint, pos);
          if (0.5 > pos.fConfidence) {
             continue;
          }
+         gen.ConvertRealWorldToProjective(1, &pos.position, &perspective_pos);
+
          user.SetRealWorldJoint(joint, pos.position);
+         user.SetPerspectiveJoint(joint, perspective_pos);
       }
 
       users.push_back(user);

@@ -41,10 +41,10 @@ UserData::~UserData()
 
 }
 
-const XnPoint3D& UserData::operator[] (const int joint_id) const
-{
-   return mRealWorldJoints[joint_id];
-}
+//const XnPoint3D& UserData::operator[] (const int joint_id) const
+//{
+//   return mRealWorldJoints[joint_id];
+//}
 
 XnUserID UserData::GetId() const
 {
@@ -59,6 +59,16 @@ std::map<int, XnPoint3D> UserData::GetRealWorldJoints() const
 void UserData::SetRealWorldJoint(const int joint, const XnPoint3D& pos)
 {
    mRealWorldJoints[joint] = pos;
+}
+
+std::map<int, XnPoint3D> UserData::GetPerspectiveJoints() const
+{
+   return mPerspectiveJoints;
+}
+
+void UserData::SetPerspectiveJoint(const int joint, const XnPoint3D& pos)
+{
+   mPerspectiveJoints[joint] = pos;
 }
 
 std::string UserData::JointId2JointName(const int joint_id) const

@@ -133,23 +133,23 @@ const XnDepthPixel* Kinect::GetDepthData()
    return mDepthGenMD.Data();
 }
 
-XnPoint3D Kinect::RealWorldToProjective( const XnPoint3D& pos ) const
-{
-   XnPoint3D tmp;
-   mDepthGen.ConvertRealWorldToProjective(1, &pos, &tmp);
-   return tmp;
-}
-
-XnPoint3D Kinect::ProjectiveToRealWorld( const XnPoint3D& pos ) const
-{
-   XnPoint3D tmp;
-   mDepthGen.ConvertProjectiveToRealWorld(1, &pos, &tmp);
-   return tmp;
-}
+//XnPoint3D Kinect::RealWorldToProjective( const XnPoint3D& pos ) const
+//{
+//   XnPoint3D tmp;
+//   mDepthGen.ConvertRealWorldToProjective(1, &pos, &tmp);
+//   return tmp;
+//}
+//
+//XnPoint3D Kinect::ProjectiveToRealWorld( const XnPoint3D& pos ) const
+//{
+//   XnPoint3D tmp;
+//   mDepthGen.ConvertProjectiveToRealWorld(1, &pos, &tmp);
+//   return tmp;
+//}
 
 std::vector<UserData> Kinect::GetUsers() const
 {
-   return mUserTracking.GetUsers();
+   return mUserTracking.GetUsers(mDepthGen);
 }
 
 std::shared_ptr<xn::SceneMetaData> Kinect::GetUserPixels(const UserData& user) const

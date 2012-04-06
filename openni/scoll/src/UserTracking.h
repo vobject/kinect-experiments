@@ -30,7 +30,7 @@ public:
    ~UserTracking();
 
    void Init(xn::Context& ctx);
-   std::vector<UserData> GetUsers() const;
+   std::vector<UserData> GetUsers(const xn::DepthGenerator& gen) const;
 //   void GetUserPixels(const UserData& user, xn::SceneMetaData& meta) const;
    std::shared_ptr<xn::SceneMetaData> GetUserPixels(const UserData& user) const;
 

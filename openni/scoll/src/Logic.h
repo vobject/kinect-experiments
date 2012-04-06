@@ -2,12 +2,13 @@
 #define LOGIC_H
 
 #include <memory>
+#include <list>
 
 #include <SDL_events.h>
 
 class Kinect;
 class Renderer;
-class View;
+class SceneObject;
 class Background;
 class Actor;
 
@@ -53,10 +54,13 @@ private:
    void ScrollBackground();
 
 //   std::shared_ptr<Kinect> mKinect;
-   std::shared_ptr<View> mView;
+//   std::shared_ptr<View> mView;
 
+   std::shared_ptr<Renderer> mRenderer;
+   std::list<std::shared_ptr<SceneObject>> mSceneObjects;
    std::shared_ptr<Background> mBackground;
    std::shared_ptr<Actor> mActor;
+
 
    int mXScreen;
    int mYScreen;
