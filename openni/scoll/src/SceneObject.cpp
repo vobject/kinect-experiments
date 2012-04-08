@@ -5,8 +5,9 @@ SceneObject::SceneObject()
    , mYPos(0)
    , mWidth(0)
    , mHeight(0)
-   , mZOrder(zo_Layer_1)
+   , mZOrder(ZOrder::zo_Layer_1)
    , mIsVisible(true)
+   , mIsAlive(true)
 {
 
 }
@@ -47,12 +48,12 @@ void SceneObject::SetPos(const int x_pos, const int y_pos)
    mYPos = y_pos;
 }
 
-int SceneObject::GetWidth() const
+int SceneObject::GetXRes() const
 {
    return mWidth;
 }
 
-int SceneObject::GetHeight() const
+int SceneObject::GetYRes() const
 {
    return mHeight;
 }
@@ -81,4 +82,14 @@ bool SceneObject::IsVisible() const
 void SceneObject::SetVisible(const bool visible)
 {
    mIsVisible = visible;
+}
+
+bool SceneObject::IsAlive() const
+{
+   return mIsAlive;
+}
+
+void SceneObject::SetAlive(const bool alive)
+{
+   mIsAlive = alive;
 }

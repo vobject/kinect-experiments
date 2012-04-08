@@ -2,7 +2,7 @@
 #include "Kinect.h"
 #include "SdlWindow.h"
 #include "ResourceCache.h"
-#include "SceneObject.h"
+#include "Sprite.h"
 #include "Background.h"
 #include "Actor.h"
 #include "Log.h"
@@ -12,12 +12,12 @@
 #include <string>
 
 Renderer::Renderer(
-   std::shared_ptr<SdlWindow> window,
-   std::shared_ptr<ResourceCache> resource,
-   std::shared_ptr<Kinect> kinect
+   std::shared_ptr<SdlWindow>& window,
+   std::shared_ptr<ResourceCache>& res,
+   std::shared_ptr<Kinect>& kinect
 )
    : mWindow(window)
-   , mResCache(resource)
+   , mResCache(res)
    , mKinect(kinect)
 {
 
@@ -30,9 +30,14 @@ Renderer::~Renderer()
 
 void Renderer::PreRender()
 {
-   SDL_FillRect(mWindow->mSurface, NULL, 0xff0000);
+   SDL_FillRect(mWindow->mSurface, NULL, 0x0000ba);
 
    // TODO: Lock mSurface?
+}
+
+void Renderer::PostRender()
+{
+   // TODO: Unlock mSurface?
 }
 
 void Renderer::Render(const std::shared_ptr<Background>& bg)
@@ -41,11 +46,12 @@ void Renderer::Render(const std::shared_ptr<Background>& bg)
       return;
    }
 
-   SDL_Surface* res = mResCache->GetResource(bg->GetResourceId());
+   const auto bg_res = mResCache->GetSprite(bg->GetResourceId());
+   const auto frame = bg_res->GetFrame(0);
    SDL_Rect rect = { (Sint16)bg->GetXPos(), (Sint16)bg->GetYPos(),
-                     (Uint16)bg->GetWidth(), (Uint16)bg->GetHeight() };
+                     (Uint16)bg->GetXRes(), (Uint16)bg->GetYRes() };
 
-   SDL_BlitSurface(res, NULL, mWindow->mSurface, &rect);
+   SDL_BlitSurface(frame, NULL, mWindow->mSurface, &rect);
 }
 
 void Renderer::Render(const std::shared_ptr<Actor>& actor)
@@ -81,7 +87,7 @@ void Renderer::Render(const std::shared_ptr<Actor>& actor)
    SDL_UnlockSurface(mWindow->mSurface);
 }
 
-void Renderer::Render(const std::list<std::shared_ptr<SceneObject>>& objects)
+void Renderer::Render(const std::list<std::shared_ptr<Sprite>>& objects)
 {
    for (auto& obj : objects)
    {
@@ -92,18 +98,31 @@ void Renderer::Render(const std::list<std::shared_ptr<SceneObject>>& objects)
       // TODO: Get objects resources from resource manager
       // TODO: Draw the objects resources in its current state to mSurface
 
-      const std::string resource_id = obj->GetResourceId();
+      const std::string res_id = obj->GetResourceId();
 
-      if (resource_id == "Rectangle")
+      if (res_id == "Rectangle")
       {
          SDL_Rect rect = { (Sint16)obj->GetXPos(), (Sint16)obj->GetYPos(),
-                           (Uint16)obj->GetWidth(), (Uint16)obj->GetHeight() };
+                           (Uint16)obj->GetXRes(), (Uint16)obj->GetYRes() };
          SDL_FillRect(mWindow->mSurface, &rect, 0xff55ff);
       }
-   }
-}
+      else if (res_id == "blood_a")
+      {
+         const auto sprite = mResCache->GetSprite(res_id);
+         const auto frame = sprite->GetFrame(obj->GetCurrentFrame());
+         SDL_Rect rect = { (Sint16)obj->GetXPos(), (Sint16)obj->GetYPos(),
+                           (Uint16)obj->GetXRes(), (Uint16)obj->GetYRes() };
 
-void Renderer::PostRender()
-{
-   // TODO: Unlock mSurface?
+         SDL_BlitSurface(frame, NULL, mWindow->mSurface, &rect);
+      }
+      else
+      {
+         const auto sprite = mResCache->GetSprite(res_id);
+         const auto frame = sprite->GetFrame(0);
+         SDL_Rect rect = { (Sint16)obj->GetXPos(), (Sint16)obj->GetYPos(),
+                           (Uint16)obj->GetXRes(), (Uint16)obj->GetYRes() };
+
+         SDL_BlitSurface(frame, NULL, mWindow->mSurface, &rect);
+      }
+   }
 }

@@ -7,23 +7,25 @@
 class Kinect;
 class SdlWindow;
 class ResourceCache;
-class SceneObject;
+class Sprite;
 class Background;
 class Actor;
 
 class Renderer
 {
 public:
-   Renderer(std::shared_ptr<SdlWindow> window, std::shared_ptr<ResourceCache> resource, std::shared_ptr<Kinect> kinect);
+   Renderer(std::shared_ptr<SdlWindow>& window, std::shared_ptr<ResourceCache>& res, std::shared_ptr<Kinect>& kinect);
    virtual ~Renderer();
 
    virtual void PreRender();
+   virtual void PostRender();
    virtual void Render(const std::shared_ptr<Background>& bg);
    virtual void Render(const std::shared_ptr<Actor>& actor);
-   virtual void Render(const std::list<std::shared_ptr<SceneObject>>& objects);
-   virtual void PostRender();
+   virtual void Render(const std::list<std::shared_ptr<Sprite>>& objects);
 
 private:
+//   bool ObjectOnScreen(const std::shared_ptr<Sprite>& obj) const;
+
    std::shared_ptr<SdlWindow> mWindow;
    std::shared_ptr<ResourceCache> mResCache;
    std::shared_ptr<Kinect> mKinect;

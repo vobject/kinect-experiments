@@ -8,37 +8,15 @@
 
 class Kinect;
 class Renderer;
-class SceneObject;
+class ResourceCache;
+class Sprite;
 class Background;
 class Actor;
-
-//enum InputType
-//{
-//   it_Invalid,
-//   it_Keyboard,
-//   it_Mouse,
-//   it_Kinect,
-//   INPUT_TYPE_ITEM_COUNT
-//};
-//
-//struct InputOption
-//{
-//   InputOption() : input_type(it_Invalid)
-//                 , event_type(0)
-//                 , w_param(0)
-//                 , l_param(0)
-//                 { }
-//
-//   InputType input_type;
-//   int event_type;
-//   int w_param;
-//   int l_param;
-//};
 
 class Logic
 {
 public:
-   Logic(const std::shared_ptr<Renderer>& renderer);
+   Logic(const std::shared_ptr<Renderer>& renderer, std::shared_ptr<ResourceCache>& res);
    virtual ~Logic();
 
    virtual void ProcessInput(const SDL_KeyboardEvent& ev);
@@ -53,14 +31,11 @@ public:
 private:
    void ScrollBackground();
 
-//   std::shared_ptr<Kinect> mKinect;
-//   std::shared_ptr<View> mView;
-
    std::shared_ptr<Renderer> mRenderer;
-   std::list<std::shared_ptr<SceneObject>> mSceneObjects;
+   std::shared_ptr<ResourceCache> mResCache;
    std::shared_ptr<Background> mBackground;
    std::shared_ptr<Actor> mActor;
-
+   std::list<std::shared_ptr<Sprite>> mSprites;
 
    int mXScreen;
    int mYScreen;

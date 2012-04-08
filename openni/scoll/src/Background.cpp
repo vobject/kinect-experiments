@@ -2,8 +2,8 @@
 
 Background::Background()
 {
-   SetResourceId("smw");
-   SetZOrder(zo_Background);
+   SetResourceId("background");
+   SetZOrder(ZOrder::zo_Background);
    SetVisible(true);
 }
 
@@ -27,7 +27,7 @@ void Background::ScrollLeft(const int speed)
 {
    // Scrolling left means walking forward.
 
-   if (std::abs(GetXPos() - mXScreen - speed) >= GetWidth()) {
+   if (std::abs(GetXPos() - mXScreen - speed) >= GetXRes()) {
       return;
    }
 

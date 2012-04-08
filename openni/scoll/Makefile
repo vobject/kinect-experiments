@@ -10,8 +10,8 @@ BIN_DIR = ./bin
 
 SRC_FILES = ./src/*.cpp
 
-CFLAGS += -I/usr/include/ni `sdl-config --cflags`
-LDFLAGS += -lOpenNI `sdl-config --libs` -lSDL_ttf -lSDL_image -lboost_system -lboost_filesystem
+CFLAGS += -I/usr/include/ni -I/usr/include/SDL
+LDFLAGS += -lOpenNI `sdl-config --libs` -lSDL_ttf -lSDL_image -lSDL_gfx -lboost_system -lboost_filesystem
 
 
 EXE_NAME = scroll
@@ -237,7 +237,6 @@ endef
 
 # define the target 'all' (it is first, and so, default)
 all: $(OUTPUT_FILE)
-	cp ../../external/ttf-bitstream-vera-1.10/VeraMono.ttf $(OUT_DIR)
 
 # Intermediate directory
 $(INT_DIR):

@@ -1,13 +1,13 @@
 #include "Sprite.h"
 
-Sprite::Sprite()
+Sprite::Sprite(int frame_cnt /*=1*/, int ms_per_frame /*=100*/, int ms_per_pos /*=100*/, bool looping /*=false*/)
    : mIsPaused(false)
-   , mIsLooping(false)
-   , mMsPerFrame(100)
-   , mMsPerPosUpdate(100)
+   , mIsLooping(looping)
+   , mMsPerFrame(ms_per_frame)
+   , mMsPerPosUpdate(ms_per_pos)
    , mElapsedFrameTime(0)
    , mElapsedPosTime(0)
-   , mFrameCount(1)
+   , mFrameCount(frame_cnt)
    , mCurrentFrameIndex(0)
    , mXDirection(0)
    , mYDirection(0)
@@ -35,11 +35,6 @@ void Sprite::Update(const int elapsed_time)
    UpdatePosition();
 }
 
-void Sprite::SetFrameCount(const int frame_cnt)
-{
-   mFrameCount = frame_cnt;
-}
-
 void Sprite::SetDirection(const int x_dir, const int y_dir)
 {
    mXDirection = x_dir;
@@ -52,22 +47,31 @@ void Sprite::SetSpeed(const int x_speed, const int y_speed)
    mYSpeed = y_speed;
 }
 
+int Sprite::GetCurrentFrame() const
+{
+   return mCurrentFrameIndex;
+}
+
 void Sprite::UpdateFrame()
 {
-    if(mElapsedFrameTime >= mMsPerFrame)
-    {
-        const int adv_cnt = mElapsedFrameTime / mMsPerFrame;
-        mElapsedFrameTime -= (adv_cnt * mMsPerFrame);
+   if (1 == mFrameCount) {
+      return;
+   }
 
-        int new_frame_index = mCurrentFrameIndex + adv_cnt;
+   if(mElapsedFrameTime >= mMsPerFrame)
+   {
+      const int adv_cnt = mElapsedFrameTime / mMsPerFrame;
+      mElapsedFrameTime -= (adv_cnt * mMsPerFrame);
 
-        if(!mIsLooping && (new_frame_index >= mFrameCount))
-        {
-            new_frame_index = mFrameCount - 1;
-        }
+      int new_frame_index = mCurrentFrameIndex + adv_cnt;
 
-        mCurrentFrameIndex = new_frame_index % mFrameCount;
-    }
+      if(!mIsLooping && (new_frame_index >= mFrameCount))
+      {
+         new_frame_index = mFrameCount - 1;
+      }
+
+      mCurrentFrameIndex = new_frame_index % mFrameCount;
+   }
 }
 
 void Sprite::UpdatePosition()

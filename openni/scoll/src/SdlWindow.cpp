@@ -1,6 +1,8 @@
 #include "SdlWindow.h"
 
-SdlWindow::SdlWindow( const int xres, const int yres, const std::string& text)
+#include <SDL_rotozoom.h>
+
+SdlWindow::SdlWindow(const int xres, const int yres, const std::string& text)
    : mXRes(xres)
    , mYRes(yres)
    , mScreen(NULL)
@@ -12,7 +14,7 @@ SdlWindow::SdlWindow( const int xres, const int yres, const std::string& text)
 {
    // Bring up SDL's video system...
 #ifdef WIN32
-   if (0 > SDL_Init(SDL_INIT_VIDEO)) {
+   if (0 > SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER)) {
 #else
    if (0 > SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTTHREAD | SDL_INIT_TIMER)) {
 #endif
@@ -23,9 +25,9 @@ SdlWindow::SdlWindow( const int xres, const int yres, const std::string& text)
    // ...and finally create the window.
    mScreen = SDL_SetVideoMode(mXRes,
                               mYRes,
-                              24,
+                              32,
                               SDL_ANYFORMAT |
-                                 SDL_HWSURFACE |
+                                 SDL_SWSURFACE |
                                  SDL_DOUBLEBUF);
    if (!mScreen) {
       throw "SDL_SetVideoMode() failed.";
@@ -34,7 +36,7 @@ SdlWindow::SdlWindow( const int xres, const int yres, const std::string& text)
    // This is the surface that we will write to.
    mSurface = SDL_CreateRGBSurface(SDL_SWSURFACE,
                                    mXRes, mYRes,
-                                   24, 0, 0, 0, 0);
+                                   32, 0, 0, 0, 0);
 
    if (!mSurface) {
       throw "SDL_CreateRGBSurface() failed.";
@@ -44,7 +46,7 @@ SdlWindow::SdlWindow( const int xres, const int yres, const std::string& text)
       throw "Cannot init SDL ttf feature.";
    }
 
-   mFont = TTF_OpenFont("VeraMono.ttf", 16);
+   mFont = TTF_OpenFont("res/font/VeraMono.ttf", 16);
    if (!mFont) {
       TTF_Quit();
       throw "TTF_OpenFont() failed!";
@@ -82,11 +84,18 @@ int SdlWindow::GetYRes() const
 void SdlWindow::Flip() const
 {
    mTextBuf.str("");
+#ifdef NDEBUG
+   mTextBuf << "Release | ";
+#else
+   mTextBuf << "Debug | ";
+#endif
    mTextBuf << mFPS << " FPS";
    WriteText(0, 0, mTextColor, mTextBuf.str());
    mFrameCount++;
 
+//   SDL_Surface* tmp = zoomSurface(mSurface, 2.0, 2.0, 0);
    SDL_BlitSurface(mSurface, NULL, mScreen, NULL);
+//   SDL_FreeSurface(tmp);
    SDL_Flip(mScreen);
 }
 

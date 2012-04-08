@@ -10,7 +10,7 @@ Actor::Actor()
    SetResourceId("actor");
    SetPos(0, 0);
    SetSize(640, 480);
-   SetZOrder(zo_Layer_2);
+   SetZOrder(ZOrder::zo_Layer_2);
    SetVisible(false);
 }
 
@@ -46,17 +46,17 @@ bool Actor::CheckCollision(const std::shared_ptr<SceneObject>& obj) const
    const auto right_hand = mJoints[XN_SKEL_RIGHT_HAND];
 
    if ((left_hand.X > obj->GetXPos()) &&
-       (left_hand.X < obj->GetXPos() + obj->GetWidth()) &&
+       (left_hand.X < obj->GetXPos() + obj->GetXRes()) &&
        (left_hand.Y > obj->GetYPos()) &&
-       (left_hand.Y < obj->GetYPos() + obj->GetHeight()))
+       (left_hand.Y < obj->GetYPos() + obj->GetYRes()))
    {
       return true;
    }
 
    if ((right_hand.X > obj->GetXPos()) &&
-       (right_hand.X < obj->GetXPos() + obj->GetWidth()) &&
+       (right_hand.X < obj->GetXPos() + obj->GetXRes()) &&
        (right_hand.Y > obj->GetYPos()) &&
-       (right_hand.Y < obj->GetYPos() + obj->GetHeight()))
+       (right_hand.Y < obj->GetYPos() + obj->GetYRes()))
    {
       return true;
    }

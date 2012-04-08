@@ -1,6 +1,8 @@
 #ifndef RESOURCE_CACHE_H
 #define RESOURCE_CACHE_H
 
+#include "SpriteResource.h"
+
 #include <SDL.h>
 
 #include <memory>
@@ -14,14 +16,17 @@ public:
    ResourceCache();
    ~ResourceCache();
 
-   void AddDirectory(const std::string& dir);
-   SDL_Surface* GetResource(const std::string& id);
+   std::shared_ptr<SpriteResource> GetSprite(const std::string& id);
+   // std::shared_ptr<...> GetSound(const std::string& id);
+
+//   void AddDirectory(const std::string& dir);
+//   SDL_Surface* GetResource(const std::string& id);
 
 private:
-   void Load(const std::string& file, const std::string& id);
+   void LoadSprite(const std::vector<std::string>& files, const std::string& id);
 
    std::string mResDir;
-   std::map<std::string, SDL_Surface*> mCache;
+   std::map<std::string, std::shared_ptr<SpriteResource>> mSprites;
 
    ResourceCache(const ResourceCache&);
    const ResourceCache& operator=(const ResourceCache&);

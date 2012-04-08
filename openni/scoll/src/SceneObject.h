@@ -3,7 +3,7 @@
 
 #include <string>
 
-enum ZOrder
+enum class ZOrder
 {
    zo_Background,
    zo_Layer_1,
@@ -30,15 +30,18 @@ public:
    int GetYPos() const;
    void SetPos(int x_pos, int y_pos);
 
-   int GetWidth() const;
-   int GetHeight() const;
-   void SetSize(int width, int height);
+   int GetXRes() const;
+   int GetYRes() const;
+   void SetSize(int x_res, int y_res);
 
    ZOrder GetZOrder() const;
    void SetZOrder(ZOrder order);
 
    bool IsVisible() const;
    void SetVisible(bool visible);
+
+   bool IsAlive() const;
+   void SetAlive(bool alive);
 
 //   virtual SceneObject* Create() = 0;
 //   virtual SceneObject* Clone() = 0;
@@ -52,6 +55,7 @@ private:
    int mHeight;
    ZOrder mZOrder;
    bool mIsVisible;
+   bool mIsAlive;
 };
 
 #endif // SCENE_OBJECT_H

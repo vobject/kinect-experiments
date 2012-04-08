@@ -6,17 +6,15 @@
 class Sprite : public SceneObject
 {
 public:
-   Sprite();
+   Sprite(int frame_cnt = 1, int ms_per_frame = 0, int ms_per_pos = 33, bool looping = false);
    virtual ~Sprite();
 
    virtual void Update(int elapsed_time);
 
-   void SetFrameCount(int frame_cnt);
    void SetDirection(int x_dir, int y_dir);
    void SetSpeed(int x_speed, int y_speed);
-//   virtual void Restore();
 
-//   void SetAnimation(bool is_paused, bool is_looping);
+   int GetCurrentFrame() const;
 
 private:
    void UpdateFrame();

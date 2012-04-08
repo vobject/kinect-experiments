@@ -15,9 +15,9 @@ Kinect::~Kinect()
 
 void Kinect::Init()
 {
-   InitOpenNI("");
-   mUserTracking.Init(mContext);
-   mContext.StartGeneratingAll();
+//   InitOpenNI("");
+//   mUserTracking.Init(mContext);
+//   mContext.StartGeneratingAll();
 }
 
 void Kinect::InitPlayback( const std::string& file )
@@ -81,10 +81,10 @@ void Kinect::InitOpenNI( const std::string& file )
 void Kinect::NextFrame()
 {
    // Read a new frame from the recording.
-   const auto rc = mContext.WaitNoneUpdateAll();
-   if (XN_STATUS_OK != rc) {
-      throw "xn::Context::WaitAnyUpdateAll() failed";
-   }
+//   const auto rc = mContext.WaitNoneUpdateAll();
+//   if (XN_STATUS_OK != rc) {
+//      throw "xn::Context::WaitAnyUpdateAll() failed";
+//   }
 }
 
 void Kinect::SeekForward( const int frames /*= 100*/ )
@@ -149,7 +149,7 @@ const XnDepthPixel* Kinect::GetDepthData()
 
 std::vector<UserData> Kinect::GetUsers() const
 {
-   return mUserTracking.GetUsers(mDepthGen);
+   return std::vector<UserData>();// mUserTracking.GetUsers(mDepthGen);
 }
 
 std::shared_ptr<xn::SceneMetaData> Kinect::GetUserPixels(const UserData& user) const
