@@ -29,15 +29,14 @@ static void print_commands()
 Logic::Logic(const std::shared_ptr<Renderer>& renderer, std::shared_ptr<ResourceCache>& res)
    : mRenderer(renderer)
    , mResCache(res)
-   , mBackground(std::make_shared<Background>())
    , mActor(std::make_shared<Actor>())
    , mXScreen(0)
    , mYScreen(0)
-   , mLastBgUpdateTime(0)
+   , mLastBgUpdateTime(0) // TODO: Move this into Background class
 {
-   const auto bg_res = mResCache->GetSprite("background");
-   mBackground->SetSize(bg_res->GetWidth(), bg_res->GetHeight());
-   mBackground->SetScreenSize(bg_res->GetWidth(), bg_res->GetHeight());
+   const auto bg_id = "background";
+   const auto bg_frame = mResCache->GetSpriteFrames(bg_id).at(0);
+   mBackground = std::make_shared<Background>(bg_id, bg_frame);
 
 //   srand(time(NULL));
 }
@@ -80,13 +79,11 @@ void Logic::ProcessInput(const SDL_MouseButtonEvent& ev)
 {
    if ((SDL_MOUSEBUTTONUP == ev.type) && (SDL_BUTTON_LEFT == ev.button))
    {
-      const std::string res_id = "blood_a";
-      const auto res = mResCache->GetSprite(res_id);
+      const auto res_id = "blood_b";
+      const auto frames = mResCache->GetSpriteFrames(res_id);
 
-      auto obj = std::make_shared<Sprite>(res->GetFrameCount(), 80, 80, true);
-      obj->SetResourceId(res_id);
-//      obj->SetSize(res->GetWidth(), res->GetHeight());
-      obj->SetSize(100, 100);
+      auto obj = std::make_shared<Sprite>(res_id, frames, true);
+      obj->SetSize(200, 200);
       obj->SetPos(ev.x - (obj->GetXRes() / 2), ev.y - (obj->GetYRes() / 2));
       obj->SetZOrder(ZOrder::zo_Layer_3);
       obj->SetDirection(-1, 1);
@@ -95,11 +92,10 @@ void Logic::ProcessInput(const SDL_MouseButtonEvent& ev)
    }
    else if ((SDL_MOUSEBUTTONUP == ev.type) && (SDL_BUTTON_RIGHT == ev.button))
    {
-      auto obj = std::make_shared<Sprite>();
-      obj->SetResourceId("Rectangle");
+      auto obj = std::make_shared<Sprite>("Rectangle");
       obj->SetSize(60, 60);
       obj->SetPos(ev.x - (obj->GetXRes() / 2), ev.y - (obj->GetYRes() / 2));
-      obj->SetZOrder(ZOrder::zo_Layer_3);
+      obj->SetZOrder(ZOrder::zo_Layer_2);
       obj->SetDirection(-1, 0);
       obj->SetSpeed(2, 2);
       mSprites.push_back(obj);
@@ -162,10 +158,12 @@ void Logic::Render()
    mRenderer->PostRender();
 }
 
-void Logic::SetScreenSize(int x_res, int y_res)
+void Logic::SetScreenSize(const int x_res, const int y_res)
 {
    mXScreen = x_res;
    mYScreen = y_res;
+
+   mBackground->SetScreenSize(mXScreen, mYScreen);
 }
 
 void Logic::ScrollBackground()

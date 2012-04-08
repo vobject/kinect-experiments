@@ -1,10 +1,13 @@
 #include "Background.h"
 
-Background::Background()
+Background::Background(const std::string& id, SDL_Surface* frame)
+   : mXScreen(0)
+   , mYScreen(0)
+   , mFrame(frame)
 {
-   SetResourceId("background");
+   SetResourceId(id);
+   SetSize(mFrame->w, mFrame->h);
    SetZOrder(ZOrder::zo_Background);
-   SetVisible(true);
 }
 
 Background::~Background()
@@ -43,4 +46,9 @@ void Background::ScrollRight(const int speed)
    }
 
    SetPos(GetXPos() + speed, GetYPos());
+}
+
+SDL_Surface* Background::GetFrame() const
+{
+   return mFrame;
 }

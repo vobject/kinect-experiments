@@ -19,12 +19,12 @@ ResourceCache::ResourceCache()
 //   Load("res/background/2zxr32b.png", "smw");
    LoadSprite({mResDir + "/sprite/aaa.png"}, "background");
    LoadSprite({mResDir + "/sprite/arcanister2.png"}, "arcanister");
-   LoadSprite({mResDir + "/sprite/blood_a/1.png",
-               mResDir + "/sprite/blood_a/2.png",
-               mResDir + "/sprite/blood_a/3.png",
-               mResDir + "/sprite/blood_a/4.png",
-               mResDir + "/sprite/blood_a/5.png",
-               mResDir + "/sprite/blood_a/6.png",}, "blood_a");
+   LoadSprite({mResDir + "/sprite/blood_b/1.png",
+               mResDir + "/sprite/blood_b/2.png",
+               mResDir + "/sprite/blood_b/3.png",
+               mResDir + "/sprite/blood_b/4.png",
+               mResDir + "/sprite/blood_b/5.png",
+               mResDir + "/sprite/blood_b/6.png",}, "blood_b");
 }
 
 ResourceCache::~ResourceCache()
@@ -61,16 +61,16 @@ ResourceCache::~ResourceCache()
 //   }
 //}
 
-std::shared_ptr<SpriteResource> ResourceCache::GetSprite(const std::string& id)
+std::vector<SDL_Surface*> ResourceCache::GetSpriteFrames(const std::string& id)
 {
-   return mSprites[id];
+   return mSpriteFrames[id];
 }
 
 void ResourceCache::LoadSprite(const std::vector<std::string>& files, const std::string& id)
 {
-   std::shared_ptr<SpriteResource> sr(std::make_shared<SpriteResource>());
+   std::vector<SDL_Surface*> frames;
 
-   for (auto& file : files)
+   for (const auto& file : files)
    {
       SDL_Surface* img_loaded = IMG_Load(file.c_str());
       if (!img_loaded) {
@@ -84,12 +84,11 @@ void ResourceCache::LoadSprite(const std::vector<std::string>& files, const std:
       SDL_FreeSurface(img_loaded);
       img_loaded = nullptr;
 
-      const Uint32 colorkey = SDL_MapRGB(img_compat->format, 0, 0, 0);
-      SDL_SetColorKey(img_compat, SDL_RLEACCEL | SDL_SRCCOLORKEY, colorkey);
+//      const Uint32 colorkey = SDL_MapRGB(img_compat->format, 0, 0, 0);
+//      SDL_SetColorKey(img_compat, SDL_RLEACCEL | SDL_SRCCOLORKEY, colorkey);
 
-      sr->AddFrame(img_compat);
-      sr->SetSize(img_compat->w, img_compat->h);
+      frames.push_back(img_compat);
    }
 
-   mSprites[id] = sr;
+   mSpriteFrames[id] = frames;
 }

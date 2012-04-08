@@ -8,6 +8,7 @@
 #include "Log.h"
 
 #include <SDL.h>
+#include <SDL_rotozoom.h>
 
 #include <string>
 
@@ -46,12 +47,10 @@ void Renderer::Render(const std::shared_ptr<Background>& bg)
       return;
    }
 
-   const auto bg_res = mResCache->GetSprite(bg->GetResourceId());
-   const auto frame = bg_res->GetFrame(0);
    SDL_Rect rect = { (Sint16)bg->GetXPos(), (Sint16)bg->GetYPos(),
                      (Uint16)bg->GetXRes(), (Uint16)bg->GetYRes() };
 
-   SDL_BlitSurface(frame, NULL, mWindow->mSurface, &rect);
+   SDL_BlitSurface(bg->GetFrame(), NULL, mWindow->mSurface, &rect);
 }
 
 void Renderer::Render(const std::shared_ptr<Actor>& actor)
@@ -89,7 +88,7 @@ void Renderer::Render(const std::shared_ptr<Actor>& actor)
 
 void Renderer::Render(const std::list<std::shared_ptr<Sprite>>& objects)
 {
-   for (auto& obj : objects)
+   for (const auto& obj : objects)
    {
       if (!obj->IsVisible()) {
          continue;
@@ -98,7 +97,7 @@ void Renderer::Render(const std::list<std::shared_ptr<Sprite>>& objects)
       // TODO: Get objects resources from resource manager
       // TODO: Draw the objects resources in its current state to mSurface
 
-      const std::string res_id = obj->GetResourceId();
+      const auto res_id = obj->GetResourceId();
 
       if (res_id == "Rectangle")
       {
@@ -106,23 +105,26 @@ void Renderer::Render(const std::list<std::shared_ptr<Sprite>>& objects)
                            (Uint16)obj->GetXRes(), (Uint16)obj->GetYRes() };
          SDL_FillRect(mWindow->mSurface, &rect, 0xff55ff);
       }
-      else if (res_id == "blood_a")
-      {
-         const auto sprite = mResCache->GetSprite(res_id);
-         const auto frame = sprite->GetFrame(obj->GetCurrentFrame());
-         SDL_Rect rect = { (Sint16)obj->GetXPos(), (Sint16)obj->GetYPos(),
-                           (Uint16)obj->GetXRes(), (Uint16)obj->GetYRes() };
-
-         SDL_BlitSurface(frame, NULL, mWindow->mSurface, &rect);
-      }
       else
       {
-         const auto sprite = mResCache->GetSprite(res_id);
-         const auto frame = sprite->GetFrame(0);
-         SDL_Rect rect = { (Sint16)obj->GetXPos(), (Sint16)obj->GetYPos(),
-                           (Uint16)obj->GetXRes(), (Uint16)obj->GetYRes() };
-
-         SDL_BlitSurface(frame, NULL, mWindow->mSurface, &rect);
+         RenderSprite(obj);
       }
    }
 }
+
+void Renderer::RenderSprite(const std::shared_ptr<Sprite>& obj) const
+{
+   const auto frame = obj->GetCurrentFrame();
+   SDL_Rect rect = { (Sint16)obj->GetXPos(), (Sint16)obj->GetYPos(),
+                     (Uint16)obj->GetXRes(), (Uint16)obj->GetYRes() };
+
+   const double x_zoom = static_cast<double>(rect.w) / frame->w;
+   const double y_zoom = static_cast<double>(rect.h) / frame->h;
+   SDL_Surface* zoomed_frame = zoomSurface(frame, x_zoom, y_zoom, 0);
+
+   const Uint32 colorkey = SDL_MapRGB(zoomed_frame->format, 0, 0, 0);
+   SDL_SetColorKey(zoomed_frame, SDL_RLEACCEL | SDL_SRCCOLORKEY, colorkey);
+
+   SDL_BlitSurface(zoomed_frame, NULL, mWindow->mSurface, &rect);
+}
+

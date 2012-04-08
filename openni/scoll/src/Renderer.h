@@ -25,6 +25,7 @@ public:
 
 private:
 //   bool ObjectOnScreen(const std::shared_ptr<Sprite>& obj) const;
+   void RenderSprite(const std::shared_ptr<Sprite>& obj) const;
 
    std::shared_ptr<SdlWindow> mWindow;
    std::shared_ptr<ResourceCache> mResCache;

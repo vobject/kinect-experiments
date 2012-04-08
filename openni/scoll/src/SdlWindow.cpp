@@ -1,7 +1,5 @@
 #include "SdlWindow.h"
 
-#include <SDL_rotozoom.h>
-
 SdlWindow::SdlWindow(const int xres, const int yres, const std::string& text)
    : mXRes(xres)
    , mYRes(yres)

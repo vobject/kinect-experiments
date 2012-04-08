@@ -24,7 +24,6 @@ public:
 //   virtual void Restore() = 0;
 
    std::string GetResourceId() const;
-   void SetResourceId(const std::string& resource);
 
    int GetXPos() const;
    int GetYPos() const;
@@ -46,6 +45,9 @@ public:
 //   virtual SceneObject* Create() = 0;
 //   virtual SceneObject* Clone() = 0;
 //   virtual void Destroy();
+
+protected:
+   void SetResourceId(const std::string& resource);
 
 private:
    std::string mResource;

@@ -1,20 +1,24 @@
 #include "Sprite.h"
 
-Sprite::Sprite(int frame_cnt /*=1*/, int ms_per_frame /*=100*/, int ms_per_pos /*=100*/, bool looping /*=false*/)
-   : mIsPaused(false)
-   , mIsLooping(looping)
-   , mMsPerFrame(ms_per_frame)
-   , mMsPerPosUpdate(ms_per_pos)
+Sprite::Sprite(
+   const std::string& id,
+   const std::vector<SDL_Surface*>& frames /*=std::vector<SDL_Surface*>()*/,
+   const bool looping /*=false*/
+)
+   : mIsLooping(looping)
+   , mMsPerFrame(60)
+   , mMsPerPosUpdate(30)
    , mElapsedFrameTime(0)
    , mElapsedPosTime(0)
-   , mFrameCount(frame_cnt)
-   , mCurrentFrameIndex(0)
+   , mFrameCount(frames.size() ? frames.size() : 1)
+   , mCurrentFrame(0)
    , mXDirection(0)
    , mYDirection(0)
    , mXSpeed(0)
    , mYSpeed(0)
+   , mFrames(frames)
 {
-
+   SetResourceId(id);
 }
 
 Sprite::~Sprite()
@@ -24,15 +28,25 @@ Sprite::~Sprite()
 
 void Sprite::Update(const int elapsed_time)
 {
-   if (mIsPaused) {
-      return;
-   }
+//   if (mIsPaused) {
+//      return;
+//   }
 
    mElapsedFrameTime += elapsed_time;
    mElapsedPosTime += elapsed_time;
 
    UpdateFrame();
    UpdatePosition();
+}
+
+void Sprite::SetMsPerFrame(const int ms)
+{
+   mMsPerFrame = ms;
+}
+
+void Sprite::SetMsPerPosition(const int ms)
+{
+   mMsPerPosUpdate = ms;
 }
 
 void Sprite::SetDirection(const int x_dir, const int y_dir)
@@ -47,9 +61,9 @@ void Sprite::SetSpeed(const int x_speed, const int y_speed)
    mYSpeed = y_speed;
 }
 
-int Sprite::GetCurrentFrame() const
+SDL_Surface* Sprite::GetCurrentFrame() const
 {
-   return mCurrentFrameIndex;
+   return mFrames.at(mCurrentFrame);
 }
 
 void Sprite::UpdateFrame()
@@ -63,14 +77,14 @@ void Sprite::UpdateFrame()
       const int adv_cnt = mElapsedFrameTime / mMsPerFrame;
       mElapsedFrameTime -= (adv_cnt * mMsPerFrame);
 
-      int new_frame_index = mCurrentFrameIndex + adv_cnt;
+      int new_frame_index = mCurrentFrame + adv_cnt;
 
       if(!mIsLooping && (new_frame_index >= mFrameCount))
       {
          new_frame_index = mFrameCount - 1;
       }
 
-      mCurrentFrameIndex = new_frame_index % mFrameCount;
+      mCurrentFrame = new_frame_index % mFrameCount;
    }
 }
 
@@ -85,11 +99,6 @@ void Sprite::UpdatePosition()
              GetYPos() + (mYDirection * mYSpeed * adv_cnt));
    }
 }
-
-//void Sprite::Restore()
-//{
-//
-//}
 
 //void Sprite::SetAnimation(const bool is_paused, const bool is_looping)
 //{
