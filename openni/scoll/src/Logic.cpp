@@ -26,10 +26,13 @@ static void print_commands()
              << std::endl;
 }
 
-Logic::Logic(const std::shared_ptr<Renderer>& renderer, std::shared_ptr<ResourceCache>& res)
+Logic::Logic(
+   const std::shared_ptr<Renderer>& renderer,
+   const std::shared_ptr<ResourceCache>& res,
+   const std::shared_ptr<Kinect>& kinect
+)
    : mRenderer(renderer)
    , mResCache(res)
-   , mActor(std::make_shared<Actor>())
    , mXScreen(0)
    , mYScreen(0)
    , mLastBgUpdateTime(0) // TODO: Move this into Background class
@@ -37,6 +40,8 @@ Logic::Logic(const std::shared_ptr<Renderer>& renderer, std::shared_ptr<Resource
    const auto bg_id = "background";
    const auto bg_frame = mResCache->GetSpriteFrames(bg_id).at(0);
    mBackground = std::make_shared<Background>(bg_id, bg_frame);
+
+   mActor = std::make_shared<Actor>(kinect);
 
 //   srand(time(NULL));
 }
@@ -104,13 +109,15 @@ void Logic::ProcessInput(const SDL_MouseButtonEvent& ev)
 
 void Logic::ProcessInput(const std::shared_ptr<Kinect>& kinect)
 {
-   const auto users = kinect->GetUsers();
-   if (users.empty()) {
-      mActor->SetVisible(false);
-      return;
-   }
+   // TODO: Actor reengineering!
 
-   mActor->Update(users[0]);
+//   const auto users = kinect->GetUsers();
+//   if (users.empty()) {
+//      mActor->SetVisible(false);
+//      return;
+//   }
+//
+//   mActor->Update(users[0]);
 }
 
 void Logic::Update(const int game_time, const int elapsed_time)
@@ -121,13 +128,16 @@ void Logic::Update(const int game_time, const int elapsed_time)
       mLastBgUpdateTime = game_time;
    }
 
-   for (auto& obj : mSprites)
-   {
-       if (mActor->CheckCollision(obj))
-       {
-          obj->SetVisible(false);
-       }
-   }
+   // TODO: Check for dead sprites and remove them
+   // TODO: Trigger an animation on collision
+
+//   for (auto& obj : mSprites)
+//   {
+//       if (mActor->CheckCollision(obj))
+//       {
+//          obj->SetVisible(false);
+//       }
+//   }
 
    for (auto& obj : mSprites)
    {
@@ -168,10 +178,12 @@ void Logic::SetScreenSize(const int x_res, const int y_res)
 
 void Logic::ScrollBackground()
 {
-   if (!mActor->IsVisible()) {
-      return;
-   }
+   // TODO: Actor reengineering!
 
+//   if (!mActor->IsVisible()) {
+//      return;
+//   }
+//
 //   const int actor_x_center = mActor->GetXCenter();
 //   if (std::abs(actor_x_center) < 30) {
 //      return;

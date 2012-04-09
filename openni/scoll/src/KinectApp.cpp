@@ -36,7 +36,7 @@ void KinectApp::Initialize(const std::string& path)
    mWindow = std::make_shared<SdlWindow>(1024, 768, "scroll");
    mResCache = std::make_shared<ResourceCache>();
    mRenderer = std::make_shared<Renderer>(mWindow, mResCache, mKinect);
-   mLogic = std::make_shared<Logic>(mRenderer, mResCache);
+   mLogic = std::make_shared<Logic>(mRenderer, mResCache, mKinect);
    mLogic->SetScreenSize(mWindow->GetXRes(), mWindow->GetYRes());
 }
 

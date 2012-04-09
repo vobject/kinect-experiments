@@ -14,7 +14,9 @@ class Actor;
 class Renderer
 {
 public:
-   Renderer(std::shared_ptr<SdlWindow>& window, std::shared_ptr<ResourceCache>& res, std::shared_ptr<Kinect>& kinect);
+   Renderer(const std::shared_ptr<SdlWindow>& window,
+             const std::shared_ptr<ResourceCache>& res,
+             const std::shared_ptr<Kinect>& kinect);
    virtual ~Renderer();
 
    virtual void PreRender();

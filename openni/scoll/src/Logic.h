@@ -16,7 +16,9 @@ class Actor;
 class Logic
 {
 public:
-   Logic(const std::shared_ptr<Renderer>& renderer, std::shared_ptr<ResourceCache>& res);
+   Logic(const std::shared_ptr<Renderer>& renderer,
+          const std::shared_ptr<ResourceCache>& res,
+          const std::shared_ptr<Kinect>& kinect);
    virtual ~Logic();
 
    virtual void ProcessInput(const SDL_KeyboardEvent& ev);

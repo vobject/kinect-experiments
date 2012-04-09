@@ -1,15 +1,15 @@
 #include "Actor.h"
+#include "Kinect.h"
 #include "UserData.h"
 
-#include <XnTypes.h>
-
-Actor::Actor()
+Actor::Actor(const std::shared_ptr<Kinect>& kinect)
    : mXCenter(0)
    , mYCenter(0)
+   , mFrame(nullptr)
 {
    SetResourceId("actor");
    SetPos(0, 0);
-   SetSize(640, 480);
+   SetSize(kinect->GetXRes(), kinect->GetYRes());
    SetZOrder(ZOrder::zo_Layer_2);
    SetVisible(false);
 }
@@ -72,4 +72,9 @@ int Actor::GetXCenter()
 int Actor::GetYCenter()
 {
    return mYCenter;
+}
+
+SDL_Surface* Actor::GetFrame() const
+{
+   return mFrame;
 }
