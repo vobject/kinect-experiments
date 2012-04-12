@@ -17,8 +17,8 @@ ResourceCache::ResourceCache()
    // FIXME:
 //   Load("res/background/smw.jpg", "smw");
 //   Load("res/background/2zxr32b.png", "smw");
-   LoadSprite({mResDir + "/sprite/aaa.png"}, "background");
-   LoadSprite({mResDir + "/sprite/arcanister2.png"}, "arcanister");
+   LoadSprite({mResDir + "/sprite/aaa2.jpg"}, "background");
+   LoadSprite({mResDir + "/sprite/explode1.jpg"}, "arcanister");
    LoadSprite({mResDir + "/sprite/blood_b/1.png",
                mResDir + "/sprite/blood_b/2.png",
                mResDir + "/sprite/blood_b/3.png",

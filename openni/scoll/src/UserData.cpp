@@ -2,38 +2,66 @@
 
 #include <XnCppWrapper.h>
 
+const std::map<int, std::string> UserData::mJointNames = {
+   { XN_SKEL_HEAD, "HEAD" },
+   { XN_SKEL_NECK, "NECK" },
+   { XN_SKEL_TORSO, "TORSO" },
+   { XN_SKEL_WAIST, "WAIST" },
+
+   { XN_SKEL_LEFT_COLLAR, "LEFT_COLLAR" },
+   { XN_SKEL_LEFT_SHOULDER, "LEFT_SHOULDER" },
+   { XN_SKEL_LEFT_ELBOW, "LEFT_ELBOW" },
+   { XN_SKEL_LEFT_WRIST, "LEFT_WRIST" },
+   { XN_SKEL_LEFT_HAND, "LEFT_HAND" },
+   { XN_SKEL_LEFT_FINGERTIP, "LEFT_FINGERTIP" },
+
+   { XN_SKEL_RIGHT_COLLAR, "RIGHT_COLLAR" },
+   { XN_SKEL_RIGHT_SHOULDER, "RIGHT_SHOULDER" },
+   { XN_SKEL_RIGHT_ELBOW, "RIGHT_ELBOW" },
+   { XN_SKEL_RIGHT_WRIST, "RIGHT_WRIST" },
+   { XN_SKEL_RIGHT_HAND, "RIGHT_HAND" },
+   { XN_SKEL_RIGHT_FINGERTIP, "RIGHT_FINGERTIP" },
+
+   { XN_SKEL_LEFT_HIP, "LEFT_HIP" },
+   { XN_SKEL_LEFT_KNEE, "LEFT_KNEE" },
+   { XN_SKEL_LEFT_ANKLE, "LEFT_ANKLE" },
+   { XN_SKEL_LEFT_FOOT, "LEFT_FOOT" },
+
+   { XN_SKEL_RIGHT_HIP, "RIGHT_HIP" },
+   { XN_SKEL_RIGHT_KNEE, "RIGHT_KNEE" },
+   { XN_SKEL_RIGHT_ANKLE, "RIGHT_ANKLE" },
+   { XN_SKEL_RIGHT_FOOT, "RIGHT_FOOT" },
+};
+
+std::string UserData::NameFromId(const int joint_id)
+{
+   return mJointNames.at(joint_id);
+}
+
 UserData::UserData(const XnUserID id)
    : mId(id)
 {
-   // TODO: This lookup table shout be outsourced.
-   mJointNames[XN_SKEL_HEAD] = "HEAD";
-   mJointNames[XN_SKEL_NECK] = "NECK";
-   mJointNames[XN_SKEL_TORSO] = "TORSO";
-   mJointNames[XN_SKEL_WAIST] = "WAIST";
 
-   mJointNames[XN_SKEL_LEFT_COLLAR] = "LEFT_COLLAR";
-   mJointNames[XN_SKEL_LEFT_SHOULDER] = "LEFT_SHOULDER";
-   mJointNames[XN_SKEL_LEFT_ELBOW] = "LEFT_ELBOW";
-   mJointNames[XN_SKEL_LEFT_WRIST] = "LEFT_WRIST";
-   mJointNames[XN_SKEL_LEFT_HAND] = "LEFT_HAND";
-   mJointNames[XN_SKEL_LEFT_FINGERTIP] = "LEFT_FINGERTIP";
+}
 
-   mJointNames[XN_SKEL_RIGHT_COLLAR] = "RIGHT_COLLAR";
-   mJointNames[XN_SKEL_RIGHT_SHOULDER] = "RIGHT_SHOULDER";
-   mJointNames[XN_SKEL_RIGHT_ELBOW] = "RIGHT_ELBOW";
-   mJointNames[XN_SKEL_RIGHT_WRIST] = "RIGHT_WRIST";
-   mJointNames[XN_SKEL_RIGHT_HAND] = "RIGHT_HAND";
-   mJointNames[XN_SKEL_RIGHT_FINGERTIP] = "RIGHT_FINGERTIP";
+UserData::UserData(const UserData& rhs)
+   : mId(rhs.mId)
+   , mRealWorldJoints(rhs.mRealWorldJoints)
+   , mPerspectiveJoints(rhs.mPerspectiveJoints)
+{
 
-   mJointNames[XN_SKEL_LEFT_HIP] = "LEFT_HIP";
-   mJointNames[XN_SKEL_LEFT_KNEE] = "LEFT_KNEE";
-   mJointNames[XN_SKEL_LEFT_ANKLE] = "LEFT_ANKLE";
-   mJointNames[XN_SKEL_LEFT_FOOT] = "LEFT_FOOT";
+}
 
-   mJointNames[XN_SKEL_RIGHT_HIP] = "RIGHT_HIP";
-   mJointNames[XN_SKEL_RIGHT_KNEE] = "RIGHT_KNEE";
-   mJointNames[XN_SKEL_RIGHT_ANKLE] = "RIGHT_ANKLE";
-   mJointNames[XN_SKEL_RIGHT_FOOT] = "RIGHT_FOOT";
+UserData& UserData::operator=(const UserData& rhs)
+{
+   if (&rhs != this)
+   {
+      mId = rhs.mId;
+      mRealWorldJoints = rhs.mRealWorldJoints;
+      mPerspectiveJoints = rhs.mPerspectiveJoints;
+   }
+
+   return *this;
 }
 
 UserData::~UserData()
@@ -69,9 +97,4 @@ std::map<int, XnPoint3D> UserData::GetPerspectiveJoints() const
 void UserData::SetPerspectiveJoint(const int joint, const XnPoint3D& pos)
 {
    mPerspectiveJoints[joint] = pos;
-}
-
-std::string UserData::JointId2JointName(const int joint_id) const
-{
-   return mJointNames[joint_id];
 }

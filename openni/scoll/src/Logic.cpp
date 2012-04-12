@@ -4,7 +4,7 @@
 #include "Kinect.h"
 #include "Sprite.h"
 #include "Background.h"
-#include "Actor.h"
+#include "Player.h"
 #include "Log.h"
 
 #include <algorithm>
@@ -40,8 +40,10 @@ Logic::Logic(
    const auto bg_id = "background";
    const auto bg_frame = mResCache->GetSpriteFrames(bg_id).at(0);
    mBackground = std::make_shared<Background>(bg_id, bg_frame);
+   // TODO: Background must have a "buttom" coordinate.
 
-   mActor = std::make_shared<Actor>(kinect);
+   mPlayer = std::make_shared<Player>(kinect);
+   mPlayer->SetSize(128, 96);
 
 //   srand(time(NULL));
 }
@@ -97,7 +99,10 @@ void Logic::ProcessInput(const SDL_MouseButtonEvent& ev)
    }
    else if ((SDL_MOUSEBUTTONUP == ev.type) && (SDL_BUTTON_RIGHT == ev.button))
    {
-      auto obj = std::make_shared<Sprite>("Rectangle");
+      const auto res_id = "arcanister";
+      const auto frames = mResCache->GetSpriteFrames(res_id);
+
+      auto obj = std::make_shared<Sprite>(res_id, frames);
       obj->SetSize(60, 60);
       obj->SetPos(ev.x - (obj->GetXRes() / 2), ev.y - (obj->GetYRes() / 2));
       obj->SetZOrder(ZOrder::zo_Layer_2);
@@ -107,42 +112,22 @@ void Logic::ProcessInput(const SDL_MouseButtonEvent& ev)
    }
 }
 
-void Logic::ProcessInput(const std::shared_ptr<Kinect>& kinect)
-{
-   // TODO: Actor reengineering!
-
-//   const auto users = kinect->GetUsers();
+//void Logic::ProcessInput(const Kinect& kinect)
+//{
+//   const auto users = kinect.GetUsers();
 //   if (users.empty()) {
 //      mActor->SetVisible(false);
 //      return;
 //   }
 //
-//   mActor->Update(users[0]);
-}
+//   mActor->SetInputData(users[0]);
+//}
 
 void Logic::Update(const int game_time, const int elapsed_time)
 {
-   if ((game_time - mLastBgUpdateTime) > BACKGROUND_UPDATE_DELTA)
-   {
-      ScrollBackground();
-      mLastBgUpdateTime = game_time;
-   }
-
-   // TODO: Check for dead sprites and remove them
-   // TODO: Trigger an animation on collision
-
-//   for (auto& obj : mSprites)
-//   {
-//       if (mActor->CheckCollision(obj))
-//       {
-//          obj->SetVisible(false);
-//       }
-//   }
-
-   for (auto& obj : mSprites)
-   {
-       obj->Update(elapsed_time);
-   }
+   UpdateBackground(game_time, elapsed_time);
+   UpdatePlayer(game_time, elapsed_time);
+   UpdateEnemies(game_time, elapsed_time);
 
 //   if(rand() % 2000 == 0)
 //   {
@@ -164,7 +149,7 @@ void Logic::Render()
    mRenderer->PreRender();
    mRenderer->Render(mBackground);
    mRenderer->Render(mSprites);
-   mRenderer->Render(mActor);
+   mRenderer->Render(mPlayer);
    mRenderer->PostRender();
 }
 
@@ -174,16 +159,21 @@ void Logic::SetScreenSize(const int x_res, const int y_res)
    mYScreen = y_res;
 
    mBackground->SetScreenSize(mXScreen, mYScreen);
+
+   mPlayer->SetPos((mXScreen / 2) - (mPlayer->GetXRes() / 2),
+                   (mYScreen / 2) + (mPlayer->GetYRes() / 2) + 130);
 }
 
-void Logic::ScrollBackground()
+void Logic::UpdateBackground(const int game_time, const int elapsed_time)
 {
-   // TODO: Actor reengineering!
+   if ((game_time - mLastBgUpdateTime) < BACKGROUND_UPDATE_DELTA) {
+      return;
+   }
 
-//   if (!mActor->IsVisible()) {
-//      return;
-//   }
-//
+   if (!mPlayer->IsVisible()) {
+      return;
+   }
+
 //   const int actor_x_center = mActor->GetXCenter();
 //   if (std::abs(actor_x_center) < 30) {
 //      return;
@@ -200,4 +190,59 @@ void Logic::ScrollBackground()
 //   {
 //      mBackground->ScrollRight(scroll_speed);
 //   }
+
+   mBackground->Update(elapsed_time);
+   mLastBgUpdateTime = game_time;
+}
+
+void Logic::UpdatePlayer(const int game_time, const int elapsed_time)
+{
+   // TODO: Trigger an animation on collision
+
+//   for (auto& obj : mSprites)
+//   {
+//       if (mActor->CheckCollision(obj))
+//       {
+//          obj->SetVisible(false);
+//       }
+//   }
+
+//   const int x_center = mPlayer->GetXCenter();
+//   const int y_center = mPlayer->GetYCenter();
+//   mPlayer->SetPos((mXScreen / 2) - x_center, (mYScreen / 2) - y_center);
+
+//   const int x_center = mPlayer->GetXCenter();
+//   static int i = 1;
+//   const int x_center = mPlayer->mUserData.GetPerspectiveJoints()[XN_SKEL_TORSO].X;
+//   const int x_left_hand = mPlayer->mUserData.GetPerspectiveJoints()[XN_SKEL_LEFT_HAND].X;
+//   const int y_left_hand = mPlayer->mUserData.GetPerspectiveJoints()[XN_SKEL_LEFT_HAND].Y;
+//
+//   if (mPlayer->IsVisible() && i == 1) {
+//      if (((x_left_hand - abs(x_center)) > 30) || ((x_left_hand - abs(x_center)) < 30))
+//      {
+//         const auto res_id = "blood_b";
+//         const auto frames = mResCache->GetSpriteFrames(res_id);
+//
+//         auto obj = std::make_shared<Sprite>(res_id, frames, true);
+//         obj->SetSize(200, 200);
+//         obj->SetPos(x_left_hand, y_left_hand);
+//         obj->SetZOrder(ZOrder::zo_Layer_3);
+//         obj->SetDirection(0, 0);
+//         obj->SetSpeed(0, 0);
+//         mSprites.push_back(obj);
+//         i++;
+//      }
+//   }
+
+   mPlayer->Update(elapsed_time);
+}
+
+void Logic::UpdateEnemies(const int game_time, const int elapsed_time)
+{
+   // TODO: Check for dead sprites and remove them
+
+   for (auto& obj : mSprites)
+   {
+       obj->Update(elapsed_time);
+   }
 }

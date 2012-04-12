@@ -9,7 +9,12 @@
 class UserData
 {
 public:
+   static std::string NameFromId(int joint_id);
+   static const int INVALID_USER_ID = -1;
+
    UserData(XnUserID id);
+   UserData(const UserData& rhs);
+   UserData& operator=(const UserData& rhs);
    ~UserData();
 
 //   const XnPoint3D& operator[](int joint_id) const;
@@ -22,17 +27,13 @@ public:
    std::map<int, XnPoint3D> GetPerspectiveJoints() const;
    void SetPerspectiveJoint(int joint, const XnPoint3D& pos);
 
-   std::string JointId2JointName(int joint_id) const;
-
 private:
+   static const std::map<int, std::string> mJointNames;
+
    XnUserID mId;
+   std::map<int, XnPoint3D> mRealWorldJoints;
+   std::map<int, XnPoint3D> mPerspectiveJoints;
 
-   // FIXME: Is there a way to implement read-operator[] without having to make this mutable?
-   mutable std::map<int, XnPoint3D> mRealWorldJoints;
-   mutable std::map<int, XnPoint3D> mPerspectiveJoints;
-
-   // FIXME: Make this static
-   mutable std::map<int, std::string> mJointNames;
 };
 
 #endif // USER_DATA_H

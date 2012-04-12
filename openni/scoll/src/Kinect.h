@@ -31,9 +31,6 @@ public:
    const XnRGB24Pixel* GetImageData();
    const XnDepthPixel* GetDepthData();
 
-//   XnPoint3D RealWorldToProjective(const XnPoint3D& pos) const;
-//   XnPoint3D ProjectiveToRealWorld(const XnPoint3D& pos) const;
-
    std::vector<UserData> GetUsers() const;
    std::shared_ptr<xn::SceneMetaData> GetUserPixels(const UserData& user) const;
 

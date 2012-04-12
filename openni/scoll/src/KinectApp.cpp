@@ -35,7 +35,7 @@ void KinectApp::Initialize(const std::string& path)
    // This has to go first to set the display format.
    mWindow = std::make_shared<SdlWindow>(1024, 768, "scroll");
    mResCache = std::make_shared<ResourceCache>();
-   mRenderer = std::make_shared<Renderer>(mWindow, mResCache, mKinect);
+   mRenderer = std::make_shared<Renderer>(mWindow, mResCache);
    mLogic = std::make_shared<Logic>(mRenderer, mResCache, mKinect);
    mLogic->SetScreenSize(mWindow->GetXRes(), mWindow->GetYRes());
 }
@@ -70,7 +70,7 @@ void KinectApp::UpdateScene(const int game_time, const int elapsed_time)
 
    // Poll for kinect input on every update cycle.
    mKinect->NextFrame();
-   mLogic->ProcessInput(mKinect);
+//   mLogic->ProcessInput(*mKinect);
 
    mLogic->Update(game_time, elapsed_time);
 }

@@ -35,7 +35,6 @@ SdlWindow::SdlWindow(const int xres, const int yres, const std::string& text)
    mSurface = SDL_CreateRGBSurface(SDL_SWSURFACE,
                                    mXRes, mYRes,
                                    32, 0, 0, 0, 0);
-
    if (!mSurface) {
       throw "SDL_CreateRGBSurface() failed.";
    }

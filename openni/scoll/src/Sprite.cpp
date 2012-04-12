@@ -82,6 +82,7 @@ void Sprite::UpdateFrame()
       if(!mIsLooping && (new_frame_index >= mFrameCount))
       {
          new_frame_index = mFrameCount - 1;
+         SetAlive(false);
       }
 
       mCurrentFrame = new_frame_index % mFrameCount;

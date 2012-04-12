@@ -4,22 +4,21 @@
 #include "ResourceCache.h"
 #include "Sprite.h"
 #include "Background.h"
-#include "Actor.h"
+#include "Player.h"
 #include "Log.h"
 
 #include <SDL.h>
 #include <SDL_rotozoom.h>
 
 #include <string>
+#include <cassert>
 
 Renderer::Renderer(
    const std::shared_ptr<SdlWindow>& window,
-   const std::shared_ptr<ResourceCache>& res,
-   const std::shared_ptr<Kinect>& kinect
+   const std::shared_ptr<ResourceCache>& res
 )
    : mWindow(window)
    , mResCache(res)
-   , mKinect(kinect)
 {
 
 }
@@ -31,7 +30,7 @@ Renderer::~Renderer()
 
 void Renderer::PreRender()
 {
-   SDL_FillRect(mWindow->mSurface, NULL, 0x0000ba);
+   SDL_FillRect(mWindow->mSurface, NULL, 0x0000b5);
 
    // TODO: Lock mSurface?
 }
@@ -53,16 +52,29 @@ void Renderer::Render(const std::shared_ptr<Background>& bg)
    SDL_BlitSurface(bg->GetFrame(), NULL, mWindow->mSurface, &rect);
 }
 
-void Renderer::Render(const std::shared_ptr<Actor>& actor)
+void Renderer::Render(const std::shared_ptr<Player>& player)
 {
-   // TODO: Actor reengineering!
+   //  TODO: Center the Actor with its XCenter to the middle of the window
 
-   //  Center the Actor with its XCenter to the middle of the window
+   if (!player->IsVisible()) {
+      return;
+   }
 
-//   if (!actor->IsVisible()) {
-//      return;
-//   }
-//
+   const auto orig_frame = player->GetFrame();
+   const double x_zoom = static_cast<double>(player->GetXRes()) / orig_frame->w;
+   const double y_zoom = static_cast<double>(player->GetYRes()) / orig_frame->h;
+   SDL_Surface* zoomed_frame = zoomSurface(orig_frame, x_zoom, y_zoom, 0);
+
+   const Uint32 colorkey = SDL_MapRGB(zoomed_frame->format, 0, 0, 0);
+   if (SDL_SetColorKey(zoomed_frame, SDL_RLEACCEL | SDL_SRCCOLORKEY, colorkey)) {
+      throw "SDL_SetColorKey failed";
+   }
+
+   SDL_Rect rect = { (Sint16)player->GetXPos(), (Sint16)player->GetYPos(),
+                     (Uint16)player->GetXRes(), (Uint16)player->GetYRes() };
+   SDL_BlitSurface(zoomed_frame, NULL, mWindow->mSurface, &rect);
+
+
 //   const auto users = mKinect->GetUsers();
 //   if (users.empty()) {
 //      return;
@@ -127,7 +139,9 @@ void Renderer::RenderSprite(const std::shared_ptr<Sprite>& obj) const
    SDL_Surface* zoomed_frame = zoomSurface(frame, x_zoom, y_zoom, 0);
 
    const Uint32 colorkey = SDL_MapRGB(zoomed_frame->format, 0, 0, 0);
-   SDL_SetColorKey(zoomed_frame, SDL_RLEACCEL | SDL_SRCCOLORKEY, colorkey);
+   if (SDL_SetColorKey(zoomed_frame, SDL_RLEACCEL | SDL_SRCCOLORKEY, colorkey)) {
+      throw "SDL_SetColorKey failed";
+   }
 
    SDL_BlitSurface(zoomed_frame, NULL, mWindow->mSurface, &rect);
 }
