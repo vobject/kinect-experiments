@@ -18,7 +18,7 @@ openni/sprites:
 allegro5, combination of GetUserpixels() and sprite animation
 
 openni/scroll:
-scrolling environment
+SDL, OpenNI, animated sprites, collision detection, scrolling environment
 
 
 Enjoy!
