@@ -17,6 +17,9 @@ public:
    Kinect();
    ~Kinect();
 
+   Kinect(const Kinect&) = delete;
+   Kinect& operator=(const Kinect&) = delete;
+
    void Init();
    void InitPlayback(const std::string& file);
 
@@ -48,9 +51,6 @@ private:
    UserTracking mUserTracking;
    
    bool mPlaybackMode;
-
-   Kinect(const Kinect&);
-   const Kinect& operator=(const Kinect&);
 };
 
 #endif // KINECT_H

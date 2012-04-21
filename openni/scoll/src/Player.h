@@ -1,8 +1,10 @@
-#ifndef ACTOR_H
-#define ACTOR_H
+#ifndef PLAYER_H
+#define PLAYER_H
 
 #include "SceneObject.h"
 #include "UserData.h"
+#include "Texture.h"
+#include "Utils.h"
 
 #include <XnTypes.h>
 
@@ -19,24 +21,24 @@ public:
    Player(const std::shared_ptr<Kinect>& kinect);
    virtual ~Player();
 
-   virtual void Update(int elapsed_time);
+   Player(const Player&) = delete;
+   Player& operator=(const Player&) = delete;
+
+   void Update(int elapsed_time) override;
 
    virtual bool CheckCollision(const SceneObject& obj) const;
 
    int GetXCenter();
    int GetYCenter();
 
-   SDL_Surface* GetFrame() const;
+   std::shared_ptr<Texture> GetFrame() const;
 
 private:
    bool IsUserDataValid(const UserData& user) const;
 
    std::shared_ptr<Kinect> mKinect;
    UserData mUserData;
-   SDL_Surface* mFrame;
-
-   Player(const Player&);
-   const Player& operator=(const Player&);
+   std::shared_ptr<Texture> mTexture;
 };
 
-#endif // ACTOR_H
+#endif // PLAYER_H

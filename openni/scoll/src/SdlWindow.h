@@ -34,6 +34,9 @@ public:
    SdlWindow(int xres, int yres, const std::string& text);
    virtual ~SdlWindow();
 
+   SdlWindow(const SdlWindow&) = delete;
+   SdlWindow& operator=(const SdlWindow&) = delete;
+
    int GetXRes() const;
    int GetYRes() const;
 
@@ -64,9 +67,6 @@ private:
    int mFPS;
    SDL_Color mTextColor;
    mutable std::ostringstream mTextBuf;
-
-   SdlWindow(const SdlWindow&);
-   const SdlWindow& operator=(const SdlWindow&);
 };
 
 #endif // SDL_WINDOW_H

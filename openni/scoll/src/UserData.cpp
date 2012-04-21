@@ -44,35 +44,10 @@ UserData::UserData(const XnUserID id)
 
 }
 
-UserData::UserData(const UserData& rhs)
-   : mId(rhs.mId)
-   , mRealWorldJoints(rhs.mRealWorldJoints)
-   , mPerspectiveJoints(rhs.mPerspectiveJoints)
-{
-
-}
-
-UserData& UserData::operator=(const UserData& rhs)
-{
-   if (&rhs != this)
-   {
-      mId = rhs.mId;
-      mRealWorldJoints = rhs.mRealWorldJoints;
-      mPerspectiveJoints = rhs.mPerspectiveJoints;
-   }
-
-   return *this;
-}
-
 UserData::~UserData()
 {
 
 }
-
-//const XnPoint3D& UserData::operator[] (const int joint_id) const
-//{
-//   return mRealWorldJoints[joint_id];
-//}
 
 XnUserID UserData::GetId() const
 {
@@ -84,14 +59,14 @@ std::map<int, XnPoint3D> UserData::GetRealWorldJoints() const
    return mRealWorldJoints;
 }
 
-void UserData::SetRealWorldJoint(const int joint, const XnPoint3D& pos)
-{
-   mRealWorldJoints[joint] = pos;
-}
-
 std::map<int, XnPoint3D> UserData::GetPerspectiveJoints() const
 {
    return mPerspectiveJoints;
+}
+
+void UserData::SetRealWorldJoint(const int joint, const XnPoint3D& pos)
+{
+   mRealWorldJoints[joint] = pos;
 }
 
 void UserData::SetPerspectiveJoint(const int joint, const XnPoint3D& pos)

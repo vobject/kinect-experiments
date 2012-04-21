@@ -8,22 +8,25 @@
 #include <string>
 #include <vector>
 
+class SpriteResource;
+
 class Sprite : public SceneObject
 {
 public:
-   Sprite(const std::string& id,
-           const std::vector<SDL_Surface*>& frames = std::vector<SDL_Surface*>(),
-           bool looping = false);
+   Sprite(const SpriteResource& res, bool looping = false);
    virtual ~Sprite();
 
-   virtual void Update(int elapsed_time);
+   Sprite(const Sprite&) = delete;
+   Sprite& operator=(const Sprite&) = delete;
+
+   void Update(int elapsed_time) override;
 
    void SetMsPerFrame(int ms);
    void SetMsPerPosition(int ms);
    void SetDirection(int x_dir, int y_dir);
    void SetSpeed(int x_speed, int y_speed);
 
-   SDL_Surface* GetCurrentFrame() const;
+   int GetCurrentFrame() const;
 
 private:
    void UpdateFrame();
@@ -43,12 +46,6 @@ private:
    int mYDirection;
    int mXSpeed;
    int mYSpeed;
-
-   // TODO: Replace this with a shared_ptr<vector<Frame>>?
-   const std::vector<SDL_Surface*> mFrames;
-
-   Sprite(const Sprite&);
-   const Sprite& operator=(const Sprite&);
 };
 
 #endif // SPRITE_H

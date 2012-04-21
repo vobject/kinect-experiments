@@ -5,7 +5,7 @@
 #include "Sprite.h"
 #include "Background.h"
 #include "Player.h"
-#include "Log.h"
+#include "Utils.h"
 
 #include <algorithm>
 #include <iostream>
@@ -33,17 +33,14 @@ Logic::Logic(
 )
    : mRenderer(renderer)
    , mResCache(res)
-   , mXScreen(0)
-   , mYScreen(0)
-   , mLastBgUpdateTime(0) // TODO: Move this into Background class
+   , mXScreen(0_px)
+   , mYScreen(0_px)
 {
-   const auto bg_id = "background";
-   const auto bg_frame = mResCache->GetSpriteFrames(bg_id).at(0);
-   mBackground = std::make_shared<Background>(bg_id, bg_frame);
+   mBackground = std::make_shared<Background>(mResCache->GetBackground("background"));
    // TODO: Background must have a "buttom" coordinate.
 
    mPlayer = std::make_shared<Player>(kinect);
-   mPlayer->SetSize(128, 96);
+   mPlayer->SetSize({ 128_px, 96_px });
 
 //   srand(time(NULL));
 }
@@ -86,26 +83,18 @@ void Logic::ProcessInput(const SDL_MouseButtonEvent& ev)
 {
    if ((SDL_MOUSEBUTTONUP == ev.type) && (SDL_BUTTON_LEFT == ev.button))
    {
-      const auto res_id = "blood_b";
-      const auto frames = mResCache->GetSpriteFrames(res_id);
-
-      auto obj = std::make_shared<Sprite>(res_id, frames, true);
-      obj->SetSize(200, 200);
-      obj->SetPos(ev.x - (obj->GetXRes() / 2), ev.y - (obj->GetYRes() / 2));
-      obj->SetZOrder(ZOrder::zo_Layer_3);
+      auto obj = std::make_shared<Sprite>(mResCache->GetSprite("blood_b"), true);
+      obj->SetSize({ 200_px, 200_px });
+      obj->SetPosition({ ev.x - (obj->GetSize().Width / 2), ev.y - (obj->GetSize().Height / 2) });
       obj->SetDirection(-1, 1);
       obj->SetSpeed(3, 2);
       mSprites.push_back(obj);
    }
    else if ((SDL_MOUSEBUTTONUP == ev.type) && (SDL_BUTTON_RIGHT == ev.button))
    {
-      const auto res_id = "arcanister";
-      const auto frames = mResCache->GetSpriteFrames(res_id);
-
-      auto obj = std::make_shared<Sprite>(res_id, frames);
-      obj->SetSize(60, 60);
-      obj->SetPos(ev.x - (obj->GetXRes() / 2), ev.y - (obj->GetYRes() / 2));
-      obj->SetZOrder(ZOrder::zo_Layer_2);
+      auto obj = std::make_shared<Sprite>(mResCache->GetSprite("arcanister"));
+      obj->SetSize({ 60_px, 60_px });
+      obj->SetPosition({ ev.x - (obj->GetSize().Width / 2), ev.y - (obj->GetSize().Height / 2) });
       obj->SetDirection(-1, 0);
       obj->SetSpeed(2, 2);
       mSprites.push_back(obj);
@@ -158,18 +147,14 @@ void Logic::SetScreenSize(const int x_res, const int y_res)
    mXScreen = x_res;
    mYScreen = y_res;
 
-   mBackground->SetScreenSize(mXScreen, mYScreen);
+   mBackground->SetScreenResolution(mXScreen, mYScreen);
 
-   mPlayer->SetPos((mXScreen / 2) - (mPlayer->GetXRes() / 2),
-                   (mYScreen / 2) + (mPlayer->GetYRes() / 2) + 130);
+   mPlayer->SetPosition({ (mXScreen / 2) - (mPlayer->GetSize().Width / 2),
+                          (mYScreen / 2) + (mPlayer->GetSize().Height / 2) });
 }
 
 void Logic::UpdateBackground(const int game_time, const int elapsed_time)
 {
-   if ((game_time - mLastBgUpdateTime) < BACKGROUND_UPDATE_DELTA) {
-      return;
-   }
-
    if (!mPlayer->IsVisible()) {
       return;
    }
@@ -192,7 +177,6 @@ void Logic::UpdateBackground(const int game_time, const int elapsed_time)
 //   }
 
    mBackground->Update(elapsed_time);
-   mLastBgUpdateTime = game_time;
 }
 
 void Logic::UpdatePlayer(const int game_time, const int elapsed_time)

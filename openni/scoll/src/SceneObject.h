@@ -1,6 +1,8 @@
 #ifndef SCENE_OBJECT_H
 #define SCENE_OBJECT_H
 
+#include "Utils.h"
+
 #include <string>
 
 enum class ZOrder
@@ -25,13 +27,11 @@ public:
 
    std::string GetResourceId() const;
 
-   int GetXPos() const;
-   int GetYPos() const;
-   void SetPos(int x_pos, int y_pos);
+   Point GetPosition() const;
+   void SetPosition(const Point& pos);
 
-   int GetXRes() const;
-   int GetYRes() const;
-   void SetSize(int x_res, int y_res);
+   Size GetSize() const;
+   void SetSize(const Size& size);
 
    ZOrder GetZOrder() const;
    void SetZOrder(ZOrder order);
@@ -51,10 +51,8 @@ protected:
 
 private:
    std::string mResource;
-   int mXPos;
-   int mYPos;
-   int mWidth;
-   int mHeight;
+   Point mPos;
+   Size mSize;
    ZOrder mZOrder;
    bool mIsVisible;
    bool mIsAlive;

@@ -5,7 +5,7 @@
 #include "Sprite.h"
 #include "Background.h"
 #include "Player.h"
-#include "Log.h"
+#include "Utils.h"
 
 #include <SDL.h>
 #include <SDL_rotozoom.h>
@@ -46,10 +46,16 @@ void Renderer::Render(const std::shared_ptr<Background>& bg)
       return;
    }
 
-   SDL_Rect rect = { (Sint16)bg->GetXPos(), (Sint16)bg->GetYPos(),
-                     (Uint16)bg->GetXRes(), (Uint16)bg->GetYRes() };
+   SDL_Rect rect = { (Sint16)bg->GetPosition().X, (Sint16)bg->GetPosition().Y,
+                     (Uint16)bg->GetSize().Width, (Uint16)bg->GetSize().Height };
 
-   SDL_BlitSurface(bg->GetFrame(), NULL, mWindow->mSurface, &rect);
+   const auto texture = mResCache->GetBackground(bg->GetResourceId()).GetFrame();
+   if (!texture) {
+      throw "No texture associated with background";
+   }
+
+   const auto bg_frame = (SDL_Surface*)texture->GetData();
+   SDL_BlitSurface(bg_frame, NULL, mWindow->mSurface, &rect);
 }
 
 void Renderer::Render(const std::shared_ptr<Player>& player)
@@ -61,17 +67,17 @@ void Renderer::Render(const std::shared_ptr<Player>& player)
    }
 
    const auto orig_frame = player->GetFrame();
-   const double x_zoom = static_cast<double>(player->GetXRes()) / orig_frame->w;
-   const double y_zoom = static_cast<double>(player->GetYRes()) / orig_frame->h;
-   SDL_Surface* zoomed_frame = zoomSurface(orig_frame, x_zoom, y_zoom, 0);
+   const double x_zoom = static_cast<double>(player->GetSize().Width) / orig_frame->GetSize().Width;
+   const double y_zoom = static_cast<double>(player->GetSize().Height) / orig_frame->GetSize().Height;
+   SDL_Surface* zoomed_frame = zoomSurface(static_cast<SDL_Surface*>(orig_frame->GetData()), x_zoom, y_zoom, 0);
 
    const Uint32 colorkey = SDL_MapRGB(zoomed_frame->format, 0, 0, 0);
    if (SDL_SetColorKey(zoomed_frame, SDL_RLEACCEL | SDL_SRCCOLORKEY, colorkey)) {
       throw "SDL_SetColorKey failed";
    }
 
-   SDL_Rect rect = { (Sint16)player->GetXPos(), (Sint16)player->GetYPos(),
-                     (Uint16)player->GetXRes(), (Uint16)player->GetYRes() };
+   SDL_Rect rect = { (Sint16)player->GetPosition().X, (Sint16)player->GetPosition().Y,
+                     (Uint16)player->GetSize().Width, (Uint16)player->GetSize().Height };
    SDL_BlitSurface(zoomed_frame, NULL, mWindow->mSurface, &rect);
 
 
@@ -117,8 +123,8 @@ void Renderer::Render(const std::list<std::shared_ptr<Sprite>>& objects)
 
       if (res_id == "Rectangle")
       {
-         SDL_Rect rect = { (Sint16)obj->GetXPos(), (Sint16)obj->GetYPos(),
-                           (Uint16)obj->GetXRes(), (Uint16)obj->GetYRes() };
+         SDL_Rect rect = { (Sint16)obj->GetPosition().X, (Sint16)obj->GetPosition().Y,
+                           (Uint16)obj->GetSize().Width, (Uint16)obj->GetSize().Height };
          SDL_FillRect(mWindow->mSurface, &rect, 0xff55ff);
       }
       else
@@ -130,9 +136,14 @@ void Renderer::Render(const std::list<std::shared_ptr<Sprite>>& objects)
 
 void Renderer::RenderSprite(const std::shared_ptr<Sprite>& obj) const
 {
-   const auto frame = obj->GetCurrentFrame();
-   SDL_Rect rect = { (Sint16)obj->GetXPos(), (Sint16)obj->GetYPos(),
-                     (Uint16)obj->GetXRes(), (Uint16)obj->GetYRes() };
+   SDL_Rect rect = { (Sint16)obj->GetPosition().X, (Sint16)obj->GetPosition().Y,
+                     (Uint16)obj->GetSize().Width, (Uint16)obj->GetSize().Height };
+   const auto texture = mResCache->GetSprite(obj->GetResourceId()).GetFrame(obj->GetCurrentFrame());
+   if (!texture) {
+      throw "No texture associated with background";
+   }
+
+   const auto frame = (SDL_Surface*)texture->GetData();
 
    const double x_zoom = static_cast<double>(rect.w) / frame->w;
    const double y_zoom = static_cast<double>(rect.h) / frame->h;

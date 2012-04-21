@@ -1,10 +1,8 @@
 #include "SceneObject.h"
 
 SceneObject::SceneObject()
-   : mXPos(0)
-   , mYPos(0)
-   , mWidth(0)
-   , mHeight(0)
+   : mPos(0, 0)
+   , mSize(0, 0)
    , mZOrder(ZOrder::zo_Layer_1)
    , mIsVisible(true)
    , mIsAlive(true)
@@ -32,36 +30,24 @@ void SceneObject::SetResourceId(const std::string& resource)
    mResource = resource;
 }
 
-int SceneObject::GetXPos() const
+Point SceneObject::GetPosition() const
 {
-   return mXPos;
+   return mPos;
 }
 
-int SceneObject::GetYPos() const
+void SceneObject::SetPosition(const Point& pos)
 {
-   return mYPos;
+   mPos = pos;
 }
 
-void SceneObject::SetPos(const int x_pos, const int y_pos)
+Size SceneObject::GetSize() const
 {
-   mXPos = x_pos;
-   mYPos = y_pos;
+   return mSize;
 }
 
-int SceneObject::GetXRes() const
+void SceneObject::SetSize(const Size& size)
 {
-   return mWidth;
-}
-
-int SceneObject::GetYRes() const
-{
-   return mHeight;
-}
-
-void SceneObject::SetSize(const int width, const int height)
-{
-   mWidth = width;
-   mHeight = height;
+   mSize = size;
 }
 
 ZOrder SceneObject::GetZOrder() const

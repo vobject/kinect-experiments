@@ -1,24 +1,26 @@
 #include "Sprite.h"
+#include "SpriteResource.h"
+#include "Utils.h"
 
 Sprite::Sprite(
-   const std::string& id,
-   const std::vector<SDL_Surface*>& frames /*=std::vector<SDL_Surface*>()*/,
+   const SpriteResource& res,
    const bool looping /*=false*/
 )
    : mIsLooping(looping)
-   , mMsPerFrame(60)
-   , mMsPerPosUpdate(30)
+   , mMsPerFrame(60) // TODO: Move this info into the resource
+   , mMsPerPosUpdate(30) // TODO: Move this info into the resource
    , mElapsedFrameTime(0)
    , mElapsedPosTime(0)
-   , mFrameCount(frames.size() ? frames.size() : 1)
+   , mFrameCount(res.GetFrameCount())
    , mCurrentFrame(0)
    , mXDirection(0)
    , mYDirection(0)
    , mXSpeed(0)
    , mYSpeed(0)
-   , mFrames(frames)
 {
-   SetResourceId(id);
+   SetResourceId(res.GetId());
+   SetSize(res.GetSize());
+   SetZOrder(ZOrder::zo_Layer_2);
 }
 
 Sprite::~Sprite()
@@ -61,9 +63,9 @@ void Sprite::SetSpeed(const int x_speed, const int y_speed)
    mYSpeed = y_speed;
 }
 
-SDL_Surface* Sprite::GetCurrentFrame() const
+int Sprite::GetCurrentFrame() const
 {
-   return mFrames.at(mCurrentFrame);
+   return mCurrentFrame;
 }
 
 void Sprite::UpdateFrame()
@@ -96,8 +98,8 @@ void Sprite::UpdatePosition()
       const int adv_cnt = mElapsedPosTime / mMsPerPosUpdate;
       mElapsedPosTime -= (adv_cnt * mMsPerPosUpdate);
 
-      SetPos(GetXPos() + (mXDirection * mXSpeed * adv_cnt),
-             GetYPos() + (mYDirection * mYSpeed * adv_cnt));
+      SetPosition({ GetPosition().X + (mXDirection * mXSpeed * adv_cnt),
+                    GetPosition().Y + (mYDirection * mYSpeed * adv_cnt) });
    }
 }
 

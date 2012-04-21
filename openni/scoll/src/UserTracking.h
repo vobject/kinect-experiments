@@ -14,13 +14,12 @@ class Kinect;
 // A pointer to this struct is passed as the "cookie" argument to the CB functions.
 struct UserTrackerCallbackArgs
 {
-   UserTrackerCallbackArgs() : user_gen(NULL) { }
+   constexpr UserTrackerCallbackArgs() : user_gen(nullptr) { }
+
+   UserTrackerCallbackArgs(const UserTrackerCallbackArgs&) = delete;
+   UserTrackerCallbackArgs& operator=(const UserTrackerCallbackArgs&) = delete;
 
    xn::UserGenerator* user_gen;
-
-private:
-   UserTrackerCallbackArgs(const UserTrackerCallbackArgs&);
-   UserTrackerCallbackArgs& operator=(const UserTrackerCallbackArgs&);
 };
 
 class UserTracking
@@ -28,6 +27,9 @@ class UserTracking
 public:
    UserTracking();
    ~UserTracking();
+
+   UserTracking(const UserTracking&) = delete;
+   UserTracking& operator=(const UserTracking&) = delete;
 
    void Init(xn::Context& ctx);
    std::vector<UserData> GetUsers(const xn::DepthGenerator& gen) const;
@@ -44,10 +46,6 @@ private:
    XnCallbackHandle mCalibEndCB;
 
    UserTrackerCallbackArgs mCallbackArgs;
-
-   // Stuff we do not need atm.
-   UserTracking(const UserTracking&);
-   const UserTracking& operator=(const UserTracking&);
 };
 
 #endif // USER_TRACKING_H

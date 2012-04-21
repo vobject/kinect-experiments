@@ -1,5 +1,6 @@
 #include "ResourceCache.h"
-#include "Log.h"
+#include "Kinect.h"
+#include "Utils.h"
 
 #include <SDL.h>
 #include <SDL_image.h>
@@ -17,7 +18,9 @@ ResourceCache::ResourceCache()
    // FIXME:
 //   Load("res/background/smw.jpg", "smw");
 //   Load("res/background/2zxr32b.png", "smw");
-   LoadSprite({mResDir + "/sprite/aaa2.jpg"}, "background");
+
+   LoadBackground(mResDir + "/sprite/aaa2.jpg", "background");
+
    LoadSprite({mResDir + "/sprite/explode1.jpg"}, "arcanister");
    LoadSprite({mResDir + "/sprite/blood_b/1.png",
                mResDir + "/sprite/blood_b/2.png",
@@ -25,6 +28,7 @@ ResourceCache::ResourceCache()
                mResDir + "/sprite/blood_b/4.png",
                mResDir + "/sprite/blood_b/5.png",
                mResDir + "/sprite/blood_b/6.png",}, "blood_b");
+
 }
 
 ResourceCache::~ResourceCache()
@@ -61,34 +65,51 @@ ResourceCache::~ResourceCache()
 //   }
 //}
 
-std::vector<SDL_Surface*> ResourceCache::GetSpriteFrames(const std::string& id)
+BackgroundResource ResourceCache::GetBackground(const std::string& id)
 {
-   return mSpriteFrames[id];
+   return mBackgrounds[id];
+}
+
+SpriteResource ResourceCache::GetSprite(const std::string& id)
+{
+   return mSprites[id];
+}
+
+//Texture ResourceCache::GetPlayer(const Kinect& kinect)
+//{
+//
+//}
+
+void ResourceCache::LoadBackground(const std::string& file, const std::string& id)
+{
+   mBackgrounds[id] = { id, LoadTexture(file) };
 }
 
 void ResourceCache::LoadSprite(const std::vector<std::string>& files, const std::string& id)
 {
-   std::vector<SDL_Surface*> frames;
+   std::vector<std::shared_ptr<Texture>> textures;
 
    for (const auto& file : files)
    {
-      SDL_Surface* img_loaded = IMG_Load(file.c_str());
-      if (!img_loaded) {
-         throw "Failed to load animation frame";
-      }
-
-      SDL_Surface* img_compat = SDL_DisplayFormat(img_loaded);
-      if (!img_compat) {
-         throw "Failed to convert animation frame to display format";
-      }
-      SDL_FreeSurface(img_loaded);
-      img_loaded = nullptr;
-
-//      const Uint32 colorkey = SDL_MapRGB(img_compat->format, 0, 0, 0);
-//      SDL_SetColorKey(img_compat, SDL_RLEACCEL | SDL_SRCCOLORKEY, colorkey);
-
-      frames.push_back(img_compat);
+      textures.push_back(LoadTexture(file));
    }
 
-   mSpriteFrames[id] = frames;
+   mSprites[id] = { id, textures };
+}
+
+std::shared_ptr<Texture> ResourceCache::LoadTexture(const std::string& file) const
+{
+   SDL_Surface* img_loaded = IMG_Load(file.c_str());
+   if (!img_loaded) {
+      throw "Failed to load background frame";
+   }
+
+   SDL_Surface* img_compat = SDL_DisplayFormat(img_loaded);
+   if (!img_compat) {
+      throw "Failed to convert animation frame to display format";
+   }
+   SDL_FreeSurface(img_loaded);
+   img_loaded = nullptr;
+
+   return std::make_shared<Texture>(img_compat);
 }

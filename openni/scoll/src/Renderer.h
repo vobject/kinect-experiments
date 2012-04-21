@@ -4,6 +4,8 @@
 #include <memory>
 #include <list>
 
+class SDL_Surface;
+
 class Kinect;
 class SdlWindow;
 class ResourceCache;
@@ -18,6 +20,9 @@ public:
             const std::shared_ptr<ResourceCache>& res);
    virtual ~Renderer();
 
+   Renderer(const Renderer&) = delete;
+   Renderer& operator=(const Renderer&) = delete;
+
    virtual void PreRender();
    virtual void PostRender();
    virtual void Render(const std::shared_ptr<Background>& bg);
@@ -30,9 +35,6 @@ private:
 
    std::shared_ptr<SdlWindow> mWindow;
    std::shared_ptr<ResourceCache> mResCache;
-
-   Renderer(const Renderer&);
-   const Renderer& operator=(const Renderer&);
 };
 
 #endif // RENDERER_H

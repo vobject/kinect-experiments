@@ -20,7 +20,7 @@ void Kinect::Init()
    mContext.StartGeneratingAll();
 }
 
-void Kinect::InitPlayback( const std::string& file )
+void Kinect::InitPlayback(const std::string& file)
 {
    // Check if the given filepath is accessible.
    if ((-1 == access(file.c_str(), 0))) {
@@ -33,7 +33,7 @@ void Kinect::InitPlayback( const std::string& file )
    mContext.StartGeneratingAll();
 }
 
-void Kinect::InitOpenNI( const std::string& file )
+void Kinect::InitOpenNI(const std::string& file)
 {
    // TODO: Better (real!) error handling for OpenNI API failures.
 
@@ -83,11 +83,11 @@ void Kinect::NextFrame()
    // Read a new frame from the recording.
    const auto rc = mContext.WaitNoneUpdateAll();
    if (XN_STATUS_OK != rc) {
-      throw "xn::Context::WaitAnyUpdateAll() failed";
+      throw "xn::Context::WaitNoneUpdateAll() failed";
    }
 }
 
-void Kinect::SeekForward( const int frames /*= 100*/ )
+void Kinect::SeekForward(const int frames /*= 100*/)
 {
    if (mPlaybackMode)
    {
@@ -95,7 +95,7 @@ void Kinect::SeekForward( const int frames /*= 100*/ )
    }
 }
 
-void Kinect::SeekBackward( const int frames /*= -100*/ )
+void Kinect::SeekBackward(const int frames /*= -100*/)
 {
    if (mPlaybackMode)
    {

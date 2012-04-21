@@ -3,6 +3,8 @@
 
 #include "Kinect.h"
 
+#include <array>
+
 // Callback functions for xn::UserGenerator class.
 void XN_CALLBACK_TYPE UserFoundCB(xn::UserGenerator& gen, XnUserID id, void* cookie);
 void XN_CALLBACK_TYPE UserLostCB(xn::UserGenerator& gen, XnUserID id, void* cookie);
@@ -52,8 +54,8 @@ void UserTracking::Init(xn::Context& ctx)
 
 std::vector<UserData> UserTracking::GetUsers(const xn::DepthGenerator& gen) const
 {
-   XnUserID userBuf[16];
    XnUInt16 userMax = 16;
+   std::array<XnUserID, 16> userBuf;
 
    if (userMax < mUserGen.GetNumberOfUsers()) {
       LOG(logWARNING) << mUserGen.GetNumberOfUsers() << " users detected"
@@ -61,7 +63,7 @@ std::vector<UserData> UserTracking::GetUsers(const xn::DepthGenerator& gen) cons
    }
 
    std::vector<UserData> users;
-   mUserGen.GetUsers(userBuf, userMax);
+   mUserGen.GetUsers(userBuf.data(), userMax);
 
    for (XnUInt16 id = 0; userMax >= id; id++)
    {

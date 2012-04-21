@@ -21,6 +21,9 @@ public:
          const std::shared_ptr<Kinect>& kinect);
    virtual ~Logic();
 
+   Logic(const Logic&) = delete;
+   Logic& operator=(const Logic&) = delete;
+
    virtual void ProcessInput(const SDL_KeyboardEvent& ev);
    virtual void ProcessInput(const SDL_MouseButtonEvent& ev);
 //   virtual void ProcessInput(const Kinect& kinect);
@@ -44,11 +47,6 @@ private:
    int mXScreen;
    int mYScreen;
 
-   // In milliseconds - Determines the minimum scroll speed.
-   const int BACKGROUND_UPDATE_DELTA = 1000 / 60;
-
-   int mLastBgUpdateTime;
-
 //   ProcessManager* m_pProcessManager;
 //   LevelManager* m_pLevelManager;
 
@@ -56,9 +54,6 @@ private:
 //   ActorId m_LastActorId;
 //   GameViewList m_gameViews;
 //   ActorFactory* m_pActorFactory;
-
-   Logic(const Logic&);
-   const Logic& operator=(const Logic&);
 };
 
 #endif // LOGIC_H

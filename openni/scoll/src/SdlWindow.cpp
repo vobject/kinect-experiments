@@ -1,12 +1,13 @@
 #include "SdlWindow.h"
+#include "Utils.h"
 
 SdlWindow::SdlWindow(const int xres, const int yres, const std::string& text)
    : mXRes(xres)
    , mYRes(yres)
-   , mScreen(NULL)
-   , mSurface(NULL)
-   , mFont(NULL)
-   , mFrameTimer(NULL)
+   , mScreen(nullptr)
+   , mSurface(nullptr)
+   , mFont(nullptr)
+   , mFrameTimer(nullptr)
    , mFrameCount(0)
    , mFPS(0)
 {
@@ -54,7 +55,7 @@ SdlWindow::SdlWindow(const int xres, const int yres, const std::string& text)
    mTextColor.g = 0xff;
    mTextColor.b = 0xff;
 
-   mFrameTimer = SDL_AddTimer(1000, FrameTimerCallback, this);
+   mFrameTimer = SDL_AddTimer(1000_ms, FrameTimerCallback, this);
 }
 
 SdlWindow::~SdlWindow()
@@ -200,7 +201,7 @@ Uint32 SdlWindow::FrameTimerCallback(const Uint32 interval, void* param)
 {
    SdlWindow* obj = static_cast<SdlWindow*>(param);
 
-   obj->mFPS = (int)((obj->mFrameCount / (float)interval) * 1000);
+   obj->mFPS = (int)((obj->mFrameCount / (float)interval) * 1000_ms);
    obj->mFrameCount = 0;
    return interval;
 }

@@ -5,28 +5,25 @@
 Player::Player(const std::shared_ptr<Kinect>& kinect)
    : mKinect(kinect)
    , mUserData(UserData::INVALID_USER_ID)
-   , mFrame(nullptr)
 {
-   SetResourceId("actor");
-   SetPos(0, 0);
-   SetSize(mKinect->GetXRes(), mKinect->GetYRes());
+   SetResourceId("player");
+   SetPosition({ 0, 0 });
+   SetSize({ mKinect->GetXRes(), mKinect->GetYRes() });
    SetZOrder(ZOrder::zo_Layer_2);
    SetVisible(false);
 
-   mFrame = SDL_CreateRGBSurface(SDL_SWSURFACE,
-                                 GetXRes(), GetYRes(),
-                                 32, 0, 0, 0, 0);
-   if (!mFrame) {
+   mTexture = std::make_shared<Texture>(SDL_CreateRGBSurface(SDL_SWSURFACE,
+                                                             GetSize().Width,
+                                                             GetSize().Height,
+                                                             32, 0, 0, 0, 0));
+   if (!mTexture->GetData()) {
       throw "SDL_CreateRGBSurface() failed.";
    }
 }
 
 Player::~Player()
 {
-   if (mFrame)
-   {
-      SDL_FreeSurface(mFrame);
-   }
+
 }
 
 void Player::Update(const int elapsed_time)
@@ -81,19 +78,20 @@ int Player::GetYCenter()
    return mUserData.GetRealWorldJoints()[XN_SKEL_TORSO].Y;
 }
 
-SDL_Surface* Player::GetFrame() const
+std::shared_ptr<Texture> Player::GetFrame() const
 {
-   SDL_FillRect(mFrame, NULL, 0);
+   SDL_Surface* frame = static_cast<SDL_Surface*>(mTexture->GetData());
+   SDL_FillRect(frame, NULL, 0);
 
    if (!IsVisible()) {
-      return mFrame;
+      return mTexture;
    }
 
    const auto scene_meta = mKinect->GetUserPixels(mUserData);
 
-   SDL_LockSurface(mFrame);
-   char* screen_buf = static_cast<char*>(mFrame->pixels);
-   const int bytes_per_pixel = mFrame->format->BytesPerPixel;
+   SDL_LockSurface(frame);
+   char* screen_buf = static_cast<char*>(frame->pixels);
+   const int bytes_per_pixel = frame->format->BytesPerPixel;
 
    const XnRGB24Pixel* rgb_buf = mKinect->GetImageData();
    const XnLabel* label_buf = scene_meta->Data();
@@ -110,13 +108,13 @@ SDL_Surface* Player::GetFrame() const
          screen_buf[i * bytes_per_pixel + 2] = rgb_buf->nRed;
       }
    }
-   SDL_UnlockSurface(mFrame);
+   SDL_UnlockSurface(frame);
 
-   return mFrame;
+   return mTexture;
 }
 
 bool Player::IsUserDataValid(const UserData& user) const
 {
    auto joints = user.GetRealWorldJoints();
-   return (joints[XN_SKEL_TORSO].X && joints[XN_SKEL_TORSO].Y) ? true : false;
+   return (joints[XN_SKEL_TORSO].X && joints[XN_SKEL_TORSO].Y);
 }

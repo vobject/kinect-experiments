@@ -4,7 +4,7 @@
 #include "Renderer.h"
 #include "Logic.h"
 #include "Kinect.h"
-#include "Log.h"
+#include "Utils.h"
 
 #include <SDL.h>
 
@@ -33,7 +33,7 @@ void KinectApp::Initialize(const std::string& path)
    mKinect->Init();
 
    // This has to go first to set the display format.
-   mWindow = std::make_shared<SdlWindow>(1024, 768, "scroll");
+   mWindow = std::make_shared<SdlWindow>(1024_px, 768_px, "scroll");
    mResCache = std::make_shared<ResourceCache>();
    mRenderer = std::make_shared<Renderer>(mWindow, mResCache);
    mLogic = std::make_shared<Logic>(mRenderer, mResCache, mKinect);
@@ -70,8 +70,6 @@ void KinectApp::UpdateScene(const int game_time, const int elapsed_time)
 
    // Poll for kinect input on every update cycle.
    mKinect->NextFrame();
-//   mLogic->ProcessInput(*mKinect);
-
    mLogic->Update(game_time, elapsed_time);
 }
 

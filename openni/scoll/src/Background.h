@@ -7,28 +7,32 @@
 
 #include <string>
 
+class BackgroundResource;
+
 class Background : public SceneObject
 {
 public:
-   Background(const std::string& id, SDL_Surface* frame);
+   Background(const BackgroundResource& res);
    virtual ~Background();
 
-   virtual void Update(int elapsed_time);
+   Background(const Background&) = delete;
+   Background& operator=(const Background&) = delete;
 
-   void SetScreenSize(int x_res, int y_res);
+   void Update(int elapsed_time) override;
+
+   void SetScreenResolution(int x_res, int y_res);
 
    void ScrollLeft(int speed);
    void ScrollRight(int speed);
 
-   SDL_Surface* GetFrame() const;
-
 private:
    int mXScreen;
    int mYScreen;
-   SDL_Surface* mFrame;
 
-   Background(const Background&);
-   const Background& operator=(const Background&);
+//   // In milliseconds - Determines the minimum scroll speed.
+//   const int BACKGROUND_UPDATE_DELTA = 1000 / 60;
+//
+//   int mLastBgUpdateTime;
 };
 
 #endif // BACKGROUND_H

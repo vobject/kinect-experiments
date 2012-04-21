@@ -18,6 +18,9 @@ public:
    KinectApp();
    virtual ~KinectApp();
 
+   KinectApp(const KinectApp&) = delete;
+   KinectApp& operator=(const KinectApp&) = delete;
+
    void Start(const std::string& path);
 
 protected:
@@ -44,9 +47,6 @@ private:
 //   ALLEGRO_EVENT_QUEUE* mEventQueue;
 //   ALLEGRO_TIMER* mFpsTimer;
 //   Kinect mKinect;
-
-   KinectApp(const KinectApp&);
-   const KinectApp& operator=(const KinectApp&);
 };
 
 #endif // KINENOID_APP_H
