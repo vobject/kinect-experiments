@@ -1,7 +1,7 @@
 #include "VlcPlayer.h"
 #include "SdlWindow.h"
 
-VlcPlayer::VlcPlayer(const SdlWindow& wnd, const std::string& video_path)
+VlcPlayer::VlcPlayer(const SdlWindow& wnd, const std::string& vlc_plugins_dir, const std::string& video_path)
    : mWindow(wnd)
    , mVideoPath(video_path)
    , mSurface(NULL)
@@ -26,7 +26,7 @@ VlcPlayer::VlcPlayer(const SdlWindow& wnd, const std::string& video_path)
    {
 //        "--no-audio", // skip any audio track
 //        "--no-xlib", // tell VLC to not use Xlib
-      "--plugin-path", "D:\\Development\\Projects\\kinect\\external\\vlc-1.1.11\\plugins",
+      "--plugin-path", vlc_plugins_dir.c_str(), // FIXME
    };
    const int vlc_argc = sizeof(vlc_argv) / sizeof(*vlc_argv);
 

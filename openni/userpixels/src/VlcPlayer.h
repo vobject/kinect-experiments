@@ -13,7 +13,7 @@ class SdlWindow;
 class VlcPlayer
 {
 public:
-   VlcPlayer(const SdlWindow& wnd, const std::string& video_path);
+   VlcPlayer(const SdlWindow& wnd, const std::string& vlc_plugins_dir, const std::string& video_path);
    ~VlcPlayer();
 
    void Blit() const;

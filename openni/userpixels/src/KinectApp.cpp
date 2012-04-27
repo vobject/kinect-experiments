@@ -9,7 +9,6 @@
 #include "FpsDrawer.h"
 
 #include <SDL.h>
-#include <SDL_image.h>
 
 #include <iostream>
 
@@ -51,7 +50,9 @@ void KinectApp::EventLoop()
 
    SdlWindow wnd(mKinect.GetXRes(), mKinect.GetYRes());
 
-   VlcPlayer video_player(wnd, "screen://");
+   // FIXME: Stupid VLC does not seem to like forward slashed in its
+   //  plugin path on windows.
+   VlcPlayer video_player(wnd, "..\\..\\..\\..\\external\\vlc-1.1.11\\plugins", "screen://");
    VlcRemote video_remote(&mKinect, wnd, video_player);
 
    // Several observers.
