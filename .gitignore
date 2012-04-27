@@ -1,3 +1,4 @@
+demos/
 openni/userpixels/bin/
 openni/userpixels/x86-Debug/
 openni/userpixels/x86-Release/
@@ -13,6 +14,7 @@ openni/sprites/x64-Release/
 openni/sprites/Win32Debug/
 openni/sprites/Win32Release/
 *.ipch
+*.opensdf
 *.sdf
 *.sln
 *.suo
