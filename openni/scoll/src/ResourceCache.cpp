@@ -101,7 +101,7 @@ std::shared_ptr<Texture> ResourceCache::LoadTexture(const std::string& file) con
 {
    SDL_Surface* img_loaded = IMG_Load(file.c_str());
    if (!img_loaded) {
-      throw "Failed to load background frame";
+      throw "Failed to load texture";
    }
 
    SDL_Surface* img_compat = SDL_DisplayFormat(img_loaded);
