@@ -40,9 +40,9 @@ Logic::Logic(
    // TODO: Background must have a "buttom" coordinate.
 
    mPlayer = std::make_shared<Player>(kinect);
-   mPlayer->SetSize({ 128_px, 96_px });
+   mPlayer->SetSize({ 320_px, 400_px });
 
-//   srand(time(NULL));
+   srand(time(NULL));
 }
 
 Logic::~Logic()
@@ -118,16 +118,14 @@ void Logic::Update(const int game_time, const int elapsed_time)
    UpdatePlayer(game_time, elapsed_time);
    UpdateEnemies(game_time, elapsed_time);
 
-//   if(rand() % 2000 == 0)
+//   if(rand() % 1000 == 0)
 //   {
-//      auto obj = std::make_shared<Sprite>();
-//      obj->SetResourceId("Rectangle");
-//      obj->SetSize(50, 50);
-//      obj->SetPos(rand() % ((mXScreen / 2) - (mXScreen + 2)), rand() % (mYScreen - 60));
-//      obj->SetZOrder(zo_Layer_3);
+//      auto obj = std::make_shared<Sprite>(mResCache->GetSprite("arcanister"));
+//      obj->SetSize({ 50_px, 50_px });
+//      obj->SetPosition({ rand() % mXScreen, rand() % mYScreen });
 //      obj->SetDirection(-1, 0);
 //      obj->SetSpeed(2, 2);
-//      mSceneObjects.push_back(obj);
+//      mSprites.push_back(obj);
 //   }
 }
 
@@ -149,8 +147,9 @@ void Logic::SetScreenSize(const int x_res, const int y_res)
 
    mBackground->SetScreenResolution(mXScreen, mYScreen);
 
-   mPlayer->SetPosition({ (mXScreen / 2) - (mPlayer->GetSize().Width / 2),
-                          (mYScreen / 2) + (mPlayer->GetSize().Height / 2) });
+//   mPlayer->SetPosition({ (mXScreen / 2) - (mPlayer->GetSize().Width / 2),
+//                          (mYScreen / 2) + (mPlayer->GetSize().Height / 2) });
+   mPlayer->SetPosition({ 0, 0 });
 }
 
 void Logic::UpdateBackground(const int game_time, const int elapsed_time)
