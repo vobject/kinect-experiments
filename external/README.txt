@@ -9,6 +9,10 @@ msinttypes:
 - http://code.google.com/p/msinttypes/
 - http://msinttypes.googlecode.com/files/msinttypes-r26.zip
 
+SDL_image-1.2.12:
+- http://www.libsdl.org/projects/SDL_image/
+- http://www.libsdl.org/projects/SDL_image/release/SDL_image-devel-1.2.12-VC.zip
+
 SDL_ttf-2.0.11:
 - http://www.libsdl.org/projects/SDL_ttf/
 - http://www.libsdl.org/projects/SDL_ttf/release/SDL_ttf-devel-2.0.11-VC.zip

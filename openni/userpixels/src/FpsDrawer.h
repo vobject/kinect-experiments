@@ -4,7 +4,7 @@
 #include "Observer.h"
 #include "KinectWrapper.h"
 
-#include <SDL/SDL.h>
+#include <SDL.h>
 
 #include <sstream>
 
