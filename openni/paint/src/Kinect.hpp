@@ -36,6 +36,9 @@ public:
    std::vector<UserData> GetUsers() const;
    std::shared_ptr<xn::SceneMetaData> GetUserPixels(const UserData& user) const;
 
+   // TODO:
+   //  OnGesture(GESTURE, callback);
+
 private:
    void InitOpenNI(const std::string& file);
 

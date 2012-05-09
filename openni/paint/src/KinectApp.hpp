@@ -6,9 +6,9 @@
 #include <vector>
 #include <list>
 
+class Window;
 class Kinect;
 class KinectBackground;
-class SdlWindow;
 class Point;
 
 struct Status
@@ -42,9 +42,9 @@ protected:
 private:
    bool mQuitRequested = false;
    bool mKinectConnected = false;
+   std::shared_ptr<Window> mWindow;
    std::shared_ptr<Kinect> mKinect;
-   std::shared_ptr<KinectBackground> mKinectBackground;
-   std::shared_ptr<SdlWindow> mWindow;
+   std::shared_ptr<KinectBackground> mKinectBg;
    Status mState;
 };
 

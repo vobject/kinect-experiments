@@ -1,23 +1,24 @@
-#ifndef SDL_WINDOW_HPP
-#define SDL_WINDOW_HPP
+#ifndef GL_WINDOW_HPP
+#define GL_WINDOW_HPP
 
 #include "Window.hpp"
+#include "GlFont.hpp"
 #include "Utils.hpp"
 
 #include <SDL.h>
-#include <SDL_ttf.h>
 
+#include <memory>
 #include <string>
 #include <sstream>
 
-class SdlWindow : public Window
+class GlWindow : public Window
 {
 public:
-   SdlWindow(const Size& res, const std::string& text);
-   virtual ~SdlWindow();
+   GlWindow(const Size& res, const std::string& text);
+   virtual ~GlWindow();
 
-   SdlWindow(const SdlWindow&) = delete;
-   SdlWindow& operator=(const SdlWindow&) = delete;
+   GlWindow(const GlWindow&) = delete;
+   GlWindow& operator=(const GlWindow&) = delete;
 
    void Blit(const void* data, const Size& data_size, const Point& dest) override;
    void Clear() override;
@@ -30,18 +31,14 @@ public:
 private:
    static Uint32 FrameTimerCallback(Uint32 interval, void *param);
 
-   void DrawPixel(int x, int y);
+//   void DrawPixel(int x, int y, unsigned int color = 0xffffffff);
 
-   SDL_Surface* mScreen;
-   SDL_Surface* mSurface;
-
-   TTF_Font* mFont;
-
-   SDL_TimerID mFrameTimer;
-   mutable int mFrameCount;
-   int mFPS;
-   SDL_Color mTextColor;
+   SDL_Surface* mScreen = nullptr;
+   SDL_TimerID mFrameTimer = nullptr;
+   int mFrameCount = 0;
+   int mFPS = 0;
    std::ostringstream mTextBuf;
+   std::unique_ptr<GlFont> mGlFont;
 };
 
-#endif // SDL_WINDOW_HPP
+#endif // GL_WINDOW_HPP

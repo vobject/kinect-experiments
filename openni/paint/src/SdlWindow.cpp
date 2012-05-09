@@ -1,7 +1,9 @@
 #include "SdlWindow.hpp"
 
+#include <iostream>
+
 SdlWindow::SdlWindow(const Size& res, const std::string& text)
-   : mRes(res)
+   : Window(res)
    , mScreen(nullptr)
    , mSurface(nullptr)
    , mFont(nullptr)
@@ -67,17 +69,16 @@ SdlWindow::~SdlWindow()
    TTF_Quit();
 }
 
-Size SdlWindow::GetSize() const
+void SdlWindow::Blit(const void* data, const Size& data_size, const Point& dest)
 {
-   return mRes;
-}
+   // HACK: haha, very funny...
+   SDL_Surface* surface = const_cast<SDL_Surface*>
+                              (static_cast<const SDL_Surface*>(data));
 
-void SdlWindow::Blit(SDL_Surface* surface, const Point& dest)
-{
    SDL_Rect rect = { static_cast<Sint16>(dest.X),
                      static_cast<Sint16>(dest.Y),
-                     surface->w,
-                     surface->h };
+                     static_cast<Uint16>(data_size.Width),
+                     static_cast<Uint16>(data_size.Height) };
    SDL_BlitSurface(surface, NULL, mSurface, &rect);
 }
 
@@ -96,7 +97,7 @@ void SdlWindow::Flip()
    mTextBuf << "Debug | ";
 #endif
    mTextBuf << mFPS << " FPS";
-   WriteText(0, 0, mTextColor, mTextBuf.str());
+   WriteText(mTextBuf.str(), { 0, 0 });
    mFrameCount++;
 
 //   SDL_Surface* tmp = zoomSurface(mSurface, 2.0, 2.0, 0);
@@ -105,24 +106,27 @@ void SdlWindow::Flip()
    SDL_Flip(mScreen);
 }
 
-void SdlWindow::DrawRect(
-   const int x_pos,
-   const int y_pos,
-   const unsigned int size,
-   const unsigned int color /* = 0xffffffff */
-)
+void SdlWindow::DrawRect(const Point& pos, const int size)
 {
-   SDL_Rect rect = { (Sint16)(x_pos - (size / 2)), (Sint16)(y_pos - (size / 2)), (Uint16)size, (Uint16)size };
+   SDL_Rect rect = { (Sint16)(pos.X - (size / 2)),
+                     (Sint16)(pos.Y - (size / 2)),
+                     (Uint16)size,
+                     (Uint16)size };
 
-   SDL_FillRect(mSurface, &rect, color);
+   SDL_FillRect(mSurface, &rect, 0xffffffff);
 }
 
-void SdlWindow::DrawLine(int x1, int y1, int x2, int y2, unsigned int color /*= 0xffffffff*/)
+void SdlWindow::DrawLine(const Point& src_pos, const Point& dest_pos)
 {
    // based on http://alawibaba.com/projects/whiteboard/drawing-SDL.c
 
 #define SGN(x) ((x)>0 ? 1 : ((x)==0 ? 0:(-1)))
 #define ABS(x) ((x)>0 ? (x) : (-x))
+
+   int x1 = src_pos.X;
+   int y1 = src_pos.Y;
+   int x2 = dest_pos.X;
+   int y2 = dest_pos.Y;
 
    int lg_delta;
    int sh_delta;
@@ -142,7 +146,7 @@ void SdlWindow::DrawLine(int x1, int y1, int x2, int y2, unsigned int color /*= 
       cycle = lg_delta >> 1;
       while (x1 != x2)
       {
-         DrawPixel(x1, y1, color);
+         DrawPixel(x1, y1);
 
          cycle += sh_delta;
          if (cycle > lg_delta)
@@ -152,13 +156,13 @@ void SdlWindow::DrawLine(int x1, int y1, int x2, int y2, unsigned int color /*= 
          }
          x1 += lg_step;
       }
-      DrawPixel(x1, y1, color);
+      DrawPixel(x1, y1);
    }
 
    cycle = sh_delta >> 1;
    while (y1 != y2)
    {
-      DrawPixel(x1, y1, color);
+      DrawPixel(x1, y1);
 
       cycle += lg_delta;
       if (cycle > sh_delta)
@@ -168,27 +172,23 @@ void SdlWindow::DrawLine(int x1, int y1, int x2, int y2, unsigned int color /*= 
       }
       y1 += sh_step;
    }
-   DrawPixel(x1, y1, color);
+   DrawPixel(x1, y1);
 }
 
-void SdlWindow::WriteText(
-   const int x_pos,
-   const int y_pos,
-   const SDL_Color color,
-   const std::string& text
-)
+void SdlWindow::WriteText(const std::string& text, const Point& point)
 {
-   SDL_Surface* surface = TTF_RenderText_Blended(mFont, text.c_str(), color);
-   SDL_Rect rect = { (Sint16)x_pos, (Sint16)y_pos, 0, 0 };
+   SDL_Surface* surface = TTF_RenderText_Blended(mFont, text.c_str(), mTextColor);
+   SDL_Rect rect = { (Sint16)point.X, (Sint16)point.Y, 0, 0 };
 
    SDL_BlitSurface(surface, NULL, mSurface, &rect);
    SDL_FreeSurface(surface);
 }
 
-void SdlWindow::DrawPixel(int x_pos, int y_pos, unsigned int color /*= 0xffffffff*/)
+void SdlWindow::DrawPixel(const int x_pos, const int y_pos)
 {
    const size_t bpp = mSurface->format->BytesPerPixel;
    const size_t offset = (mSurface->pitch * y_pos) + (x_pos * bpp);
+   const unsigned int color = 0xffffffff;
 
    SDL_LockSurface(mSurface);
    memcpy(static_cast<char*>(mSurface->pixels) + offset, &color, bpp);
@@ -201,5 +201,8 @@ Uint32 SdlWindow::FrameTimerCallback(const Uint32 interval, void* param)
 
    obj->mFPS = (int)((obj->mFrameCount / (float)interval) * 1000_ms);
    obj->mFrameCount = 0;
+
+   LOG(logDEBUG) << "FPS: " << obj->mFPS;
+
    return interval;
 }

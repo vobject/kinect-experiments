@@ -1,4 +1,5 @@
 demos/
+workspace/
 openni/userpixels/bin/
 openni/userpixels/x86-Debug/
 openni/userpixels/x86-Release/
@@ -13,6 +14,12 @@ openni/sprites/x64-Debug/
 openni/sprites/x64-Release/
 openni/sprites/Win32Debug/
 openni/sprites/Win32Release/
+openni/scroll/bin/
+openni/scroll/x64-Debug/
+openni/scroll/x64-Release/
+openni/paint/bin/
+openni/paint/Debug/
+openni/paint/Release/
 *.ipch
 *.opensdf
 *.sdf

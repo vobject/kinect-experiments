@@ -1,15 +1,14 @@
-#include "KinectBackground.hpp"
+#include "SdlKinectBackground.hpp"
 #include "Kinect.hpp"
-#include "Utils.hpp"
 
 #include <SDL.h>
 #include <SDL_rotozoom.h>
 
-KinectBackground::KinectBackground(
+SdlKinectBackground::SdlKinectBackground(
    const std::shared_ptr<Kinect>& kinect,
    const Size& res
 )
-   : mKinect(kinect)
+   : KinectBackground(kinect)
    , mZoomRes(res)
 {
    mSurface = SDL_CreateRGBSurface(SDL_SWSURFACE,
@@ -21,7 +20,7 @@ KinectBackground::KinectBackground(
    }
 }
 
-KinectBackground::~KinectBackground()
+SdlKinectBackground::~SdlKinectBackground()
 {
    if (mZoomedSurface) {
       SDL_FreeSurface(mZoomedSurface);
@@ -29,12 +28,7 @@ KinectBackground::~KinectBackground()
    SDL_FreeSurface(mSurface);
 }
 
-void KinectBackground::SwitchMode()
-{
-   mDisplayMode = static_cast<BackgroundMode>((mDisplayMode + 1) % BACKGROUND_MODE_ITEM_COUNT);
-}
-
-SDL_Surface* KinectBackground::GetImage()
+const void* SdlKinectBackground::GetImage()
 {
    switch (mDisplayMode)
    {
@@ -51,7 +45,7 @@ SDL_Surface* KinectBackground::GetImage()
    return ZoomSurface();
 }
 
-void KinectBackground::SelectRgbImage()
+void SdlKinectBackground::SelectRgbImage()
 {
    const auto bpp = mSurface->format->BytesPerPixel;
    const auto pixel_cnt = mSurface->w * mSurface->h;
@@ -70,7 +64,7 @@ void KinectBackground::SelectRgbImage()
    SDL_UnlockSurface(mSurface);
 }
 
-void KinectBackground::SelectDepthImage()
+void SdlKinectBackground::SelectDepthImage()
 {
    const int bpp = mSurface->format->BytesPerPixel;
    const int pixel_cnt = mSurface->w * mSurface->h;
@@ -104,7 +98,7 @@ void KinectBackground::SelectDepthImage()
    SDL_UnlockSurface(mSurface);
 }
 
-SDL_Surface* KinectBackground::ZoomSurface()
+const SDL_Surface* SdlKinectBackground::ZoomSurface()
 {
    if ((mSurface->w == mZoomRes.Width) &&
        (mSurface->h == mZoomRes.Height))

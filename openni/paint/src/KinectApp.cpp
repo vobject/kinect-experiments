@@ -1,7 +1,9 @@
 #include "KinectApp.hpp"
-#include "SdlWindow.hpp"
 #include "Kinect.hpp"
-#include "KinectBackground.hpp"
+#include "GlWindow.hpp"
+#include "GlKinectBackground.hpp"
+#include "SdlWindow.hpp"
+#include "SdlKinectBackground.hpp"
 #include "Utils.hpp"
 
 #include <SDL.h>
@@ -36,16 +38,19 @@ void KinectApp::Start(const std::string& path)
 
 void KinectApp::Initialize(const std::string& path)
 {
-//   mWindow = std::make_shared<SdlWindow>(Size(640_px, 480_px), "paint");
-   mWindow = std::make_shared<SdlWindow>(Size(1024_px, 768_px), "paint");
+   mWindow = std::make_shared<GlWindow>(Size(1024_px, 768_px), "paint");
+//   mWindow = std::make_shared<SdlWindow>(Size(1024_px, 768_px), "paint");
 
    mKinect = std::make_shared<Kinect>();
-   try {
+   try
+   {
       mKinect->Init();
-      mKinectBackground = std::make_shared<KinectBackground>(mKinect, mWindow->GetSize());
+      mKinectBg = std::make_shared<GlKinectBackground>(mKinect);
+//      mKinectBg = std::make_shared<SdlKinectBackground>(mKinect, mWindow->GetSize());
       mKinectConnected = true;
    }
-   catch (...) {
+   catch (...)
+   {
       LOG(logWARNING) << "Failed to initialize a connection to Kinect.";
       mKinectConnected = false;
    }
@@ -100,8 +105,8 @@ void KinectApp::RenderScene()
 {
    if (mKinectConnected)
    {
-      const auto bg = mKinectBackground->GetImage();
-      mWindow->Blit(bg, {0, 0});
+      const auto bg = mKinectBg->GetImage();
+      mWindow->Blit(bg, mKinect->GetSize(), {0, 0});
    }
 
    for (const auto& line : mState.lines)
@@ -113,14 +118,14 @@ void KinectApp::RenderScene()
       Point previous = line.at(0);
       for (const auto& pt : line)
       {
-         mWindow->DrawLine(previous.X, previous.Y, pt.X, pt.Y);
+         mWindow->DrawLine({ previous.X, previous.Y }, { pt.X, pt.Y } );
          previous = pt;
       }
    }
 
    for (const auto& pt : mState.active_line)
    {
-      mWindow->DrawRect(pt.X, pt.Y, 6_px);
+      mWindow->DrawRect({ pt.X, pt.Y }, 6_px);
    }
 
    mWindow->Flip();
@@ -151,7 +156,7 @@ void KinectApp::ProcessInput()
                   print_commands();
                }
                else if (SDLK_b == event.key.keysym.sym && mKinectConnected) {
-                  mKinectBackground->SwitchMode();
+                  mKinectBg->SwitchMode();
                }
             }
             break;
