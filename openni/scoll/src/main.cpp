@@ -19,6 +19,4 @@ int main(int argc, char* argv[])
    {
       std::cout << "Unknown exception thrown!" << std::endl;
    }
-
-   return 0;
 }
