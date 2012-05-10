@@ -34,7 +34,7 @@ GlWindow::GlWindow(const Size& res, const std::string& text)
 //   SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS,  1);
 //   SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES,  2);
 
-   SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+//   SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
    // ...and finally create the window.
    mScreen = SDL_SetVideoMode(mRes.Width,
@@ -46,9 +46,9 @@ GlWindow::GlWindow(const Size& res, const std::string& text)
    }
    SDL_WM_SetCaption(text.c_str(), NULL);
 
-   mGlFont.reset(new GlFont("res/font/VeraMono.ttf", 16_pt, { 0xaf, 0xa0, 0xaa }));
+   mGlFont.reset(new GlFont("res/font/VeraMono.ttf", 16_pt, { 0xff, 0xff, 0xff }));
 
-   glClearColor(0, 1.0f, 0, 0);
+   glClearColor(0, 0, 0, 0);
 
    glEnable(GL_TEXTURE_2D);
 
@@ -89,7 +89,7 @@ void GlWindow::Blit(const void* data, const Size& data_size, const Point& dest)
                 1, GL_RGB, GL_UNSIGNED_BYTE, data);
 
    // Display the OpenGL texture map
-   glColor4f(1, 1, 1, 1);
+//   glColor3f(1., 1., 1.);
 
    glBegin(GL_QUADS);
       // upper left
@@ -105,11 +105,12 @@ void GlWindow::Blit(const void* data, const Size& data_size, const Point& dest)
       glTexCoord2f(0, 1);
       glVertex2f(0, mRes.Height);
    glEnd();
+   glPopMatrix();
 }
 
 void GlWindow::Clear()
 {
-   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+   glClear(GL_COLOR_BUFFER_BIT);
 }
 
 void GlWindow::Flip()
@@ -127,80 +128,31 @@ void GlWindow::Flip()
    SDL_GL_SwapBuffers();
 }
 
-//void GlWindow::DrawRect(
-//   const int x_pos,
-//   const int y_pos,
-//   const unsigned int size,
-//   const unsigned int color /* = 0xffffffff */
-//)
-//{
-////   SDL_Rect rect = { (Sint16)(x_pos - (size / 2)), (Sint16)(y_pos - (size / 2)), (Uint16)size, (Uint16)size };
-////
-////   SDL_FillRect(mSurface, &rect, color);
-//}
-
-//void GlWindow::DrawLine(int x1, int y1, int x2, int y2, unsigned int color /*= 0xffffffff*/)
-//{
-//   // based on http://alawibaba.com/projects/whiteboard/drawing-SDL.c
-//
-////#define SGN(x) ((x)>0 ? 1 : ((x)==0 ? 0:(-1)))
-////#define ABS(x) ((x)>0 ? (x) : (-x))
-////
-////   int lg_delta;
-////   int sh_delta;
-////   int cycle;
-////   int lg_step;
-////   int sh_step;
-////
-////   lg_delta = x2 - x1;
-////   sh_delta = y2 - y1;
-////   lg_step = SGN(lg_delta);
-////   lg_delta = ABS(lg_delta);
-////   sh_step = SGN(sh_delta);
-////   sh_delta = ABS(sh_delta);
-////
-////   if (sh_delta < lg_delta)
-////   {
-////      cycle = lg_delta >> 1;
-////      while (x1 != x2)
-////      {
-////         DrawPixel(x1, y1, color);
-////
-////         cycle += sh_delta;
-////         if (cycle > lg_delta)
-////         {
-////            cycle -= lg_delta;
-////            y1 += sh_step;
-////         }
-////         x1 += lg_step;
-////      }
-////      DrawPixel(x1, y1, color);
-////   }
-////
-////   cycle = sh_delta >> 1;
-////   while (y1 != y2)
-////   {
-////      DrawPixel(x1, y1, color);
-////
-////      cycle += lg_delta;
-////      if (cycle > sh_delta)
-////      {
-////         cycle -= sh_delta;
-////         x1 += lg_step;
-////      }
-////      y1 += sh_step;
-////   }
-////   DrawPixel(x1, y1, color);
-//}
-
 void GlWindow::DrawRect(const Point& pos, const int size)
 {
-
+   glPushMatrix();
+   glColor3f(1, 1, 1);
+   glBegin(GL_POLYGON);
+      glVertex2i(pos.X, pos.Y);
+      glVertex2i(pos.X + size, pos.Y);
+      glVertex2i(pos.X + size, pos.Y + size);
+      glVertex2i(pos.X, pos.Y + size);
+   glEnd();
+   glPopMatrix();
 }
 
 void GlWindow::DrawLine(const Point& src_pos, const Point& dest_pos)
 {
-
+   glPushMatrix();
+   glColor3f(1, 1, 1);
+   glLineWidth(2);
+   glBegin(GL_LINES);
+      glVertex2i(src_pos.X, src_pos.Y);
+      glVertex2i(dest_pos.X, dest_pos.Y);
+      glVertex2i(dest_pos.X, dest_pos.Y);
+      glVertex2i(0, 0);
+   glEnd();
+   glPopMatrix();
 }
 
 void GlWindow::WriteText(const std::string& text, const Point& point)

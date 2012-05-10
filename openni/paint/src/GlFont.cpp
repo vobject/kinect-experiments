@@ -7,15 +7,15 @@
 #include <SDL_image.h>
 
 /* Quick utility function for texture creation */
-static int power_of_two(const int input)
+static int power_of_two(const int n)
 {
-   int value = 1;
+   int result = 1;
 
-   while (value < input)
+   while (result < n)
    {
-      value <<= 1;
+      result <<= 1;
    }
-   return value;
+   return result;
 }
 
 static GLuint SDL_GL_LoadTexture(SDL_Surface *surface, GLfloat *texcoord)
@@ -123,60 +123,6 @@ void GlFont::Init()
       LoadChar(c);
    }
 }
-
-//void GlFont::GetTextSize(const char *text, SDL_Rect *r)
-//{
-//   int maxx = 0;
-//   int advance = 0;
-//   int w_largest = 0;
-//   char lastchar = 0;
-//
-//   r->x = 0;
-//   r->y = 0;
-//   r->w = 0;
-//   r->h = height;
-//
-//   while (*text)
-//   {
-//      if ((MIN_GLYPH <= *text) && (*text <= MAX_GLYPH))
-//      {
-//         lastchar = *text;
-//
-//         if (*text == '\n')
-//         {
-//            r->h += lineSkip;
-//            r->w = r->w - advance + maxx;
-//            if (r->w > w_largest) w_largest = r->w;
-//            r->w = 0;
-//         }
-//         else
-//         {
-////            LoadChar(*text);
-//
-//            maxx = glyphs[((int)*text)].maxx;
-//            advance = glyphs[((int)*text)].advance;
-//            r->w += advance;
-//         }
-//      }
-//
-//      text++;
-//   }
-//
-//   if (lastchar != '\n')
-//   {
-//      r->w = r->w - advance + maxx;
-//      if (r->w > w_largest) w_largest = r->w;
-//   }
-//   else
-//   {
-//      r->h -= lineSkip;
-//   }
-//
-//   if (w_largest > r->w)
-//   {
-//      r->w = w_largest;
-//   }
-//}
 
 void GlFont::DrawText(const std::string& text, int x, int y) const
 {

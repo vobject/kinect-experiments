@@ -38,7 +38,6 @@ public:
    GlFont(const std::string& name, int size, SDL_Color color);
    ~GlFont();
 
-//   void GetTextSize(const char *text, SDL_Rect *r);
    void DrawText(const std::string& text, int x, int y) const;
 
 private:
