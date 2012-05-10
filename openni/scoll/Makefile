@@ -16,7 +16,7 @@ LDFLAGS += -lOpenNI `sdl-config --libs` -lSDL_ttf -lSDL_image -lSDL_gfx -lboost_
 
 EXE_NAME = scroll
 
-CFLAGS += -Dlinux -std=c++0x
+CFLAGS += -Dlinux -std=c++11
 
 CFG = Debug
 #CFG = Release
