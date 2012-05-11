@@ -1,7 +1,7 @@
-#ifndef USER_TRACKING_H
-#define USER_TRACKING_H
+#ifndef USER_TRACKING_HPP
+#define USER_TRACKING_HPP
 
-#include "UserData.h"
+#include "UserData.hpp"
 
 #include "openni_all.h"
 
@@ -47,4 +47,4 @@ private:
    UserTrackerCallbackArgs mCallbackArgs;
 };
 
-#endif // USER_TRACKING_H
+#endif // USER_TRACKING_HPP

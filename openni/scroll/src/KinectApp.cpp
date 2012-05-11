@@ -3,7 +3,7 @@
 #include "SdlWindow.h"
 #include "Renderer.h"
 #include "Logic.h"
-#include "Kinect.h"
+#include "Kinect.hpp"
 #include "Utils.hpp"
 
 #include <SDL.h>

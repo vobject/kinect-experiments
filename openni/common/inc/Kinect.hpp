@@ -1,8 +1,8 @@
-#ifndef KINECT_H
-#define KINECT_H
+#ifndef KINECT_HPP
+#define KINECT_HPP
 
-#include "UserData.h"
-#include "UserTracking.h"
+#include "UserData.hpp"
+#include "UserTracking.hpp"
 
 #include "openni_all.h"
 
@@ -52,4 +52,4 @@ private:
    bool mPlaybackMode;
 };
 
-#endif // KINECT_H
+#endif // KINECT_HPP

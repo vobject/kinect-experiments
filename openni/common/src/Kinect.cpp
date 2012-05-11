@@ -1,4 +1,4 @@
-#include "Kinect.h"
+#include "Kinect.hpp"
 
 #include <cassert>
 

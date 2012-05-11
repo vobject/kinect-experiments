@@ -1,7 +1,7 @@
-#include "UserTracking.h"
+#include "UserTracking.hpp"
 #include "Log.hpp"
 
-#include "Kinect.h"
+#include "Kinect.hpp"
 
 #include <array>
 

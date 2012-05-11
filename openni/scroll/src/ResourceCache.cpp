@@ -1,5 +1,5 @@
 #include "ResourceCache.h"
-#include "Kinect.h"
+#include "Kinect.hpp"
 #include "Utils.hpp"
 
 #include <SDL.h>

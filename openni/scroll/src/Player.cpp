@@ -1,6 +1,6 @@
 #include "Player.h"
-#include "Kinect.h"
-#include "UserData.h"
+#include "Kinect.hpp"
+#include "UserData.hpp"
 
 Player::Player(const std::shared_ptr<Kinect>& kinect)
    : mKinect(kinect)

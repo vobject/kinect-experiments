@@ -1,4 +1,4 @@
-#include "UserData.h"
+#include "UserData.hpp"
 
 const std::map<int, std::string> UserData::mJointNames = {
    { XN_SKEL_HEAD, "HEAD" },

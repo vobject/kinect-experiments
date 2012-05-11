@@ -1,7 +1,7 @@
 #include "Logic.h"
 #include "Renderer.h"
 #include "ResourceCache.h"
-#include "Kinect.h"
+#include "Kinect.hpp"
 #include "Sprite.h"
 #include "Background.h"
 #include "Player.h"

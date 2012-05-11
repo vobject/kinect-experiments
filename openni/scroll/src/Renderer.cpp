@@ -1,5 +1,5 @@
 #include "Renderer.h"
-#include "Kinect.h"
+#include "Kinect.hpp"
 #include "SdlWindow.h"
 #include "ResourceCache.h"
 #include "Sprite.h"

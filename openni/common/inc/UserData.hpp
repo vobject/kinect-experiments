@@ -1,5 +1,5 @@
-#ifndef USER_DATA_H
-#define USER_DATA_H
+#ifndef USER_DATA_HPP
+#define USER_DATA_HPP
 
 #include "openni_all.h"
 
@@ -31,4 +31,4 @@ private:
    std::map<int, XnPoint3D> mPerspectiveJoints;
 };
 
-#endif // USER_DATA_H
+#endif // USER_DATA_HPP
