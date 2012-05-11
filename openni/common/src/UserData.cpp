@@ -1,7 +1,5 @@
 #include "UserData.h"
 
-#include <XnCppWrapper.h>
-
 const std::map<int, std::string> UserData::mJointNames = {
    { XN_SKEL_HEAD, "HEAD" },
    { XN_SKEL_NECK, "NECK" },

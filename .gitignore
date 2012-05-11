@@ -1,6 +1,11 @@
 demos/
 workspace/
 
+openni/common/.settings/
+openni/common/bin/
+openni/common/Debug/
+openni/common/Release/
+
 openni/userpixels/bin/
 openni/userpixels/x86-Debug/
 openni/userpixels/x86-Release/

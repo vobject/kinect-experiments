@@ -4,8 +4,7 @@
 #include "UserData.h"
 #include "UserTracking.h"
 
-#include <XnOS.h>
-#include <XnCppWrapper.h>
+#include "openni_all.h"
 
 #include <memory>
 #include <string>

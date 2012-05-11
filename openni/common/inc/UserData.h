@@ -1,7 +1,7 @@
 #ifndef USER_DATA_H
 #define USER_DATA_H
 
-#include <XnTypes.h>
+#include "openni_all.h"
 
 #include <map>
 #include <string>

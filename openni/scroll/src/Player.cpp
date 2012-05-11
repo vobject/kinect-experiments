@@ -64,8 +64,8 @@ bool Player::CheckCollision(const SceneObject& obj) const
 //   {
 //      return true;
 //   }
-//
-//   return false;
+
+   return false;
 }
 
 int Player::GetXCenter()

@@ -3,8 +3,7 @@
 
 #include "UserData.h"
 
-#include <XnOS.h>
-#include <XnCppWrapper.h>
+#include "openni_all.h"
 
 #include <memory>
 #include <vector>
