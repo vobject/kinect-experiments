@@ -1,5 +1,5 @@
 #include "SdlWindow.h"
-#include "Utils.h"
+#include "Utils.hpp"
 
 SdlWindow::SdlWindow(const int xres, const int yres, const std::string& text)
    : mXRes(xres)

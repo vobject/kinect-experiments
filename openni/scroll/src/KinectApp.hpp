@@ -1,5 +1,5 @@
-#ifndef KINENOID_APP_H
-#define KINENOID_APP_H
+#ifndef KINENOID_APP_HPP
+#define KINENOID_APP_HPP
 
 #include <memory>
 #include <string>
@@ -49,4 +49,4 @@ private:
 //   Kinect mKinect;
 };
 
-#endif // KINENOID_APP_H
+#endif // KINENOID_APP_HPP

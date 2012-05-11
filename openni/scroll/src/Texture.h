@@ -1,7 +1,7 @@
 #ifndef TEXTURE_H
 #define TEXTURE_H
 
-#include "Utils.h"
+#include "Utils.hpp"
 
 #include <SDL.h>
 

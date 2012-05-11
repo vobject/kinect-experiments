@@ -1,6 +1,6 @@
 #include "ResourceCache.h"
 #include "Kinect.h"
-#include "Utils.h"
+#include "Utils.hpp"
 
 #include <SDL.h>
 #include <SDL_image.h>

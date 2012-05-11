@@ -1,7 +1,7 @@
 #ifndef SCENE_OBJECT_H
 #define SCENE_OBJECT_H
 
-#include "Utils.h"
+#include "Utils.hpp"
 
 #include <string>
 

@@ -1,4 +1,4 @@
-#include "KinectApp.h"
+#include "KinectApp.hpp"
 
 #include <iostream>
 

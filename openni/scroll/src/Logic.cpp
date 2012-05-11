@@ -5,7 +5,7 @@
 #include "Sprite.h"
 #include "Background.h"
 #include "Player.h"
-#include "Utils.h"
+#include "Utils.hpp"
 
 #include <algorithm>
 #include <iostream>

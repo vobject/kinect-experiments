@@ -1,5 +1,5 @@
 #include "UserTracking.h"
-#include "Log.h"
+#include "Log.hpp"
 
 #include "Kinect.h"
 

@@ -1,6 +1,6 @@
 #include "Background.h"
 #include "BackgroundResource.h"
-#include "Utils.h"
+#include "Utils.hpp"
 
 Background::Background(const BackgroundResource& res)
    : mXScreen(0)

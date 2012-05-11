@@ -2,7 +2,7 @@
 #define BACKGROUNDRESOURCE_H
 
 #include "Texture.h"
-#include "Utils.h"
+#include "Utils.hpp"
 
 #include <SDL.h>
 

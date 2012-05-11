@@ -1,10 +1,10 @@
-#include "KinectApp.h"
+#include "KinectApp.hpp"
 #include "ResourceCache.h"
 #include "SdlWindow.h"
 #include "Renderer.h"
 #include "Logic.h"
 #include "Kinect.h"
-#include "Utils.h"
+#include "Utils.hpp"
 
 #include <SDL.h>
 

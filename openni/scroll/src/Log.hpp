@@ -1,7 +1,7 @@
 // Logging class. Based heavily on http://drdobbs.com/cpp/201804215
 
-#ifndef LOG_H
-#define LOG_H
+#ifndef LOG_HPP
+#define LOG_HPP
 
 #include <sstream>
 #include <string>
@@ -105,4 +105,4 @@ inline std::string NowTime()
 
 #endif // WIN32
 
-#endif // LOG_H
+#endif // LOG_HPP

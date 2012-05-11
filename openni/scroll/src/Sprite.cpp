@@ -1,6 +1,6 @@
 #include "Sprite.h"
 #include "SpriteResource.h"
-#include "Utils.h"
+#include "Utils.hpp"
 
 Sprite::Sprite(
    const SpriteResource& res,

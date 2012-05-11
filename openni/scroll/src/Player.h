@@ -4,7 +4,7 @@
 #include "SceneObject.h"
 #include "UserData.h"
 #include "Texture.h"
-#include "Utils.h"
+#include "Utils.hpp"
 
 #include <XnTypes.h>
 
