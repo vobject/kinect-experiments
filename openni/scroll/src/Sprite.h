@@ -1,7 +1,7 @@
 #ifndef SPRITE_H
 #define SPRITE_H
 
-#include "SceneObject.h"
+#include "SceneObject.hpp"
 
 #include <SDL.h>
 

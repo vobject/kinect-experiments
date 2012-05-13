@@ -8,8 +8,6 @@
 #include <memory>
 #include <vector>
 
-class Kinect;
-
 // A pointer to this struct is passed as the "cookie" argument to the CB functions.
 struct UserTrackerCallbackArgs
 {

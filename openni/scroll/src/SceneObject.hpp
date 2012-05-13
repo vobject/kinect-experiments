@@ -1,5 +1,5 @@
-#ifndef SCENE_OBJECT_H
-#define SCENE_OBJECT_H
+#ifndef SCENE_OBJECT_HPP
+#define SCENE_OBJECT_HPP
 
 #include "Utils.hpp"
 
@@ -58,4 +58,4 @@ private:
    bool mIsAlive;
 };
 
-#endif // SCENE_OBJECT_H
+#endif // SCENE_OBJECT_HPP

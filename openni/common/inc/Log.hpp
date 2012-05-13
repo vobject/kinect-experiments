@@ -66,7 +66,7 @@ inline std::string Log::ToString(LogLevel level)
 
 #define LOG(level) \
    if (level > Log::ReportingLevel()) ; \
-    else Log().Get(level)
+   else Log().Get(level)
 
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__)
 
@@ -79,7 +79,7 @@ inline std::string NowTime()
    if (GetTimeFormatA(LOCALE_USER_DEFAULT, 0, 0, "HH':'mm':'ss", buffer, MAX_LEN) == 0)
       return "Error in NowTime()";
 
-   char result[100] = {0};
+   char result[100];
    static DWORD first = GetTickCount();
    sprintf_s(result, "%s.%03ld", buffer, (long)(GetTickCount() - first) % 1000); 
    return result;
@@ -98,7 +98,7 @@ inline std::string NowTime()
    strftime(buffer, sizeof(buffer), "%X", localtime_r(&t, &r));
    struct timeval tv;
    gettimeofday(&tv, 0);
-   char result[100] = {0};
+   char result[100];
    sprintf(result, "%s.%03ld", buffer, (long)tv.tv_usec / 1000); 
    return result;
 }

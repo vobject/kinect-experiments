@@ -1,12 +1,11 @@
 #ifndef SPRITERESOURCE_H
 #define SPRITERESOURCE_H
 
-#include "Texture.h"
+//#include "Texture.h"
 #include "Utils.hpp"
 
 #include <SDL.h>
 
-#include <memory>
 #include <string>
 #include <vector>
 
@@ -14,7 +13,7 @@ class SpriteResource
 {
 public:
    SpriteResource();
-   SpriteResource(const std::string& id, const std::vector<std::shared_ptr<Texture>>& textures);
+   SpriteResource(const std::string& id, const std::vector<SDL_Surface*>& textures);
    ~SpriteResource();
 
    SpriteResource(const SpriteResource&) = default;
@@ -22,12 +21,12 @@ public:
 
    std::string GetId() const;
    int GetFrameCount() const;
-   std::shared_ptr<Texture> GetFrame(int n) const;
+   SDL_Surface* GetFrame(int n) const;
    Size GetSize() const;
 
 private:
    std::string mId;
-   std::vector<std::shared_ptr<Texture>> mFrames;
+   std::vector<SDL_Surface*> mFrames;
 };
 
 #endif // SPRITERESOURCE_H

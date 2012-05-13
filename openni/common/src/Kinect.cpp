@@ -1,9 +1,6 @@
 #include "Kinect.hpp"
 
-#include <cassert>
-
 Kinect::Kinect()
-   : mPlaybackMode(false)
 {
 
 }
@@ -35,31 +32,47 @@ void Kinect::InitPlayback(const std::string& file)
 
 void Kinect::InitOpenNI(const std::string& file)
 {
-   // TODO: Better (real!) error handling for OpenNI API failures.
-
    auto rc = mContext.Init();
-   assert(XN_STATUS_OK == rc);
+   if (XN_STATUS_OK != rc) {
+      throw "OpenNI context could not be initialized.\n \
+              Check if your Kinect is attached and \
+              unload gspca_kinect kernel driver.";
+   }
 
    if (!file.empty())
    {
       rc = mContext.OpenFileRecording(file.c_str(), mPlayer);
-      assert(XN_STATUS_OK == rc);
+      if (XN_STATUS_OK != rc) {
+         throw "Failed to load the pre-recorded file.";
+      }
 
       // Try to find data for image and depths generator in the recording.
       rc = mContext.FindExistingNode(XN_NODE_TYPE_DEPTH, mDepthGen);
-      assert(XN_STATUS_OK == rc);
+      if (XN_STATUS_OK != rc) {
+         throw "Could not find the OpenNI depth node.";
+      }
+
       rc = mContext.FindExistingNode(XN_NODE_TYPE_IMAGE, mImageGen);
-      assert(XN_STATUS_OK == rc);
+      if (XN_STATUS_OK != rc) {
+         throw "Could not find the OpenNI image node.";
+      }
    }
    else
    {
       rc = mContext.SetGlobalMirror(true);
-      assert(XN_STATUS_OK == rc);
+      if (XN_STATUS_OK != rc) {
+         throw "Failed to set global mirror mode.";
+      }
 
       rc = mDepthGen.Create(mContext);
-      assert(XN_STATUS_OK == rc);
+      if (XN_STATUS_OK != rc) {
+         throw "Failed to set create the OpenNI depth generator.";
+      }
+
       rc = mImageGen.Create(mContext);
-      assert(XN_STATUS_OK == rc);
+      if (XN_STATUS_OK != rc) {
+         throw "Failed to set create the OpenNI image generator.";
+      }
    }
 
    mDepthGen.GetMetaData(mDepthGenMD);
@@ -70,6 +83,9 @@ void Kinect::InitOpenNI(const std::string& file)
        mDepthGenMD.FullYRes() != mImageGenMD.FullYRes()){
          throw "Image and Depth do not have the same resolution.";
    }
+
+   mRes.Width = mDepthGenMD.FullXRes();
+   mRes.Height = mDepthGenMD.FullYRes();
 
    // The pixel format of the image recording and SDL_Surface must be the same.
    // FYI: depthmap usually returns XN_PIXEL_FORMAT_GRAYSCALE_16_BIT.
@@ -85,32 +101,6 @@ void Kinect::NextFrame()
    if (XN_STATUS_OK != rc) {
       throw "xn::Context::WaitNoneUpdateAll() failed";
    }
-}
-
-void Kinect::SeekForward(const int frames /*= 100*/)
-{
-   if (mPlaybackMode)
-   {
-      mPlayer.SeekToFrame(mImageGen.GetName(), frames, XN_PLAYER_SEEK_CUR);
-   }
-}
-
-void Kinect::SeekBackward(const int frames /*= -100*/)
-{
-   if (mPlaybackMode)
-   {
-      mPlayer.SeekToFrame(mImageGen.GetName(), frames, XN_PLAYER_SEEK_CUR);
-   }
-}
-
-int Kinect::GetXRes() const
-{
-   return mDepthGenMD.FullXRes();
-}
-
-int Kinect::GetYRes() const
-{
-   return mDepthGenMD.FullYRes();
 }
 
 const XnRGB24Pixel* Kinect::GetImageData()
@@ -131,6 +121,22 @@ const XnDepthPixel* Kinect::GetDepthData()
 
    // Return a pointer to the depth data from the generator.
    return mDepthGenMD.Data();
+}
+
+void Kinect::SeekForward(const int frames /*= 100*/)
+{
+   if (mPlaybackMode)
+   {
+      mPlayer.SeekToFrame(mImageGen.GetName(), frames, XN_PLAYER_SEEK_CUR);
+   }
+}
+
+void Kinect::SeekBackward(const int frames /*= -100*/)
+{
+   if (mPlaybackMode)
+   {
+      mPlayer.SeekToFrame(mImageGen.GetName(), frames, XN_PLAYER_SEEK_CUR);
+   }
 }
 
 std::vector<UserData> Kinect::GetUsers() const

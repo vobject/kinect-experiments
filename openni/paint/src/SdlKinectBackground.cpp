@@ -1,11 +1,11 @@
 #include "SdlKinectBackground.hpp"
-#include "Kinect.hpp"
+#include "Nui.hpp"
 
 #include <SDL.h>
 #include <SDL_rotozoom.h>
 
 SdlKinectBackground::SdlKinectBackground(
-   const std::shared_ptr<Kinect>& kinect,
+   const std::shared_ptr<Nui>& kinect,
    const Size& res
 )
    : KinectBackground(kinect)
@@ -14,7 +14,8 @@ SdlKinectBackground::SdlKinectBackground(
    mSurface = SDL_CreateRGBSurface(SDL_SWSURFACE,
                                    mKinect->GetSize().Width,
                                    mKinect->GetSize().Height,
-                                   32, 0, 0, 0, 0);
+                                   32,
+                                   0, 0, 0, 0);
    if (!mSurface) {
       throw "Unable to create KinectBackground because SDL_CreateRGBSurface() failed.";
    }

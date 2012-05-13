@@ -2,28 +2,29 @@
 #include "Kinect.hpp"
 #include "UserData.hpp"
 
-Player::Player(const std::shared_ptr<Kinect>& kinect)
+Player::Player(const std::shared_ptr<Nui>& kinect)
    : mKinect(kinect)
    , mUserData(UserData::INVALID_USER_ID)
 {
    SetResourceId("player");
    SetPosition({ 0, 0 });
-   SetSize({ mKinect->GetXRes(), mKinect->GetYRes() });
+   SetSize(mKinect->GetSize());
    SetZOrder(ZOrder::zo_Layer_2);
    SetVisible(false);
 
-   mTexture = std::make_shared<Texture>(SDL_CreateRGBSurface(SDL_SWSURFACE,
-                                                             GetSize().Width,
-                                                             GetSize().Height,
-                                                             32, 0, 0, 0, 0));
-   if (!mTexture->GetData()) {
+   mTexture = SDL_CreateRGBSurface(SDL_SWSURFACE,
+                                   GetSize().Width,
+                                   GetSize().Height,
+                                   SDL_GetVideoSurface()->format->BitsPerPixel,
+                                   0, 0, 0, 0);
+   if (!mTexture) {
       throw "SDL_CreateRGBSurface() failed.";
    }
 }
 
 Player::~Player()
 {
-
+   SDL_FreeSurface(mTexture);
 }
 
 void Player::Update(const int elapsed_time)
@@ -78,10 +79,9 @@ int Player::GetYCenter()
    return mUserData.GetRealWorldJoints()[XN_SKEL_TORSO].Y;
 }
 
-std::shared_ptr<Texture> Player::GetFrame() const
+SDL_Surface* Player::GetFrame() const
 {
-   SDL_Surface* frame = static_cast<SDL_Surface*>(mTexture->GetData());
-   SDL_FillRect(frame, NULL, 0);
+   SDL_FillRect(mTexture, NULL, 0);
 
    if (!IsVisible()) {
       return mTexture;
@@ -89,14 +89,15 @@ std::shared_ptr<Texture> Player::GetFrame() const
 
    const auto scene_meta = mKinect->GetUserPixels(mUserData);
 
-   SDL_LockSurface(frame);
-   char* screen_buf = static_cast<char*>(frame->pixels);
-   const int bytes_per_pixel = frame->format->BytesPerPixel;
+   SDL_LockSurface(mTexture);
+   char* screen_buf = static_cast<char*>(mTexture->pixels);
+   const int bytes_per_pixel = mTexture->format->BytesPerPixel;
 
    const XnRGB24Pixel* rgb_buf = mKinect->GetImageData();
    const XnLabel* label_buf = scene_meta->Data();
 
-   const int pixel_cnt = mKinect->GetYRes() * mKinect->GetXRes();
+   const Size kinect_res = mKinect->GetSize();
+   const int pixel_cnt = kinect_res.Width * kinect_res.Height;
    const XnUserID current_id = mUserData.GetId();
 
    for (int i = 0; i < pixel_cnt; i++, rgb_buf++, label_buf++)
@@ -108,7 +109,7 @@ std::shared_ptr<Texture> Player::GetFrame() const
          screen_buf[i * bytes_per_pixel + 2] = rgb_buf->nRed;
       }
    }
-   SDL_UnlockSurface(frame);
+   SDL_UnlockSurface(mTexture);
 
    return mTexture;
 }

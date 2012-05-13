@@ -35,8 +35,8 @@
 									<listOptionValue builtIn="false" value="/usr/include/SDL"/>
 									<listOptionValue builtIn="false" value="/usr/include/ni"/>
 								</option>
-								<option id="gnu.cpp.compiler.option.warnings.pedantic.713304979" superClass="gnu.cpp.compiler.option.warnings.pedantic" value="true" valueType="boolean"/>
-								<option id="gnu.cpp.compiler.option.warnings.extrawarn.994841171" superClass="gnu.cpp.compiler.option.warnings.extrawarn" value="true" valueType="boolean"/>
+								<option id="gnu.cpp.compiler.option.warnings.pedantic.713304979" name="Pedantic (-pedantic)" superClass="gnu.cpp.compiler.option.warnings.pedantic" value="true" valueType="boolean"/>
+								<option id="gnu.cpp.compiler.option.warnings.extrawarn.994841171" name="Extra warnings (-Wextra)" superClass="gnu.cpp.compiler.option.warnings.extrawarn" value="true" valueType="boolean"/>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1253523470" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
 							<tool id="cdt.managedbuild.tool.gnu.c.compiler.exe.debug.288154656" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.exe.debug">
@@ -56,6 +56,7 @@
 									<listOptionValue builtIn="false" value="SDL_image"/>
 									<listOptionValue builtIn="false" value="SDL_gfx"/>
 									<listOptionValue builtIn="false" value="OpenNI"/>
+									<listOptionValue builtIn="false" value="GL"/>
 								</option>
 								<option id="gnu.cpp.link.option.paths.244010259" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" valueType="libPaths">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/common/Debug}&quot;"/>
@@ -120,8 +121,8 @@
 									<listOptionValue builtIn="false" value="/usr/include/SDL"/>
 									<listOptionValue builtIn="false" value="/usr/include/ni"/>
 								</option>
-								<option id="gnu.cpp.compiler.option.warnings.pedantic.1551759890" superClass="gnu.cpp.compiler.option.warnings.pedantic" value="true" valueType="boolean"/>
-								<option id="gnu.cpp.compiler.option.warnings.extrawarn.1321359293" superClass="gnu.cpp.compiler.option.warnings.extrawarn" value="true" valueType="boolean"/>
+								<option id="gnu.cpp.compiler.option.warnings.pedantic.1551759890" name="Pedantic (-pedantic)" superClass="gnu.cpp.compiler.option.warnings.pedantic" value="true" valueType="boolean"/>
+								<option id="gnu.cpp.compiler.option.warnings.extrawarn.1321359293" name="Extra warnings (-Wextra)" superClass="gnu.cpp.compiler.option.warnings.extrawarn" value="true" valueType="boolean"/>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.816877928" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
 							<tool id="cdt.managedbuild.tool.gnu.c.compiler.exe.release.94833665" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.exe.release">
@@ -141,6 +142,7 @@
 									<listOptionValue builtIn="false" value="SDL_image"/>
 									<listOptionValue builtIn="false" value="SDL_gfx"/>
 									<listOptionValue builtIn="false" value="OpenNI"/>
+									<listOptionValue builtIn="false" value="GL"/>
 								</option>
 								<option id="gnu.cpp.link.option.paths.444868262" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" valueType="libPaths">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/common/Release}&quot;"/>

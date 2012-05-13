@@ -1,6 +1,6 @@
-#include "Logic.h"
-#include "Renderer.h"
-#include "ResourceCache.h"
+#include "Logic.hpp"
+#include "Renderer.hpp"
+#include "ResourceCache.hpp"
 #include "Kinect.hpp"
 #include "Sprite.h"
 #include "Background.h"
@@ -29,12 +29,10 @@ static void print_commands()
 Logic::Logic(
    const std::shared_ptr<Renderer>& renderer,
    const std::shared_ptr<ResourceCache>& res,
-   const std::shared_ptr<Kinect>& kinect
+   const std::shared_ptr<Nui>& kinect
 )
    : mRenderer(renderer)
    , mResCache(res)
-   , mXScreen(0_px)
-   , mYScreen(0_px)
 {
    mBackground = std::make_shared<Background>(mResCache->GetBackground("background"));
    // TODO: Background must have a "buttom" coordinate.
@@ -84,7 +82,7 @@ void Logic::ProcessInput(const SDL_MouseButtonEvent& ev)
    if ((SDL_MOUSEBUTTONUP == ev.type) && (SDL_BUTTON_LEFT == ev.button))
    {
       auto obj = std::make_shared<Sprite>(mResCache->GetSprite("blood_b"), true);
-      obj->SetSize({ 200_px, 200_px });
+      obj->SetSize({ 192_px, 192_px });
       obj->SetPosition({ ev.x - (obj->GetSize().Width / 2), ev.y - (obj->GetSize().Height / 2) });
       obj->SetDirection(-1, 1);
       obj->SetSpeed(3, 2);
@@ -93,7 +91,7 @@ void Logic::ProcessInput(const SDL_MouseButtonEvent& ev)
    else if ((SDL_MOUSEBUTTONUP == ev.type) && (SDL_BUTTON_RIGHT == ev.button))
    {
       auto obj = std::make_shared<Sprite>(mResCache->GetSprite("arcanister"));
-      obj->SetSize({ 60_px, 60_px });
+      obj->SetSize({ 64_px, 64_px });
       obj->SetPosition({ ev.x - (obj->GetSize().Width / 2), ev.y - (obj->GetSize().Height / 2) });
       obj->SetDirection(-1, 0);
       obj->SetSpeed(2, 2);
@@ -112,11 +110,11 @@ void Logic::ProcessInput(const SDL_MouseButtonEvent& ev)
 //   mActor->SetInputData(users[0]);
 //}
 
-void Logic::Update(const int game_time, const int elapsed_time)
+void Logic::Update(const int app_time, const int elapsed_time)
 {
-   UpdateBackground(game_time, elapsed_time);
-   UpdatePlayer(game_time, elapsed_time);
-   UpdateEnemies(game_time, elapsed_time);
+   UpdateBackground(app_time, elapsed_time);
+   UpdatePlayer(app_time, elapsed_time);
+   UpdateEnemies(app_time, elapsed_time);
 
 //   if(rand() % 1000 == 0)
 //   {
@@ -140,19 +138,17 @@ void Logic::Render()
    mRenderer->PostRender();
 }
 
-void Logic::SetScreenSize(const int x_res, const int y_res)
-{
-   mXScreen = x_res;
-   mYScreen = y_res;
+//void Logic::SetScreenSize(const Size& res)
+//{
+//   mScreenSize = res;
+//
+//   mBackground->SetScreenResolution(mScreenSize.Width, mScreenSize.Height);
+//
+////   mPlayer->SetPosition({ (mXScreen / 2) - (mPlayer->GetSize().Width / 2),
+////                          (mYScreen / 2) + (mPlayer->GetSize().Height / 2) });
+//}
 
-   mBackground->SetScreenResolution(mXScreen, mYScreen);
-
-//   mPlayer->SetPosition({ (mXScreen / 2) - (mPlayer->GetSize().Width / 2),
-//                          (mYScreen / 2) + (mPlayer->GetSize().Height / 2) });
-   mPlayer->SetPosition({ 0, 0 });
-}
-
-void Logic::UpdateBackground(const int game_time, const int elapsed_time)
+void Logic::UpdateBackground(const int app_time, const int elapsed_time)
 {
    if (!mPlayer->IsVisible()) {
       return;
@@ -178,7 +174,7 @@ void Logic::UpdateBackground(const int game_time, const int elapsed_time)
    mBackground->Update(elapsed_time);
 }
 
-void Logic::UpdatePlayer(const int game_time, const int elapsed_time)
+void Logic::UpdatePlayer(const int app_time, const int elapsed_time)
 {
    // TODO: Trigger an animation on collision
 
@@ -220,7 +216,7 @@ void Logic::UpdatePlayer(const int game_time, const int elapsed_time)
    mPlayer->Update(elapsed_time);
 }
 
-void Logic::UpdateEnemies(const int game_time, const int elapsed_time)
+void Logic::UpdateEnemies(const int app_time, const int elapsed_time)
 {
    // TODO: Check for dead sprites and remove them
 

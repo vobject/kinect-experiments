@@ -3,15 +3,14 @@
 
 #include "KinectBackground.hpp"
 
-#include <memory>
 #include <vector>
 
-class Kinect;
+class Nui;
 
 class GlKinectBackground : public KinectBackground
 {
 public:
-   GlKinectBackground(const std::shared_ptr<Kinect>& kinect);
+   GlKinectBackground(const std::shared_ptr<Nui>& kinect);
    virtual ~GlKinectBackground();
 
    GlKinectBackground(const GlKinectBackground&) = delete;

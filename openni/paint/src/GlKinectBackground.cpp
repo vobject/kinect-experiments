@@ -1,8 +1,8 @@
 #include "GlKinectBackground.hpp"
-#include "Kinect.hpp"
+#include "Nui.hpp"
 #include "Utils.hpp"
 
-GlKinectBackground::GlKinectBackground(const std::shared_ptr<Kinect>& kinect)
+GlKinectBackground::GlKinectBackground(const std::shared_ptr<Nui>& kinect)
    : KinectBackground(kinect)
    , mDepthBuf(mKinect->GetSize().Width *
                mKinect->GetSize().Height *

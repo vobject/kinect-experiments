@@ -1,6 +1,6 @@
 // This code was copied from:
 //  http://www.gamedev.net/topic/284259-for-reference-using-sdl_ttf-with-opengl/page__view__findpost__p__3649811
-// Changes were made where necessary.
+// Changes were made where felt necessary.
 
 #ifndef GL_FONT_HPP
 #define GL_FONT_HPP

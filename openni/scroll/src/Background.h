@@ -1,7 +1,7 @@
 #ifndef BACKGROUND_H
 #define BACKGROUND_H
 
-#include "SceneObject.h"
+#include "SceneObject.hpp"
 
 #include <SDL.h>
 
@@ -20,7 +20,7 @@ public:
 
    void Update(int elapsed_time) override;
 
-   void SetScreenResolution(int x_res, int y_res);
+//   void SetScreenResolution(int x_res, int y_res);
 
    void ScrollLeft(int speed);
    void ScrollRight(int speed);

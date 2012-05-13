@@ -6,13 +6,13 @@
 
 #include <memory>
 
-class Kinect;
+class Nui;
 class SDL_Surface;
 
 class SdlKinectBackground : public KinectBackground
 {
 public:
-   SdlKinectBackground(const std::shared_ptr<Kinect>& kinect, const Size& res);
+   SdlKinectBackground(const std::shared_ptr<Nui>& kinect, const Size& res);
    virtual ~SdlKinectBackground();
 
    SdlKinectBackground(const SdlKinectBackground&) = delete;

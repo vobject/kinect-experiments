@@ -1,7 +1,5 @@
 #include "UserTracking.hpp"
-#include "Log.hpp"
-
-#include "Kinect.hpp"
+#include "Utils.hpp"
 
 #include <array>
 

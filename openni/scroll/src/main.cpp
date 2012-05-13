@@ -1,15 +1,19 @@
-#include "KinectApp.hpp"
+#include "ScrollApp.hpp"
 
 #include <iostream>
 
 int main(int argc, char* argv[])
 {
+   (void) argc;
+   (void) argv;
+
    try
    {
       // TODO: Introduce real command line argument handling, e.g. with boost.
 
-      KinectApp app;
-      app.Start((argc > 1) ? argv[1] : "");
+      ScrollApp app;
+      app.Start();
+//      app.Start((argc > 1) ? argv[1] : "");
    }
    catch (const char* e)
    {

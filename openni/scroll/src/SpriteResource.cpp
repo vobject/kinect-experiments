@@ -7,10 +7,10 @@ SpriteResource::SpriteResource()
 
 SpriteResource::SpriteResource(
    const std::string& id,
-   const std::vector<std::shared_ptr<Texture>>& textures
+   const std::vector<SDL_Surface*>& textures
 )
-   : mId(id),
-     mFrames(textures)
+   : mId(id)
+   , mFrames(textures)
 {
 
 }
@@ -30,7 +30,7 @@ int SpriteResource::GetFrameCount() const
    return mFrames.size();
 }
 
-std::shared_ptr<Texture> SpriteResource::GetFrame(int n) const
+SDL_Surface* SpriteResource::GetFrame(const int n) const
 {
    return mFrames.at(n);
 }
@@ -40,5 +40,5 @@ Size SpriteResource::GetSize() const
    if (mFrames.empty()) {
       throw "No frames associated with the current sprite";
    }
-   return mFrames.at(0)->GetSize();
+   return {mFrames.at(0)->w, mFrames.at(0)->h};
 }

@@ -1,5 +1,5 @@
-#ifndef RESOURCE_CACHE_H
-#define RESOURCE_CACHE_H
+#ifndef RESOURCE_CACHE_HPP
+#define RESOURCE_CACHE_HPP
 
 #include "BackgroundResource.h"
 #include "SpriteResource.h"
@@ -34,12 +34,13 @@ public:
 private:
    void LoadBackground(const std::string& file, const std::string& id);
    void LoadSprite(const std::vector<std::string>& files, const std::string& id);
-   std::shared_ptr<Texture> LoadTexture(const std::string& file) const;
+   SDL_Surface* LoadTexture(const std::string& file);
 
    std::string mResDir;
    std::map<const std::string, BackgroundResource> mBackgrounds;
    std::map<const std::string, SpriteResource> mSprites;
+   std::vector<SDL_Surface*> mSurfaceCache;
 //   SDL_Surface* mPlayer;
 };
 
-#endif // RESOURCE_CACHE_H
+#endif // RESOURCE_CACHE_HPP

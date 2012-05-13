@@ -1,40 +1,35 @@
 #ifndef KINECT_HPP
 #define KINECT_HPP
 
-#include "UserData.hpp"
+#include "Nui.hpp"
 #include "UserTracking.hpp"
 
-#include "openni_all.h"
-
-#include <memory>
 #include <string>
-#include <vector>
 
-class Kinect
+class Kinect : public Nui
 {
 public:
    Kinect();
-   ~Kinect();
+   virtual ~Kinect();
 
    Kinect(const Kinect&) = delete;
    Kinect& operator=(const Kinect&) = delete;
 
-   void Init();
+   void Init() override;
    void InitPlayback(const std::string& file);
+   void NextFrame() override;
 
-   void NextFrame();
+   const XnRGB24Pixel* GetImageData() override;
+   const XnDepthPixel* GetDepthData() override;
 
    void SeekForward(int frames = 100);
    void SeekBackward(int frames = -100);
 
-   int GetXRes() const;
-   int GetYRes() const;
+   std::vector<UserData> GetUsers() const override;
+   std::shared_ptr<xn::SceneMetaData> GetUserPixels(const UserData& user) const override;
 
-   const XnRGB24Pixel* GetImageData();
-   const XnDepthPixel* GetDepthData();
-
-   std::vector<UserData> GetUsers() const;
-   std::shared_ptr<xn::SceneMetaData> GetUserPixels(const UserData& user) const;
+   // TODO:
+   //  OnGesture(GESTURE, callback);
 
 private:
    void InitOpenNI(const std::string& file);
@@ -49,7 +44,7 @@ private:
 
    UserTracking mUserTracking;
    
-   bool mPlaybackMode;
+   bool mPlaybackMode = false;
 };
 
 #endif // KINECT_HPP

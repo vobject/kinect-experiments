@@ -1,4 +1,4 @@
-#include "KinectApp.hpp"
+#include "PaintApp.hpp"
 
 #include <iostream>
 
@@ -6,8 +6,8 @@ int main(int argc, char* argv[])
 {
    try
    {
-      KinectApp app;
-      app.Start((argc > 1) ? argv[1] : "");
+      PaintApp app;
+      app.Start();
    }
    catch (const char* e)
    {

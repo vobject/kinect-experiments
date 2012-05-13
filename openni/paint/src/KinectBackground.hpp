@@ -3,12 +3,12 @@
 
 #include <memory>
 
-class Kinect;
+class Nui;
 
 class KinectBackground
 {
 public:
-   KinectBackground(const std::shared_ptr<Kinect>& kinect) : mKinect(kinect) { }
+   KinectBackground(const std::shared_ptr<Nui>& kinect) : mKinect(kinect) { }
    virtual ~KinectBackground() { }
 
    virtual void SwitchMode() { mDisplayMode = static_cast<BackgroundMode>((mDisplayMode + 1) % BACKGROUND_MODE_ITEM_COUNT); }
@@ -23,7 +23,7 @@ protected:
       BACKGROUND_MODE_ITEM_COUNT
    } mDisplayMode = RgbImage;
 
-   std::shared_ptr<Kinect> mKinect;
+   std::shared_ptr<Nui> mKinect;
 };
 
 #endif // KINECT_BACKGROUND_HPP

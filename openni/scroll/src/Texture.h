@@ -17,6 +17,10 @@ public:
 
 protected:
    SDL_Surface* mSurface;
+
+   // void* mData;
+   // Size mSize;
+   // int mBpp;
 };
 
 #endif // TEXTURE_H

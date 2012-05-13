@@ -1,4 +1,4 @@
-#include "ResourceCache.h"
+#include "ResourceCache.hpp"
 #include "Kinect.hpp"
 #include "Utils.hpp"
 
@@ -19,7 +19,7 @@ ResourceCache::ResourceCache()
 //   Load("res/background/smw.jpg", "smw");
 //   Load("res/background/2zxr32b.png", "smw");
 
-   LoadBackground(mResDir + "/sprite/a.jpg", "background");
+   LoadBackground(mResDir + "/sprite/a.png", "background");
 
    LoadSprite({mResDir + "/sprite/explode1.jpg"}, "arcanister");
    LoadSprite({mResDir + "/sprite/blood_b/1.png",
@@ -28,12 +28,13 @@ ResourceCache::ResourceCache()
                mResDir + "/sprite/blood_b/4.png",
                mResDir + "/sprite/blood_b/5.png",
                mResDir + "/sprite/blood_b/6.png",}, "blood_b");
-
 }
 
 ResourceCache::~ResourceCache()
 {
-
+   for (auto& surface : mSurfaceCache) {
+      SDL_FreeSurface(surface);
+   }
 }
 
 //void ResourceCache::AddDirectory(const std::string& dir)
@@ -87,7 +88,7 @@ void ResourceCache::LoadBackground(const std::string& file, const std::string& i
 
 void ResourceCache::LoadSprite(const std::vector<std::string>& files, const std::string& id)
 {
-   std::vector<std::shared_ptr<Texture>> textures;
+   std::vector<SDL_Surface*> textures;
 
    for (const auto& file : files)
    {
@@ -97,7 +98,7 @@ void ResourceCache::LoadSprite(const std::vector<std::string>& files, const std:
    mSprites[id] = { id, textures };
 }
 
-std::shared_ptr<Texture> ResourceCache::LoadTexture(const std::string& file) const
+SDL_Surface* ResourceCache::LoadTexture(const std::string& file)
 {
    SDL_Surface* img_loaded = IMG_Load(file.c_str());
    if (!img_loaded) {
@@ -111,5 +112,6 @@ std::shared_ptr<Texture> ResourceCache::LoadTexture(const std::string& file) con
    SDL_FreeSurface(img_loaded);
    img_loaded = nullptr;
 
-   return std::make_shared<Texture>(img_compat);
+   mSurfaceCache.push_back(img_compat);
+   return img_compat;
 }

@@ -1,7 +1,7 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
-#include "SceneObject.h"
+#include "SceneObject.hpp"
 #include "UserData.hpp"
 #include "Texture.h"
 #include "Utils.hpp"
@@ -13,12 +13,12 @@
 #include <memory>
 #include <map>
 
-class Kinect;
+class Nui;
 
 class Player : public SceneObject
 {
 public:
-   Player(const std::shared_ptr<Kinect>& kinect);
+   Player(const std::shared_ptr<Nui>& kinect);
    virtual ~Player();
 
    Player(const Player&) = delete;
@@ -31,14 +31,14 @@ public:
    int GetXCenter();
    int GetYCenter();
 
-   std::shared_ptr<Texture> GetFrame() const;
+   SDL_Surface* GetFrame() const;
 
 private:
    bool IsUserDataValid(const UserData& user) const;
 
-   std::shared_ptr<Kinect> mKinect;
+   std::shared_ptr<Nui> mKinect;
    UserData mUserData;
-   std::shared_ptr<Texture> mTexture;
+   SDL_Surface* mTexture;
 };
 
 #endif // PLAYER_H

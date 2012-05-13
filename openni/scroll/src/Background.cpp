@@ -3,8 +3,8 @@
 #include "Utils.hpp"
 
 Background::Background(const BackgroundResource& res)
-   : mXScreen(0)
-   , mYScreen(0)
+   : mXScreen(SDL_GetVideoSurface()->w)
+   , mYScreen(SDL_GetVideoSurface()->h)
 //, mLastBgUpdateTime(0) // TODO: Move this into Background class
 {
    SetResourceId(res.GetId());
@@ -26,11 +26,11 @@ void Background::Update(const int elapsed_time)
 //   mLastBgUpdateTime = game_time;
 }
 
-void Background::SetScreenResolution(const int x_res, const int y_res)
-{
-   mXScreen = x_res;
-   mYScreen = y_res;
-}
+//void Background::SetScreenResolution(const int x_res, const int y_res)
+//{
+//   mXScreen = x_res;
+//   mYScreen = y_res;
+//}
 
 void Background::ScrollLeft(const int speed)
 {
