@@ -11,17 +11,26 @@ includes third party libraries. They are licensed under their own lincese.
 Check their subfolders for details.
 
 
-openni/userpixels:
+openni/userpixels (no longer maintained):
 SDL, libVLC, OpenNI GetUserpixels() API, basic gesture recognition
 
-openni/sprites:
+openni/sprites (no longer maintained):
 allegro5, combination of GetUserpixels() and sprite animation
 
+openni/common:
+static library providing classes which are used accross other projects;
+(C++11, SDL, OpenGL, OpenNI, Logging)
+
+openni/paint:
+simple demo to paint with your (left) hand to the video screen;
+(common, C++11, SDL, OpenGL, OpenNI)
+
 openni/scroll:
-SDL, OpenNI, animated sprites, collision detection, scrolling environment
+common, C++11, SDL, OpenGL, OpenNI, animated sprites, collision detection,
+scrolling background
 
 
 Enjoy!
 	vobject@gmail.com
 
-(2012-02-15)
+(2012-05-18)
