@@ -7,7 +7,7 @@ class KinectDummy : public Nui
 {
 public:
    KinectDummy() : mRgbDummyData(KINECT_XRES * KINECT_YRES),
-                   mDepthDummyData(KINECT_XRES * KINECT_YRES) { }
+                   mDepthDummyData(KINECT_XRES * KINECT_YRES) { mRes = {KINECT_XRES, KINECT_YRES}; }
    virtual ~KinectDummy() { }
 
    KinectDummy(const KinectDummy&) = delete;

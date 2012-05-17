@@ -3,6 +3,7 @@
 
 #include "Renderer.hpp"
 
+class Nui;
 class Point;
 
 class SDL_Surface;
@@ -10,7 +11,7 @@ class SDL_Surface;
 class SdlRenderer : public Renderer
 {
 public:
-   SdlRenderer();
+   SdlRenderer(const Nui& kinect);
    virtual ~SdlRenderer();
 
    SdlRenderer(const SdlRenderer&) = delete;
@@ -18,15 +19,17 @@ public:
 
    void PreRender() override;
    void PostRender() override;
-   void Render(const std::shared_ptr<KinectBackground>& bg) override;
+   void Render(const std::shared_ptr<NuiBackground>& bg) override;
    void Render(const std::shared_ptr<PaintStatus>& status) override;
 
 private:
    void DrawLine(const Point& src_pos, const Point& dest_pos, unsigned int color);
    void DrawPixel(const Point& pos, unsigned int color);
 
+   // Writing directly to the video surface is ok since we use double buffering.
    SDL_Surface* mScreen;
-//   SDL_Surface* mSurface = nullptr;
+   // Will only be used if application window resolution != Kinect resolution.
+   SDL_Surface* mBgSurface = nullptr;
 };
 
 #endif // SDL_RENDERER_HPP

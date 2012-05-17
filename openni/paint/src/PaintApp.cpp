@@ -2,9 +2,8 @@
 #include "Nui.hpp"
 #include "Window.hpp"
 #include "GlRenderer.hpp"
-#include "GlKinectBackground.hpp"
 #include "SdlRenderer.hpp"
-#include "SdlKinectBackground.hpp"
+#include "NuiBackground.hpp"
 #include "Utils.hpp"
 
 #include <SDL.h>
@@ -40,12 +39,14 @@ void PaintApp::Initialize()
       throw "Failed to initialize Xlib muti-threading support";
    }
 
-   InitSdlVideo({640_px, 480_px});
+//   InitGlVideo({800_px, 600_px});
+   InitSdlVideo({800_px, 600_px});
    InitKinect("");
 
    mWindow = std::make_shared<kinex::Window>("paint");
-   mRenderer = std::make_shared<SdlRenderer>();
-   mKinectBg = std::make_shared<GlKinectBackground>(mKinect);
+//   mRenderer = std::make_shared<GlRenderer>();
+   mRenderer = std::make_shared<SdlRenderer>(*mKinect);
+   mKinectBg = std::make_shared<NuiBackground>(mKinect);
    mState = std::make_shared<PaintStatus>();
 }
 

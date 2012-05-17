@@ -16,7 +16,7 @@ public:
 
    void PreRender() override;
    void PostRender() override;
-   void Render(const std::shared_ptr<KinectBackground>& bg) override;
+   void Render(const std::shared_ptr<NuiBackground>& bg) override;
    void Render(const std::shared_ptr<PaintStatus>& status) override;
 
 private:

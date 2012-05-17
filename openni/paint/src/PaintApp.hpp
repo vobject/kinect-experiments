@@ -10,7 +10,7 @@ namespace kinex {
    class Window;
 }
 class Renderer;
-class KinectBackground;
+class NuiBackground;
 class Point;
 
 struct PaintStatus
@@ -41,7 +41,7 @@ private:
    std::shared_ptr<kinex::Window> mWindow;
    std::shared_ptr<Renderer> mRenderer;
 
-   std::shared_ptr<KinectBackground> mKinectBg;
+   std::shared_ptr<NuiBackground> mKinectBg;
    std::shared_ptr<PaintStatus> mState;
 };
 

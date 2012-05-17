@@ -4,7 +4,7 @@
 #include <memory>
 #include <list>
 
-class KinectBackground;
+class NuiBackground;
 class PaintStatus;
 
 class Renderer
@@ -15,7 +15,7 @@ public:
 
    virtual void PreRender() { }
    virtual void PostRender() { }
-   virtual void Render(const std::shared_ptr<KinectBackground>& bg) = 0;
+   virtual void Render(const std::shared_ptr<NuiBackground>& bg) = 0;
    virtual void Render(const std::shared_ptr<PaintStatus>& status) = 0;
 };
 

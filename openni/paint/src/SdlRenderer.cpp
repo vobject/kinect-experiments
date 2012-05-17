@@ -1,27 +1,37 @@
 #include "SdlRenderer.hpp"
-#include "KinectBackground.hpp"
+#include "Nui.hpp"
+#include "NuiBackground.hpp"
 #include "PaintApp.hpp"
 #include "Utils.hpp"
 
 #include <SDL.h>
 #include <SDL_rotozoom.h>
 
-SdlRenderer::SdlRenderer()
+SdlRenderer::SdlRenderer(const Nui& kinect)
    : mScreen(SDL_GetVideoSurface())
 {
-//   // This is the surface that we will write to before swapping it.
-//   mSurface = SDL_CreateRGBSurface(SDL_SWSURFACE,
-//                                   mScreen->w, mScreen->h,
-//                                   mScreen->format->BitsPerPixel,
-//                                   0, 0, 0, 0);
-//   if (!mSurface) {
-//      throw "SDL_CreateRGBSurface() failed.";
-//   }
+   const Size kinect_res = kinect.GetSize();
+
+   if ((mScreen->w != kinect_res.Width) ||
+       (mScreen->h != kinect_res.Height))
+   {
+      mBgSurface = SDL_CreateRGBSurface(SDL_SWSURFACE,
+                                        kinect_res.Width,
+                                        kinect_res.Height,
+                                        mScreen->format->BitsPerPixel,
+                                        0, 0, 0, 0);
+      if (!mBgSurface) {
+         throw "SDL_CreateRGBSurface() failed.";
+      }
+   }
+   // mBgSurface will stay nullptr if window and kinect image resolution match.
 }
 
 SdlRenderer::~SdlRenderer()
 {
-//   SDL_FreeSurface(mSurface);
+   if (mBgSurface) {
+      SDL_FreeSurface(mBgSurface);
+   }
 }
 
 void SdlRenderer::PreRender()
@@ -32,44 +42,41 @@ void SdlRenderer::PreRender()
 
 void SdlRenderer::PostRender()
 {
-//   SDL_BlitSurface(mSurface, NULL, mScreen, NULL);
    SDL_Flip(mScreen);
 }
 
-void SdlRenderer::Render(const std::shared_ptr<KinectBackground>& bg)
+void SdlRenderer::Render(const std::shared_ptr<NuiBackground>& bg)
 {
    Size img_size = {0, 0};
    auto img = bg->GetImage(img_size);
 
-   SDL_LockSurface(mScreen);
-   // TODO: Zoom original image which is always kinect-sized (640x480)
-   memcpy(mScreen->pixels, img, img_size.Width * img_size.Height);
-   SDL_UnlockSurface(mScreen);
+   if ((mScreen->w == img_size.Width) && (mScreen->h == img_size.Height))
+   {
+      // The window has the same resolution as the camera image from Kinect.
+      SDL_LockSurface(mScreen);
+      memcpy(mScreen->pixels, img, img_size.Width * img_size.Height);
+      SDL_UnlockSurface(mScreen);
+   }
+   else
+   {
+      // Window and Kinect resolution differ - we have to scale the image -> slow!
 
-//   SDL_LockSurface(mSurface);
-//   // I will probably go to hell for doing this...
-//   Size tmp_surface_size = {mSurface->w, mSurface->h};
-//   const auto tmp_surface_data = mSurface->pixels;
-//
-//   // ...yeah, probably into the third or sixth circle.
-//   mSurface->w = img_size.Width;
-//   mSurface->h = img_size.Height;
-//   mSurface->pixels = const_cast<void*>(img);
-//   SDL_UnlockSurface(mSurface); // Blit should not be called on a locked surface.
-//
-//   SDL_Rect rect = { static_cast<Sint16>(0),
-//                     static_cast<Sint16>(0),
-//                     static_cast<Uint16>(mSurface->w),
-//                     static_cast<Uint16>(mSurface->h) };
-//
-//   SDL_BlitSurface(mSurface, NULL, mScreen, &rect);
-//
-//   SDL_LockSurface(mSurface);
-//   // And now reverse the madness...
-//   mSurface->w = tmp_surface_size.Width;
-//   mSurface->h = tmp_surface_size.Height;
-//   mSurface->pixels = tmp_surface_data;
-//   SDL_UnlockSurface(mSurface);
+      SDL_LockSurface(mBgSurface);
+      memcpy(mBgSurface->pixels, img, img_size.Width * img_size.Height);
+      SDL_UnlockSurface(mBgSurface);
+
+      const double x_zoom = static_cast<double>(mScreen->w) / mBgSurface->w;
+      const double y_zoom = static_cast<double>(mScreen->h) / mBgSurface->h;
+      SDL_Surface* zoomed_img = zoomSurface(mBgSurface, x_zoom, y_zoom, 0);
+
+      SDL_Rect rect = { 0,
+                        0,
+                        static_cast<Uint16>(mScreen->w),
+                        static_cast<Uint16>(mScreen->h) };
+
+      SDL_BlitSurface(zoomed_img, NULL, mScreen, &rect);
+      SDL_FreeSurface(zoomed_img);
+   }
 }
 
 void SdlRenderer::Render(const std::shared_ptr<PaintStatus>& status)
@@ -166,8 +173,8 @@ void SdlRenderer::DrawLine(const Point& src_pos, const Point& dest_pos, const un
 
 void SdlRenderer::DrawPixel(const Point& pos, const unsigned int color)
 {
-   const size_t bpp = mScreen->format->BytesPerPixel;
-   const size_t offset = (mScreen->pitch * pos.Y) + (pos.X * bpp);
+   const auto bpp = mScreen->format->BytesPerPixel;
+   const auto offset = (mScreen->pitch * pos.Y) + (pos.X * bpp);
 
    SDL_LockSurface(mScreen);
    memcpy(static_cast<char*>(mScreen->pixels) + offset, &color, bpp);

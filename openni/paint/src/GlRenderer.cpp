@@ -1,5 +1,5 @@
 #include "GlRenderer.hpp"
-#include "KinectBackground.hpp"
+#include "NuiBackground.hpp"
 #include "PaintApp.hpp"
 #include "Utils.hpp"
 
@@ -41,7 +41,7 @@ void GlRenderer::PostRender()
    SDL_GL_SwapBuffers();
 }
 
-void GlRenderer::Render(const std::shared_ptr<KinectBackground>& bg)
+void GlRenderer::Render(const std::shared_ptr<NuiBackground>& bg)
 {
    Size img_size = {0, 0};
    const auto img = bg->GetImage(img_size);
@@ -53,12 +53,12 @@ void GlRenderer::Render(const std::shared_ptr<KinectBackground>& bg)
 
    // Create the OpenGL texture map
    glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP_SGIS, GL_TRUE);
-   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, img_size.Width, img_size.Height,
                 1, GL_RGB, GL_UNSIGNED_BYTE, img);
 
-   glColor3f(0.0f, 0.0f, 0.0f);
+   glColor3f(1.0f, 1.0f, 1.0f);
 
    glBegin(GL_QUADS);
       // upper left
@@ -80,7 +80,7 @@ void GlRenderer::Render(const std::shared_ptr<KinectBackground>& bg)
 void GlRenderer::Render(const std::shared_ptr<PaintStatus>& status)
 {
    glPushMatrix();
-   glColor3f(1.0f, 0.5f, 1.0f);
+   glColor3f(1.0f, 1.0f, 0.0f);
 
    // Redraw the previous drawings.
    glLineWidth(2);

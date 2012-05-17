@@ -1,9 +1,9 @@
-#include "GlKinectBackground.hpp"
+#include "NuiBackground.hpp"
 #include "Nui.hpp"
 #include "Utils.hpp"
 
-GlKinectBackground::GlKinectBackground(const std::shared_ptr<Nui>& kinect)
-   : KinectBackground(kinect)
+NuiBackground::NuiBackground(const std::shared_ptr<Nui>& kinect)
+   : mKinect(kinect)
    , mDepthBuf(mKinect->GetSize().Width *
                mKinect->GetSize().Height *
                sizeof(XnRGB24Pixel))
@@ -11,12 +11,17 @@ GlKinectBackground::GlKinectBackground(const std::shared_ptr<Nui>& kinect)
 
 }
 
-GlKinectBackground::~GlKinectBackground()
+NuiBackground::~NuiBackground()
 {
 
 }
 
-const void* GlKinectBackground::GetImage(Size& img_size)
+void NuiBackground::SwitchMode()
+{
+   mDisplayMode = static_cast<BackgroundMode>((mDisplayMode + 1) % BACKGROUND_MODE_ITEM_COUNT);
+}
+
+const void* NuiBackground::GetImage(Size& img_size)
 {
    // Always the same...
    img_size = mKinect->GetSize();
@@ -43,7 +48,7 @@ const void* GlKinectBackground::GetImage(Size& img_size)
    throw "Unknown background mode requested.";
 }
 
-void GlKinectBackground::SelectDepthImage()
+void NuiBackground::SelectDepthImage()
 {
    constexpr auto bpp = sizeof(XnRGB24Pixel); // Bytes per pixel
    const auto pixel_cnt = mKinect->GetSize().Width * mKinect->GetSize().Height;
