@@ -26,6 +26,8 @@ protected:
    void RenderScene() override;
 
 private:
+   void SelectRenderer();
+
    std::shared_ptr<kinex::Window> mWindow;
    std::shared_ptr<ResourceCache> mResCache;
    std::shared_ptr<Renderer> mRenderer;

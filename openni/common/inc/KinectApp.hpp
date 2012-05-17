@@ -1,11 +1,12 @@
 #ifndef KINECT_APP_HPP
 #define KINECT_APP_HPP
 
+#include "Utils.hpp"
+
 #include <memory>
 #include <string>
 
 class Nui;
-class Size;
 
 class KinectApp
 {
@@ -22,12 +23,22 @@ protected:
 
    virtual void Mainloop();
 
-   virtual void InitSdlVideo(const Size& res);
-   virtual void InitGlVideo(const Size& res);
    virtual void InitKinect(const std::string& path);
+   virtual void InitVideo();
+
+   enum class VideoMode
+   {
+      Software,
+      OpenGL
+   } mCurrentVideoMode = VideoMode::OpenGL;
+   Size mCurrentResolution = {640_px, 480_px};
 
    bool mQuitRequested = false;
    std::shared_ptr<Nui> mKinect;
+
+private:
+   void SelectSdlVideo();
+   void SelectGlVideo();
 };
 
 #endif // KINECT_APP_HPP

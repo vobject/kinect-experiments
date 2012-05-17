@@ -27,7 +27,7 @@ private:
    void DrawPixel(const Point& pos, unsigned int color);
 
    // Writing directly to the video surface is ok since we use double buffering.
-   SDL_Surface* mScreen;
+   SDL_Surface* mScreen = nullptr;
    // Will only be used if application window resolution != Kinect resolution.
    SDL_Surface* mBgSurface = nullptr;
 };

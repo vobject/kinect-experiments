@@ -7,8 +7,11 @@ NuiBackground::NuiBackground(const std::shared_ptr<Nui>& kinect)
    , mDepthBuf(mKinect->GetSize().Width *
                mKinect->GetSize().Height *
                sizeof(XnRGB24Pixel))
+   , mEmptyBuf(mKinect->GetSize().Width *
+               mKinect->GetSize().Height *
+               sizeof(XnRGB24Pixel))
 {
-
+   std::fill(mEmptyBuf.begin(), mEmptyBuf.end(), 128);
 }
 
 NuiBackground::~NuiBackground()
@@ -30,9 +33,7 @@ const void* NuiBackground::GetImage(Size& img_size)
    {
       case BackgroundMode::None:
          {
-            // HACK: Use the depth buffer as 'empty background' buffer -> slow!
-            std::fill(mDepthBuf.begin(), mDepthBuf.end(), 0);
-            return mDepthBuf.data();
+            return mEmptyBuf.data();
          }
       case BackgroundMode::RgbImage:
          {

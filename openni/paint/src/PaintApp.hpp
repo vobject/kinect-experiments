@@ -35,6 +35,7 @@ protected:
    void RenderScene() override;
 
 private:
+   void SelectRenderer();
    void ProcessInput();
    void ProcessKinectInput();
 

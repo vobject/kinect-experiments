@@ -10,13 +10,14 @@
 
 #include <X11/Xlib.h>
 
-#include <chrono>
 #include <iostream>
 
 static void print_commands()
 {
    std::cout << "Commands:\n"
              << "\th - print available commands\n"
+             << "\to - use the OpenGL renderer (default)\n"
+             << "\ts - use the SDL software renderer\n"
              << "\tb - toggle background modes\n"
              << "\tESC - Exit program\n"
              << std::endl;
@@ -39,15 +40,18 @@ void PaintApp::Initialize()
       throw "Failed to initialize Xlib muti-threading support";
    }
 
-//   InitGlVideo({800_px, 600_px});
-   InitSdlVideo({800_px, 600_px});
+   mCurrentVideoMode = VideoMode::OpenGL;
+   mCurrentResolution = {640_px, 480_px};
+
+   InitVideo();
    InitKinect("");
+   SelectRenderer(); // Kinect has to be set up for this!
 
    mWindow = std::make_shared<kinex::Window>("paint");
-//   mRenderer = std::make_shared<GlRenderer>();
-   mRenderer = std::make_shared<SdlRenderer>(*mKinect);
    mKinectBg = std::make_shared<NuiBackground>(mKinect);
    mState = std::make_shared<PaintStatus>();
+
+   print_commands();
 }
 
 void PaintApp::UpdateScene(const int app_time, const int elapsed_time)
@@ -68,6 +72,19 @@ void PaintApp::RenderScene()
    mWindow->FrameDone();
 }
 
+void PaintApp::SelectRenderer()
+{
+   if (VideoMode::OpenGL == mCurrentVideoMode) {
+      mRenderer = std::make_shared<GlRenderer>();
+   }
+   else if (VideoMode::Software == mCurrentVideoMode) {
+      mRenderer = std::make_shared<SdlRenderer>(*mKinect);
+   }
+   else {
+      throw "Invalid video mode.";
+   }
+}
+
 void PaintApp::ProcessInput()
 {
    SDL_Event event;
@@ -84,10 +101,28 @@ void PaintApp::ProcessInput()
 
    switch (event.type)
    {
+      case SDL_VIDEORESIZE:
+         {
+            // FIXME: SDL_VIDEORESIZE is buggy in SDL 1.2.15, see:
+            //  http://bugzilla.libsdl.org/show_bug.cgi?id=1430
+            mCurrentResolution = {event.resize.w, event.resize.h};
+            InitVideo();
+         }
+         break;
       case SDL_KEYDOWN:
          {
             if (SDLK_h == event.key.keysym.sym) {
                print_commands();
+            }
+            else if (SDLK_s == event.key.keysym.sym) {
+               mCurrentVideoMode = VideoMode::Software;
+               InitVideo();
+               SelectRenderer();
+            }
+            else if (SDLK_o == event.key.keysym.sym) {
+               mCurrentVideoMode = VideoMode::OpenGL;
+               InitVideo();
+               SelectRenderer();
             }
             else if (SDLK_b == event.key.keysym.sym) {
                mKinectBg->SwitchMode();

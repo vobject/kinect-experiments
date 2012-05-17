@@ -9,21 +9,14 @@
 #include <GL/glu.h>
 
 GlRenderer::GlRenderer()
-   : mScreen(SDL_GetVideoSurface())
 {
-   glClearColor(.0, .0, .0, .0);
+   glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
-   glEnable(GL_TEXTURE_2D);
+   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+   glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
 
-   glViewport(0, 0, mScreen->w, mScreen->h);
-
-   glMatrixMode(GL_PROJECTION);
-   glLoadIdentity();
-
-   glOrtho(0, mScreen->w, mScreen->h, 0, 1, -1);
-
-   glMatrixMode(GL_MODELVIEW);
-   glLoadIdentity();
+   glEnable(GL_BLEND);
+   glEnable(GL_LINE_SMOOTH);
 }
 
 GlRenderer::~GlRenderer()
@@ -33,6 +26,14 @@ GlRenderer::~GlRenderer()
 
 void GlRenderer::PreRender()
 {
+   // Screen size might have changed.
+   mScreen = SDL_GetVideoSurface();
+
+   glViewport(0, 0, mScreen->w, mScreen->h);
+   glMatrixMode(GL_PROJECTION);
+   glLoadIdentity();
+   glOrtho(0.0, mScreen->w, mScreen->h, 0.0, -1.0, 1.0);
+
    glClear(GL_COLOR_BUFFER_BIT);
 }
 
@@ -46,64 +47,46 @@ void GlRenderer::Render(const std::shared_ptr<NuiBackground>& bg)
    Size img_size = {0, 0};
    const auto img = bg->GetImage(img_size);
 
-   glMatrixMode(GL_PROJECTION);
-   glPushMatrix();
-   glLoadIdentity();
-   glOrtho(0, mScreen->w, mScreen->h, 0, -1.0, 1.0);
-
    // Create the OpenGL texture map
-   glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP_SGIS, GL_TRUE);
+   glEnable(GL_TEXTURE_2D);
+//   glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP_SGIS, GL_TRUE);
    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, img_size.Width, img_size.Height,
+   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, img_size.Width, img_size.Height,
                 1, GL_RGB, GL_UNSIGNED_BYTE, img);
 
    glColor3f(1.0f, 1.0f, 1.0f);
-
    glBegin(GL_QUADS);
-      // upper left
-      glTexCoord2f(0, 0);
-      glVertex2f(0, 0);
-      // upper right
-      glTexCoord2f(1, 0);
-      glVertex2f(mScreen->w, 0);
-      // bottom right
-      glTexCoord2f(1, 1);
-      glVertex2f(mScreen->w, mScreen->h);
-      // bottom left
-      glTexCoord2f(0, 1);
-      glVertex2f(0, mScreen->h);
+      glTexCoord2f(0.0f, 0.0f); glVertex2f(0.0f, 0.0f);
+      glTexCoord2f(1.0f, 0.0f); glVertex2f(mScreen->w, 0.0f);
+      glTexCoord2f(1.0f, 1.0f); glVertex2f(mScreen->w, mScreen->h);
+      glTexCoord2f(0.0f, 1.0f); glVertex2f(0.0f, mScreen->h);
    glEnd();
-   glPopMatrix();
+   glDisable(GL_TEXTURE_2D);
 }
 
 void GlRenderer::Render(const std::shared_ptr<PaintStatus>& status)
 {
-   glPushMatrix();
-   glColor3f(1.0f, 1.0f, 0.0f);
-
    // Redraw the previous drawings.
-   glLineWidth(2);
+   glColor3f(1.0f, 1.0f, 0.0f);
+   glLineWidth(4.0f);
    for (const auto& line : status->lines)
    {
       if (line.empty()) {
          continue;
       }
 
-      Point src_pos = line.at(0);
-      for (const auto& dest_pos : line)
-      {
-         glBegin(GL_LINES);
-            glVertex2i(src_pos.X, src_pos.Y);
-            glVertex2i(dest_pos.X, dest_pos.Y);
-         glEnd();
-
-         src_pos = dest_pos;
-      }
+      glBegin(GL_LINE_STRIP);
+         for (const auto& pos : line)
+         {
+            glVertex2i(pos.X, pos.Y);
+         }
+      glEnd();
    }
 
    // Show the currently active drawing.
-   constexpr auto rect_size = 6_px;
+   constexpr auto rect_size = 8_px;
+   glColor3f(1.0f, 1.0f, 1.0f);
    for (const auto& pt : status->active_line)
    {
       glBegin(GL_POLYGON);
@@ -113,6 +96,4 @@ void GlRenderer::Render(const std::shared_ptr<PaintStatus>& status)
          glVertex2i(pt.X, pt.Y + rect_size);
       glEnd();
    }
-
-   glPopMatrix();
 }

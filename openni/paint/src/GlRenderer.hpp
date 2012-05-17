@@ -20,7 +20,7 @@ public:
    void Render(const std::shared_ptr<PaintStatus>& status) override;
 
 private:
-   SDL_Surface* mScreen;
+   SDL_Surface* mScreen = nullptr;
 };
 
 #endif // GL_RENDERER_HPP

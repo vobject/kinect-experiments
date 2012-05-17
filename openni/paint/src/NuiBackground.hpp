@@ -14,6 +14,8 @@ public:
    ~NuiBackground();
 
    void SwitchMode();
+
+   // Returns a 24Bit image.
    const void* GetImage(Size& img_size);
 
 private:
@@ -28,7 +30,8 @@ private:
    } mDisplayMode = RgbImage;
 
    std::shared_ptr<Nui> mKinect;
-   std::vector<char> mDepthBuf;
+   std::vector<unsigned char> mDepthBuf;
+   std::vector<unsigned char> mEmptyBuf;
 };
 
 #endif // NUI_BACKGROUND_HPP
