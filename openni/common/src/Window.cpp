@@ -47,7 +47,7 @@ Uint32 Window::DefaultFrameTimerCallback(const Uint32 interval, void* param)
    caption << obj->mFPS << " FPS";
 
    SDL_WM_SetCaption(caption.str().c_str(), NULL);
-   LOG(logDEBUG) << caption.str();
+//   LOG(logDEBUG) << caption.str();
 
    return interval;
 }

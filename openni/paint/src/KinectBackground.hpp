@@ -4,6 +4,7 @@
 #include <memory>
 
 class Nui;
+class Size;
 
 class KinectBackground
 {
@@ -12,7 +13,7 @@ public:
    virtual ~KinectBackground() { }
 
    virtual void SwitchMode() { mDisplayMode = static_cast<BackgroundMode>((mDisplayMode + 1) % BACKGROUND_MODE_ITEM_COUNT); }
-   virtual const void* GetImage() = 0;
+   virtual const void* GetImage(Size& img_size) = 0;
 
 protected:
    enum BackgroundMode

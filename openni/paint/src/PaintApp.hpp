@@ -9,11 +9,11 @@
 namespace kinex {
    class Window;
 }
+class Renderer;
 class KinectBackground;
 class Point;
-class Size;
 
-struct Status
+struct PaintStatus
 {
    bool drawing = false;
    std::vector<std::vector<Point>> lines;
@@ -39,10 +39,10 @@ private:
    void ProcessKinectInput();
 
    std::shared_ptr<kinex::Window> mWindow;
-//   std::shared_ptr<Renderer> mRenderer;
+   std::shared_ptr<Renderer> mRenderer;
 
    std::shared_ptr<KinectBackground> mKinectBg;
-   Status mState;
+   std::shared_ptr<PaintStatus> mState;
 };
 
 #endif // PAINT_APP_HPP

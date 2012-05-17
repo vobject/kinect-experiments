@@ -13,7 +13,7 @@
 
 #include <string>
 
-GlRenderer::GlRenderer( const std::shared_ptr<ResourceCache>& res)
+GlRenderer::GlRenderer(const std::shared_ptr<ResourceCache>& res)
    : mResCache(res)
    , mScreen(SDL_GetVideoSurface())
 {

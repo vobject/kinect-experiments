@@ -38,7 +38,6 @@ void SdlRenderer::PreRender()
 
 void SdlRenderer::PostRender()
 {
-
    SDL_BlitSurface(mSurface, NULL, mScreen, NULL);
    SDL_Flip(mScreen);
 }

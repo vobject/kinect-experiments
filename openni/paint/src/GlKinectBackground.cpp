@@ -16,8 +16,11 @@ GlKinectBackground::~GlKinectBackground()
 
 }
 
-const void* GlKinectBackground::GetImage()
+const void* GlKinectBackground::GetImage(Size& img_size)
 {
+   // Always the same...
+   img_size = mKinect->GetSize();
+
    switch (mDisplayMode)
    {
       case BackgroundMode::None:
@@ -43,13 +46,13 @@ const void* GlKinectBackground::GetImage()
 void GlKinectBackground::SelectDepthImage()
 {
    constexpr auto bpp = sizeof(XnRGB24Pixel); // Bytes per pixel
-   const int pixel_cnt = mKinect->GetSize().Width * mKinect->GetSize().Height;
+   const auto pixel_cnt = mKinect->GetSize().Width * mKinect->GetSize().Height;
 
    auto label_buf = mKinect->GetDepthData();
 
-   const int MAX_COLORS = 255;
-   const int MAX_DEPTH = 3000_mm; // == 3 meters
-   const int MAX_ZONES = (MAX_DEPTH / MAX_COLORS) + 1; // number of nuances
+   constexpr int MAX_COLORS = 255;
+   constexpr int MAX_DEPTH = 3000_mm; // == 3 meters
+   constexpr int MAX_ZONES = (MAX_DEPTH / MAX_COLORS) + 1; // number of nuances
 
    for (auto i = 0; i < pixel_cnt; i++, label_buf++)
    {

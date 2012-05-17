@@ -29,8 +29,11 @@ SdlKinectBackground::~SdlKinectBackground()
    SDL_FreeSurface(mSurface);
 }
 
-const void* SdlKinectBackground::GetImage()
+const void* SdlKinectBackground::GetImage(Size& img_size)
 {
+   // TODO
+   img_size = mKinect->GetSize();
+
    switch (mDisplayMode)
    {
       case BackgroundMode::None:

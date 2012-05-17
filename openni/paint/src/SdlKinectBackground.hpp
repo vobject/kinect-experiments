@@ -18,7 +18,7 @@ public:
    SdlKinectBackground(const SdlKinectBackground&) = delete;
    SdlKinectBackground& operator=(const SdlKinectBackground&) = delete;
 
-   const void* GetImage() override;
+   const void* GetImage(Size& img_size) override;
 
 private:
    void SelectRgbImage();

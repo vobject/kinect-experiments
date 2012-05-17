@@ -16,7 +16,7 @@ public:
    GlKinectBackground(const GlKinectBackground&) = delete;
    GlKinectBackground& operator=(const GlKinectBackground&) = delete;
 
-   const void* GetImage() override;
+   const void* GetImage(Size& img_size) override;
 
 private:
    void SelectDepthImage();
