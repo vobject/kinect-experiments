@@ -29,7 +29,7 @@ static void print_commands()
 Logic::Logic(
    const std::shared_ptr<Renderer>& renderer,
    const std::shared_ptr<ResourceCache>& res,
-   const std::shared_ptr<Nui>& kinect
+   const std::shared_ptr<kinex::Nui>& kinect
 )
    : mRenderer(renderer)
    , mResCache(res)

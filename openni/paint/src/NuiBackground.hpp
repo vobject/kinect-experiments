@@ -4,13 +4,15 @@
 #include <memory>
 #include <vector>
 
-class Nui;
+namespace kinex {
+   class Nui;
+}
 class Size;
 
 class NuiBackground
 {
 public:
-   NuiBackground(const std::shared_ptr<Nui>& kinect);
+   NuiBackground(const std::shared_ptr<kinex::Nui>& kinect);
    ~NuiBackground();
 
    void SwitchMode();
@@ -29,7 +31,7 @@ private:
       BACKGROUND_MODE_ITEM_COUNT
    } mDisplayMode = RgbImage;
 
-   std::shared_ptr<Nui> mKinect;
+   std::shared_ptr<kinex::Nui> mKinect;
    std::vector<unsigned char> mDepthBuf;
    std::vector<unsigned char> mEmptyBuf;
 };

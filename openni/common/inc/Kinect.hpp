@@ -6,6 +6,8 @@
 
 #include <string>
 
+namespace kinex {
+
 class Kinect : public Nui
 {
 public:
@@ -46,5 +48,7 @@ private:
    
    bool mPlaybackMode = false;
 };
+
+} // namespace kinex
 
 #endif // KINECT_HPP

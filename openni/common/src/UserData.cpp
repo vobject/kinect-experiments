@@ -1,5 +1,7 @@
 #include "UserData.hpp"
 
+namespace kinex {
+
 const std::map<int, std::string> UserData::mJointNames = {
    { XN_SKEL_HEAD, "HEAD" },
    { XN_SKEL_NECK, "NECK" },
@@ -71,3 +73,5 @@ void UserData::SetPerspectiveJoint(const int joint, const XnPoint3D& pos)
 {
    mPerspectiveJoints[joint] = pos;
 }
+
+} // namespace kinex

@@ -3,7 +3,9 @@
 
 #include "Renderer.hpp"
 
-class Nui;
+namespace kinex {
+   class Nui;
+}
 class Point;
 
 class SDL_Surface;
@@ -11,7 +13,7 @@ class SDL_Surface;
 class SdlRenderer : public Renderer
 {
 public:
-   SdlRenderer(const Nui& kinect);
+   SdlRenderer(const kinex::Nui& kinect);
    virtual ~SdlRenderer();
 
    SdlRenderer(const SdlRenderer&) = delete;

@@ -9,6 +9,8 @@
 #include <memory>
 #include <vector>
 
+namespace kinex {
+
 // NUI (Natural User Interface) abstract class
 class Nui
 {
@@ -33,5 +35,7 @@ public:
 protected:
    Size mRes;
 };
+
+} // namespace kinex
 
 #endif // NUI_HPP

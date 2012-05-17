@@ -11,7 +11,7 @@ class Renderer;
 class Logic;
 class Size;
 
-class ScrollApp : public KinectApp
+class ScrollApp : public kinex::KinectApp
 {
 public:
    ScrollApp();

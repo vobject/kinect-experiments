@@ -6,19 +6,19 @@
 #include "Texture.h"
 #include "Utils.hpp"
 
-#include <XnTypes.h>
-
 #include <SDL.h>
 
 #include <memory>
 #include <map>
 
-class Nui;
+namespace kinex {
+   class Nui;
+}
 
 class Player : public SceneObject
 {
 public:
-   Player(const std::shared_ptr<Nui>& kinect);
+   Player(const std::shared_ptr<kinex::Nui>& kinect);
    virtual ~Player();
 
    Player(const Player&) = delete;
@@ -34,10 +34,10 @@ public:
    SDL_Surface* GetFrame() const;
 
 private:
-   bool IsUserDataValid(const UserData& user) const;
+   bool IsUserDataValid(const kinex::UserData& user) const;
 
-   std::shared_ptr<Nui> mKinect;
-   UserData mUserData;
+   std::shared_ptr<kinex::Nui> mKinect;
+   kinex::UserData mUserData;
    SDL_Surface* mTexture;
 };
 

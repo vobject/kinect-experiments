@@ -2,9 +2,9 @@
 #include "Kinect.hpp"
 #include "UserData.hpp"
 
-Player::Player(const std::shared_ptr<Nui>& kinect)
+Player::Player(const std::shared_ptr<kinex::Nui>& kinect)
    : mKinect(kinect)
-   , mUserData(UserData::INVALID_USER_ID)
+   , mUserData(kinex::UserData::INVALID_USER_ID)
 {
    SetResourceId("player");
    SetPosition({ 0, 0 });
@@ -114,7 +114,7 @@ SDL_Surface* Player::GetFrame() const
    return mTexture;
 }
 
-bool Player::IsUserDataValid(const UserData& user) const
+bool Player::IsUserDataValid(const kinex::UserData& user) const
 {
    auto joints = user.GetRealWorldJoints();
    return (joints[XN_SKEL_TORSO].X && joints[XN_SKEL_TORSO].Y);

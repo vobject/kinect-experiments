@@ -3,6 +3,8 @@
 
 #include <array>
 
+namespace kinex {
+
 // Callback functions for xn::UserGenerator class.
 void XN_CALLBACK_TYPE UserFoundCB(xn::UserGenerator& gen, XnUserID id, void* cookie);
 void XN_CALLBACK_TYPE UserLostCB(xn::UserGenerator& gen, XnUserID id, void* cookie);
@@ -97,23 +99,6 @@ std::shared_ptr<xn::SceneMetaData> UserTracking::GetUserPixels(const UserData& u
 
    mUserGen.GetUserPixels(user.GetId(), *meta);
    return meta;
-
-
-//      const size_t pixel_count = scene_meta.YRes() * scene_meta.XRes();
-//      XnLabel* user_pixels = new XnLabel[pixel_count];
-//      const XnLabel* pLabelBuf = scene_meta.Data();
-//
-////      std::vector<bool> user_pixels(pixel_count, false);
-////
-////      for (XnUInt i = 0; i < pixel_count; ++i, ++pLabelBuf)
-////      {
-////         if (*pLabelBuf == userBuf[id])
-////         {
-////            user_pixels[i] = true;
-////         }
-////      }
-//      memcpy(user_pixels, pLabelBuf, pixel_count * sizeof(XnLabel));
-//      user->SetPixels(user_pixels);
 }
 
 void XN_CALLBACK_TYPE UserFoundCB(
@@ -189,3 +174,5 @@ void XN_CALLBACK_TYPE CalibEndCB(
       args->user_gen->GetPoseDetectionCap().StartPoseDetection("Psi", id);
    }
 }
+
+} // namespace kinex

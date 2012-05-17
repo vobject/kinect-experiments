@@ -3,6 +3,8 @@
 
 #include "Nui.hpp"
 
+namespace kinex {
+
 class KinectDummy : public Nui
 {
 public:
@@ -33,5 +35,7 @@ private:
    std::vector<XnRGB24Pixel> mRgbDummyData;
    std::vector<XnDepthPixel> mDepthDummyData;
 };
+
+} // namespace kinex
 
 #endif // KINECT_DUMMY_HPP

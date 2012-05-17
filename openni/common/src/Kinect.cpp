@@ -1,5 +1,7 @@
 #include "Kinect.hpp"
 
+namespace kinex {
+
 Kinect::Kinect()
 {
 
@@ -148,3 +150,5 @@ std::shared_ptr<xn::SceneMetaData> Kinect::GetUserPixels(const UserData& user) c
 {
    return mUserTracking.GetUserPixels(user);
 }
+
+} // namespace kinex

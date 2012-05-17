@@ -20,7 +20,7 @@ struct PaintStatus
    std::vector<Point> active_line;
 };
 
-class PaintApp : public KinectApp
+class PaintApp : public kinex::KinectApp
 {
 public:
    PaintApp();

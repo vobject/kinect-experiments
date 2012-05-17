@@ -8,7 +8,9 @@
 
 #include <SDL_events.h>
 
-class Nui;
+namespace kinex {
+   class Nui;
+}
 class Renderer;
 class ResourceCache;
 class Sprite;
@@ -20,7 +22,7 @@ class Logic
 public:
    Logic(const std::shared_ptr<Renderer>& renderer,
          const std::shared_ptr<ResourceCache>& res,
-         const std::shared_ptr<Nui>& kinect);
+         const std::shared_ptr<kinex::Nui>& kinect);
    virtual ~Logic();
 
    Logic(const Logic&) = delete;

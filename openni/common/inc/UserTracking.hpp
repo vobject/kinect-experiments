@@ -8,6 +8,8 @@
 #include <memory>
 #include <vector>
 
+namespace kinex {
+
 // A pointer to this struct is passed as the "cookie" argument to the CB functions.
 struct UserTrackerCallbackArgs
 {
@@ -44,5 +46,7 @@ private:
 
    UserTrackerCallbackArgs mCallbackArgs;
 };
+
+} // namespace kinex
 
 #endif // USER_TRACKING_HPP

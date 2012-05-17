@@ -32,6 +32,8 @@
 
 #include <GL/gl.h>
 
+namespace kinex {
+
 class GlFont
 {
 public:
@@ -76,5 +78,7 @@ private:
 
    TTF_Font *ttfFont;
 };
+
+} // namespace kinex
 
 #endif // GL_FONT_HPP

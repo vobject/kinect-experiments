@@ -7,7 +7,7 @@
 #include <SDL.h>
 #include <SDL_rotozoom.h>
 
-SdlRenderer::SdlRenderer(const Nui& kinect)
+SdlRenderer::SdlRenderer(const kinex::Nui& kinect)
 {
    const Size kinect_res = kinect.GetSize();
 

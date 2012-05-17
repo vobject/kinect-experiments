@@ -77,6 +77,8 @@ static GLuint SDL_GL_LoadTexture(SDL_Surface *surface, GLfloat *texcoord)
    return texture;
 }
 
+namespace kinex {
+
 int GlFont::initCounter = 0;
 
 GlFont::GlFont(const std::string& name, const int size, SDL_Color color)
@@ -209,3 +211,5 @@ void GlFont::LoadChar(const char c)
       }
    }
 }
+
+} // namespace kinex

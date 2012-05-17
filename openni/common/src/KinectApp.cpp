@@ -4,6 +4,8 @@
 
 #include <SDL.h>
 
+namespace kinex {
+
 KinectApp::KinectApp()
 {
 
@@ -115,3 +117,5 @@ void KinectApp::SelectGlVideo()
       throw "SDL_SetVideoMode() failed.";
    }
 }
+
+} // namespace kinex

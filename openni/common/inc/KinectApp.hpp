@@ -6,6 +6,8 @@
 #include <memory>
 #include <string>
 
+namespace kinex {
+
 class Nui;
 
 class KinectApp
@@ -40,5 +42,7 @@ private:
    void SelectSdlVideo();
    void SelectGlVideo();
 };
+
+} // namespace kinex
 
 #endif // KINECT_APP_HPP

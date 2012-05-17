@@ -6,6 +6,8 @@
 #include <map>
 #include <string>
 
+namespace kinex {
+
 class UserData
 {
 public:
@@ -30,5 +32,7 @@ private:
    std::map<int, XnPoint3D> mRealWorldJoints;
    std::map<int, XnPoint3D> mPerspectiveJoints;
 };
+
+} // namespace kinex
 
 #endif // USER_DATA_HPP

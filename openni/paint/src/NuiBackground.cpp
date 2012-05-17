@@ -2,7 +2,7 @@
 #include "Nui.hpp"
 #include "Utils.hpp"
 
-NuiBackground::NuiBackground(const std::shared_ptr<Nui>& kinect)
+NuiBackground::NuiBackground(const std::shared_ptr<kinex::Nui>& kinect)
    : mKinect(kinect)
    , mDepthBuf(mKinect->GetSize().Width *
                mKinect->GetSize().Height *
