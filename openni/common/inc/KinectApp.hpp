@@ -28,11 +28,7 @@ protected:
    virtual void InitKinect(const std::string& path);
    virtual void InitVideo();
 
-   enum class VideoMode
-   {
-      Software,
-      OpenGL
-   } mCurrentVideoMode = VideoMode::OpenGL;
+   VideoMode mCurrentVideoMode = VideoMode::OpenGL;
    Size mCurrentResolution = {640_px, 480_px};
 
    bool mQuitRequested = false;

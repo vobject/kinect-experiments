@@ -3,7 +3,7 @@
 #include "ResourceCache.hpp"
 #include "Sprite.h"
 #include "Background.h"
-#include "Player.h"
+#include "Player.hpp"
 #include "Utils.hpp"
 
 #include <SDL.h>

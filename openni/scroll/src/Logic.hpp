@@ -14,6 +14,7 @@ namespace kinex {
 class Renderer;
 class ResourceCache;
 class Sprite;
+class Particle;
 class Background;
 class Player;
 
@@ -34,9 +35,6 @@ public:
    virtual void Update(int app_time, int elapsed_time);
    virtual void Render();
 
-   // Needed to know the direction and speed of scrolling.
-//   void SetScreenSize(const Size& res);
-
 private:
    void UpdateBackground(int app_time, int elapsed_time);
    void UpdatePlayer(int app_time, int elapsed_time);
@@ -47,6 +45,7 @@ private:
    std::shared_ptr<Background> mBackground;
    std::shared_ptr<Player> mPlayer;
    std::list<std::shared_ptr<Sprite>> mSprites;
+//   std::list<std::shared_ptr<Particle>> mParticles;
 
    Size mScreenSize = { 0, 0 };
 

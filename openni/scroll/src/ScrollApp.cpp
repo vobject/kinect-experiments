@@ -28,7 +28,7 @@ void ScrollApp::Initialize()
       throw "Failed to initialize Xlib muti-threading support";
    }
 
-   mCurrentVideoMode = VideoMode::OpenGL;
+   mCurrentVideoMode = VideoMode::Software;
    mCurrentResolution = {800_px, 600_px};
 
    InitVideo();

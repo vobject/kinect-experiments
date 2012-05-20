@@ -3,8 +3,9 @@
 #include "ResourceCache.hpp"
 #include "Kinect.hpp"
 #include "Sprite.h"
+//#include "Particle.hpp"
 #include "Background.h"
-#include "Player.h"
+#include "Player.hpp"
 #include "Utils.hpp"
 
 #include <algorithm>
@@ -80,12 +81,16 @@ void Logic::ProcessInput(const SDL_MouseButtonEvent& ev)
 {
    if ((SDL_MOUSEBUTTONUP == ev.type) && (SDL_BUTTON_LEFT == ev.button))
    {
-      auto obj = std::make_shared<Sprite>(mResCache->GetSprite("blood_b"), true);
+      auto obj = std::make_shared<Sprite>(mResCache->GetSprite("blood_b"));
       obj->SetSize({ 192_px, 192_px });
       obj->SetPosition({ ev.x - (obj->GetSize().Width / 2), ev.y - (obj->GetSize().Height / 2) });
-      obj->SetDirection(-1, 1);
-      obj->SetSpeed(3, 2);
+//      obj->SetDirection(-1, 1);
+//      obj->SetSpeed(3, 2);
       mSprites.push_back(obj);
+
+//      auto obj = std::make_shared<Particle>();
+//      obj->SetPosition({ ev.x - (obj->GetSize().Width / 2), ev.y - (obj->GetSize().Height / 2) });
+//      mParticles.push_back(obj);
    }
    else if ((SDL_MOUSEBUTTONUP == ev.type) && (SDL_BUTTON_RIGHT == ev.button))
    {
@@ -146,6 +151,13 @@ void Logic::Render()
    mRenderer->Render(mBackground);
    mRenderer->Render(mSprites);
    mRenderer->Render(mPlayer);
+
+//   for (auto& obj : mParticles) {
+//      SDL_Rect rect = { (Sint16)obj->GetPosition().X, (Sint16)obj->GetPosition().Y,
+//                        (Uint16)obj->GetSize().Width, (Uint16)obj->GetSize().Height };
+//      SDL_FillRect(mRenderer->mSurface, &rect, 0xff55ff);
+//   }
+
    mRenderer->PostRender();
 }
 
@@ -229,10 +241,33 @@ void Logic::UpdatePlayer(const int app_time, const int elapsed_time)
 
 void Logic::UpdateEnemies(const int app_time, const int elapsed_time)
 {
-   // TODO: Check for dead sprites and remove them
+//   mSprites.erase(
+//      std::remove_if(
+//         mSprites.begin(),
+//         mSprites.end(),
+//         [&](std::shared_ptr<Sprite> obj) -> bool {
+//            if (obj->IsAlive()) {
+//               obj->Update(elapsed_time);
+//               return false; // Do not remove the element.
+//            }
+//            return true; // Remove the element.
+//         }
+//      ),
+//      mSprites.end()
+//   );
 
-   for (auto& obj : mSprites)
+   auto obj = std::begin(mSprites);
+
+   while (obj != std::end(mSprites))
    {
-       obj->Update(elapsed_time);
+       if ((*obj)->IsAlive())
+       {
+          (*obj)->Update(elapsed_time);
+          obj++;
+       }
+       else
+       {
+          obj = mSprites.erase(obj); // Remove dead sprite.
+       }
    }
 }

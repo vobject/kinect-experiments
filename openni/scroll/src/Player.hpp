@@ -1,5 +1,5 @@
-#ifndef PLAYER_H
-#define PLAYER_H
+#ifndef PLAYER_HPP
+#define PLAYER_HPP
 
 #include "SceneObject.hpp"
 #include "UserData.hpp"
@@ -41,4 +41,4 @@ private:
    SDL_Surface* mTexture;
 };
 
-#endif // PLAYER_H
+#endif // PLAYER_HPP

@@ -6,6 +6,12 @@
 #include <memory>
 #include <utility>
 
+enum class VideoMode
+{
+   Software,
+   OpenGL
+};
+
 struct Point
 {
    constexpr Point(int x, int y) : X(x), Y(y) { }
