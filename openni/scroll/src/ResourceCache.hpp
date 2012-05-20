@@ -3,7 +3,6 @@
 
 #include "BackgroundResource.h"
 #include "SpriteResource.h"
-#include "Utils.hpp"
 
 #include <SDL.h>
 

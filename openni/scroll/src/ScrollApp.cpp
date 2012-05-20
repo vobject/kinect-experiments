@@ -28,15 +28,15 @@ void ScrollApp::Initialize()
       throw "Failed to initialize Xlib muti-threading support";
    }
 
-   mCurrentVideoMode = VideoMode::Software;
-   mCurrentResolution = {1024_px, 768_px};
+   mCurrentVideoMode = VideoMode::OpenGL;
+   mCurrentResolution = {800_px, 600_px};
 
    InitVideo();
    InitKinect("");
 
    mWindow = std::make_shared<kinex::Window>("scroll");
    mResCache = std::make_shared<ResourceCache>();
-   SelectRenderer(); // ResourceCache has to be set up for this!
+   SelectRenderer(); // ResourceCache has to be set up before the renderer!
    mLogic = std::make_shared<Logic>(mRenderer, mResCache, mKinect);
 }
 

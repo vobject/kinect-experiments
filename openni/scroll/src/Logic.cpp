@@ -50,18 +50,17 @@ Logic::~Logic()
 
 void Logic::ProcessInput(const SDL_KeyboardEvent& ev)
 {
+   // Event based keyboard-input handling:
+   //  ---> if a key is pressed or released, handle the input immediately or
+   //       set the corresponding logic state.
+   // "Is-key-still-pressed"-handling does not belong here.
+
    if (SDL_KEYDOWN == ev.type)
    {
       switch (ev.keysym.sym)
       {
       case SDLK_h:
          print_commands();
-         break;
-      case SDLK_LEFT:
-         mBackground->ScrollRight(4);
-         break;
-      case SDLK_RIGHT:
-         mBackground->ScrollLeft(4);
          break;
       default:
          break;
@@ -112,6 +111,18 @@ void Logic::ProcessInput(const SDL_MouseButtonEvent& ev)
 
 void Logic::Update(const int app_time, const int elapsed_time)
 {
+   const Uint8* keystate = SDL_GetKeyState(nullptr);
+
+   if (keystate[SDLK_LEFT])
+   {
+      mBackground->ScrollLeft(1);
+   }
+
+   if (keystate[SDLK_RIGHT])
+   {
+      mBackground->ScrollRight(1);
+   }
+
    UpdateBackground(app_time, elapsed_time);
    UpdatePlayer(app_time, elapsed_time);
    UpdateEnemies(app_time, elapsed_time);
@@ -150,9 +161,9 @@ void Logic::Render()
 
 void Logic::UpdateBackground(const int app_time, const int elapsed_time)
 {
-   if (!mPlayer->IsVisible()) {
-      return;
-   }
+//   if (!mPlayer->IsVisible()) {
+//      return;
+//   }
 
 //   const int actor_x_center = mActor->GetXCenter();
 //   if (std::abs(actor_x_center) < 30) {

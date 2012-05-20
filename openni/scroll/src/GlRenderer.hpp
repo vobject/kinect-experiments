@@ -28,7 +28,7 @@ private:
 
    std::shared_ptr<ResourceCache> mResCache;
 
-   SDL_Surface* mScreen;
+   SDL_Surface* mScreen = nullptr;
 };
 
 #endif // GL_RENDERER_HPP

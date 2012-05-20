@@ -4,7 +4,7 @@ BackgroundResource::BackgroundResource()
 {
 
 }
-BackgroundResource::BackgroundResource( const std::string& id, SDL_Surface* texture)
+BackgroundResource::BackgroundResource(const std::string& id, SDL_Surface* texture)
    : mId(id)
    , mFrame(texture)
 {

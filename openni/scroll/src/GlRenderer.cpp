@@ -15,21 +15,11 @@
 
 GlRenderer::GlRenderer(const std::shared_ptr<ResourceCache>& res)
    : mResCache(res)
-   , mScreen(SDL_GetVideoSurface())
 {
-   glClearColor(.0, .0, .0, .0);
+   glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
+   glEnable(GL_BLEND);
    glEnable(GL_TEXTURE_2D);
-
-   glViewport(0, 0, mScreen->w, mScreen->h);
-
-   glMatrixMode(GL_PROJECTION);
-   glLoadIdentity();
-
-   glOrtho(0, mScreen->w, mScreen->h, 0, 1, -1);
-
-   glMatrixMode(GL_MODELVIEW);
-   glLoadIdentity();
 }
 
 GlRenderer::~GlRenderer()
@@ -39,6 +29,14 @@ GlRenderer::~GlRenderer()
 
 void GlRenderer::PreRender()
 {
+   // Screen size might have changed.
+   mScreen = SDL_GetVideoSurface();
+
+   glViewport(0, 0, mScreen->w, mScreen->h);
+   glMatrixMode(GL_PROJECTION);
+   glLoadIdentity();
+   glOrtho(0.0, mScreen->w, mScreen->h, 0.0, -1.0, 1.0);
+
    glClear(GL_COLOR_BUFFER_BIT);
 }
 
@@ -64,28 +62,29 @@ void GlRenderer::Render(const std::shared_ptr<Background>& bg)
    glOrtho(0, mScreen->w, mScreen->h, 0, -1.0, 1.0);
 
    // Create the OpenGL texture map
-   glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP_SGIS, GL_TRUE);
+//   glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP_SGIS, GL_TRUE);
    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, frame->w, frame->h,
                 1, GL_BGRA, GL_UNSIGNED_BYTE, frame->pixels);
 
    // Display the OpenGL texture map
-   glColor3f(1., 1., 1.);
+   glColor3f(1.0f, 1.0f, 1.0f);
+
+   const Point bg_pos = bg->GetPosition();
+   const Size bg_size = bg->GetSize();
+
+   // FIXME: enable correct scrolling.
+   const float x_left_vertex = 0;//static_cast<float>(bg_pos.X) / bg_size.Width;
+   const float y_left_vertex = static_cast<float>(bg_pos.Y) / bg_size.Height;
+   const float x_right_vertex = static_cast<float>(mScreen->w) / bg_size.Width;
+   const float y_right_vertex = static_cast<float>(mScreen->h + bg_pos.Y) / bg_size.Height;
 
    glBegin(GL_QUADS);
-      // upper left
-      glTexCoord2f(0, 0);
-      glVertex2f(0, 0);
-      // upper right
-      glTexCoord2f(1, 0);
-      glVertex2f(mScreen->w, 0);
-      // bottom right
-      glTexCoord2f(1, 1);
-      glVertex2f(mScreen->w, mScreen->h);
-      // bottom left
-      glTexCoord2f(0, 1);
-      glVertex2f(0, mScreen->h);
+     glTexCoord2f(x_left_vertex, y_left_vertex);   glVertex2f(0.0f + bg_pos.X, 0.0f);
+     glTexCoord2f(x_right_vertex, y_left_vertex);  glVertex2f(mScreen->w + bg_pos.X, 0.0f);
+     glTexCoord2f(x_right_vertex, y_right_vertex); glVertex2f(mScreen->w + bg_pos.X, mScreen->h);
+     glTexCoord2f(x_left_vertex, y_right_vertex);  glVertex2f(0.0f + bg_pos.X, mScreen->h);
    glEnd();
    glPopMatrix();
 }

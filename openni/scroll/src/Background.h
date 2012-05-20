@@ -20,8 +20,6 @@ public:
 
    void Update(int elapsed_time) override;
 
-//   void SetScreenResolution(int x_res, int y_res);
-
    void ScrollLeft(int speed);
    void ScrollRight(int speed);
 
@@ -29,10 +27,11 @@ private:
    int mXScreen;
    int mYScreen;
 
-//   // In milliseconds - Determines the minimum scroll speed.
-//   const int BACKGROUND_UPDATE_DELTA = 1000 / 60;
+   // The maximum scroll speed -> how long to wait for one scroll operation.
+   const int MILLISECONDS_PER_SCROLL = 10_ms; // Move this into BackgroundResource
+   //   const int BACKGROUND_UPDATE_DELTA = 1000 / 60;
 //
-//   int mLastBgUpdateTime;
+   int mElapsedTimeSinceLastScroll = 0_ms;
 };
 
 #endif // BACKGROUND_H

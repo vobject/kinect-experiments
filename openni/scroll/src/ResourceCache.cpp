@@ -19,7 +19,7 @@ ResourceCache::ResourceCache()
 //   Load("res/background/smw.jpg", "smw");
 //   Load("res/background/2zxr32b.png", "smw");
 
-   LoadBackground(mResDir + "/sprite/a.png", "background");
+   LoadBackground(mResDir + "/sprite/Guile_Stage_by_sith_x.jpg", "background");
 
    LoadSprite({mResDir + "/sprite/explode1.jpg"}, "arcanister");
    LoadSprite({mResDir + "/sprite/blood_b/1.png",

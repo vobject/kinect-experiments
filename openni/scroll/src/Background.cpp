@@ -5,7 +5,6 @@
 Background::Background(const BackgroundResource& res)
    : mXScreen(SDL_GetVideoSurface()->w)
    , mYScreen(SDL_GetVideoSurface()->h)
-//, mLastBgUpdateTime(0) // TODO: Move this into Background class
 {
    SetResourceId(res.GetId());
    SetSize(res.GetSize());
@@ -19,6 +18,8 @@ Background::~Background()
 
 void Background::Update(const int elapsed_time)
 {
+   mElapsedTimeSinceLastScroll += elapsed_time;
+
 //   if ((game_time - mLastBgUpdateTime) < BACKGROUND_UPDATE_DELTA) {
 //      return;
 //   }
@@ -26,25 +27,13 @@ void Background::Update(const int elapsed_time)
 //   mLastBgUpdateTime = game_time;
 }
 
-//void Background::SetScreenResolution(const int x_res, const int y_res)
-//{
-//   mXScreen = x_res;
-//   mYScreen = y_res;
-//}
-
 void Background::ScrollLeft(const int speed)
 {
-   // Scrolling left means walking forward.
-
-   if (std::abs(GetPosition().X - mXScreen - speed) >= GetSize().Width) {
+   if (mElapsedTimeSinceLastScroll < MILLISECONDS_PER_SCROLL) {
       return;
    }
+   mElapsedTimeSinceLastScroll = 0_ms;
 
-   SetPosition({ GetPosition().X - speed, GetPosition().Y });
-}
-
-void Background::ScrollRight(const int speed)
-{
    // Scrolling right means walking backward.
 
    if ((GetPosition().X + speed) >= 0) {
@@ -52,4 +41,20 @@ void Background::ScrollRight(const int speed)
    }
 
    SetPosition({ GetPosition().X + speed, GetPosition().Y });
+}
+
+void Background::ScrollRight(const int speed)
+{
+   if (mElapsedTimeSinceLastScroll < MILLISECONDS_PER_SCROLL) {
+      return;
+   }
+   mElapsedTimeSinceLastScroll = 0_ms;
+
+   // Scrolling left means walking forward.
+
+   if (std::abs(GetPosition().X - mXScreen - speed) >= GetSize().Width) {
+      return;
+   }
+
+   SetPosition({ GetPosition().X - speed, GetPosition().Y });
 }
