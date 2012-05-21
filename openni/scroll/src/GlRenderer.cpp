@@ -1,9 +1,10 @@
 #include "GlRenderer.hpp"
 #include "Kinect.hpp"
 #include "ResourceCache.hpp"
-#include "Sprite.h"
+#include "Sprite.hpp"
 #include "Background.h"
 #include "Player.hpp"
+#include "Enemy.hpp"
 #include "Utils.hpp"
 
 #include <SDL.h>
@@ -114,6 +115,11 @@ void GlRenderer::Render(const std::shared_ptr<Player>& player)
 //   SDL_Rect rect = { (Sint16)player->GetPosition().X, (Sint16)player->GetPosition().Y,
 //                     (Uint16)player->GetSize().Width, (Uint16)player->GetSize().Height };
 //   SDL_BlitSurface(zoomed_frame, NULL, mWindow->mSurface, &rect);
+}
+
+void GlRenderer::Render(const std::shared_ptr<Enemy>& enemy)
+{
+   RenderSprite(enemy);
 }
 
 void GlRenderer::Render(const std::list<std::shared_ptr<Sprite>>& objects)

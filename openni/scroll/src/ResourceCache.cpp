@@ -21,6 +21,7 @@ ResourceCache::ResourceCache()
 
    LoadBackground(mResDir + "/sprite/ken_big.jpg", "background");
 
+   LoadSprite({mResDir + "/sprite/ex2scan-kairi.jpg"}, "enemy1");
    LoadSprite({mResDir + "/sprite/explode1.jpg"}, "arcanister");
    LoadSprite({mResDir + "/sprite/blood_b/1.png",
                mResDir + "/sprite/blood_b/2.png",

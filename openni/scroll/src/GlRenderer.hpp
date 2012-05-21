@@ -20,6 +20,7 @@ public:
    void PostRender() override;
    void Render(const std::shared_ptr<Background>& bg) override;
    void Render(const std::shared_ptr<Player>& player) override;
+   void Render(const std::shared_ptr<Enemy>& enemy) override;
    void Render(const std::list<std::shared_ptr<Sprite>>& objects) override;
 
 private:

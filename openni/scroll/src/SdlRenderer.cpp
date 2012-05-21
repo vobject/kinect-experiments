@@ -1,9 +1,10 @@
 #include "SdlRenderer.hpp"
 #include "Kinect.hpp"
 #include "ResourceCache.hpp"
-#include "Sprite.h"
+#include "Sprite.hpp"
 #include "Background.h"
 #include "Player.hpp"
+#include "Enemy.hpp"
 #include "Utils.hpp"
 
 #include <SDL.h>
@@ -13,32 +14,26 @@
 
 SdlRenderer::SdlRenderer(const std::shared_ptr<ResourceCache>& res)
    : mResCache(res)
-   , mScreen(SDL_GetVideoSurface())
 {
-   // This is the surface that we will write to before swapping it.
-   mSurface = SDL_CreateRGBSurface(SDL_SWSURFACE,
-                                   mScreen->w, mScreen->h,
-                                   mScreen->format->BitsPerPixel,
-                                   0, 0, 0, 0);
-   if (!mSurface) {
-      throw "SDL_CreateRGBSurface() failed.";
-   }
+
 }
 
 SdlRenderer::~SdlRenderer()
 {
-   SDL_FreeSurface(mSurface);
+
 }
 
 void SdlRenderer::PreRender()
 {
-   const auto black = SDL_MapRGB(mSurface->format, 0x00, 0x00, 0x00);
-   SDL_FillRect(mSurface, NULL, black);
+   // Screen size might have changed.
+   mScreen = SDL_GetVideoSurface();
+
+   const auto black = SDL_MapRGB(mScreen->format, 0x00, 0x00, 0x00);
+   SDL_FillRect(mScreen, NULL, black);
 }
 
 void SdlRenderer::PostRender()
 {
-   SDL_BlitSurface(mSurface, NULL, mScreen, NULL);
    SDL_Flip(mScreen);
 }
 
@@ -58,7 +53,7 @@ void SdlRenderer::Render(const std::shared_ptr<Background>& bg)
                      (Uint16)bg->GetSize().Width,
                      (Uint16)bg->GetSize().Height };
 
-   SDL_BlitSurface(frame, NULL, mSurface, &rect);
+   SDL_BlitSurface(frame, NULL, mScreen, &rect);
 }
 
 void SdlRenderer::Render(const std::shared_ptr<Player>& player)
@@ -88,8 +83,13 @@ void SdlRenderer::Render(const std::shared_ptr<Player>& player)
                      (Uint16)player->GetSize().Width,
                      (Uint16)player->GetSize().Height };
 
-   SDL_BlitSurface(zoomed_frame, NULL, mSurface, &rect);
+   SDL_BlitSurface(zoomed_frame, NULL, mScreen, &rect);
    SDL_FreeSurface(zoomed_frame);
+}
+
+void SdlRenderer::Render(const std::shared_ptr<Enemy>& enemy)
+{
+   RenderSprite(enemy);
 }
 
 void SdlRenderer::Render(const std::list<std::shared_ptr<Sprite>>& objects)
@@ -139,6 +139,6 @@ void SdlRenderer::RenderSprite(const std::shared_ptr<Sprite>& obj) const
                      (Uint16)obj->GetSize().Width,
                      (Uint16)obj->GetSize().Height };
 
-   SDL_BlitSurface(zoomed_frame, NULL, mSurface, &rect);
+   SDL_BlitSurface(zoomed_frame, NULL, mScreen, &rect);
    SDL_FreeSurface(zoomed_frame);
 }

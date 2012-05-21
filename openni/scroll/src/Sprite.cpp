@@ -1,4 +1,4 @@
-#include "Sprite.h"
+#include "Sprite.hpp"
 #include "SpriteResource.h"
 #include "Utils.hpp"
 
@@ -7,7 +7,7 @@ Sprite::Sprite(
    const bool looping /*=false*/
 )
    : mIsLooping(looping)
-   , mMsPerFrame(60) // TODO: Move this info into the resource
+   , mMsPerFrame(80) // TODO: Move this info into the resource
    , mMsPerPosUpdate(30) // TODO: Move this info into the resource
    , mElapsedFrameTime(0)
    , mElapsedPosTime(0)

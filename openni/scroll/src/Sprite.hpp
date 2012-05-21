@@ -1,5 +1,5 @@
-#ifndef SPRITE_H
-#define SPRITE_H
+#ifndef SPRITE_HPP
+#define SPRITE_HPP
 
 #include "SceneObject.hpp"
 
@@ -28,7 +28,7 @@ public:
 
    int GetCurrentFrame() const;
 
-private:
+protected:
    void UpdateFrame();
    void UpdatePosition();
 
@@ -48,4 +48,4 @@ private:
    int mYSpeed;
 };
 
-#endif // SPRITE_H
+#endif // SPRITE_HPP

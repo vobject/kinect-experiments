@@ -26,7 +26,7 @@ public:
 
    void Update(int elapsed_time) override;
 
-   virtual bool CheckCollision(const SceneObject& obj) const;
+   virtual bool CheckCollision(const SceneObject& obj, Point& collision) const;
 
    int GetXCenter();
    int GetYCenter();
@@ -35,6 +35,7 @@ public:
 
 private:
    bool IsUserDataValid(const kinex::UserData& user) const;
+   Point GetRelativePerspectiveJointPosition(const XnPoint3D& pos) const;
 
    std::shared_ptr<kinex::Nui> mKinect;
    kinex::UserData mUserData;

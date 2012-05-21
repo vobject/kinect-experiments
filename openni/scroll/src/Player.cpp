@@ -44,27 +44,31 @@ void Player::Update(const int elapsed_time)
 //   mUserData.reset(new UserData(user));
 //}
 
-bool Player::CheckCollision(const SceneObject& obj) const
+bool Player::CheckCollision(const SceneObject& obj, Point& collision) const
 {
-//   auto joints = mUserData->GetRealWorldJoints();
-//   const auto left_hand = joints[XN_SKEL_LEFT_HAND];
-//   const auto right_hand = joints[XN_SKEL_RIGHT_HAND];
-//
-//   if ((left_hand.X > obj.GetXPos()) &&
-//       (left_hand.X < obj.GetXPos() + obj.GetXRes()) &&
-//       (left_hand.Y > obj.GetYPos()) &&
-//       (left_hand.Y < obj.GetYPos() + obj.GetYRes()))
-//   {
-//      return true;
-//   }
-//
-//   if ((right_hand.X > obj.GetXPos()) &&
-//       (right_hand.X < obj.GetXPos() + obj.GetXRes()) &&
-//       (right_hand.Y > obj.GetYPos()) &&
-//       (right_hand.Y < obj.GetYPos() + obj.GetYRes()))
-//   {
-//      return true;
-//   }
+   auto joints = mUserData.GetPerspectiveJoints();
+   const auto left_hand = GetRelativePerspectiveJointPosition(joints[XN_SKEL_LEFT_HAND]);
+   const auto right_hand = GetRelativePerspectiveJointPosition(joints[XN_SKEL_RIGHT_HAND]);
+
+   if ((left_hand.X > obj.GetPosition().X) &&
+       (left_hand.X < obj.GetPosition().X + obj.GetSize().Width) &&
+       (left_hand.Y > obj.GetPosition().Y) &&
+       (left_hand.Y < obj.GetPosition().Y + obj.GetSize().Height))
+   {
+      collision.X = left_hand.X;
+      collision.Y = left_hand.Y;
+      return true;
+   }
+
+   if ((right_hand.X > obj.GetPosition().X) &&
+       (right_hand.X < obj.GetPosition().X + obj.GetSize().Width) &&
+       (right_hand.Y > obj.GetPosition().Y) &&
+       (right_hand.Y < obj.GetPosition().Y + obj.GetSize().Height))
+   {
+      collision.X = right_hand.X;
+      collision.Y = right_hand.Y;
+      return true;
+   }
 
    return false;
 }
@@ -118,4 +122,11 @@ bool Player::IsUserDataValid(const kinex::UserData& user) const
 {
    auto joints = user.GetRealWorldJoints();
    return (joints[XN_SKEL_TORSO].X && joints[XN_SKEL_TORSO].Y);
+}
+
+Point Player::GetRelativePerspectiveJointPosition(const XnPoint3D& pos) const
+{
+   const int relative_x = static_cast<float>(GetSize().Width) / mKinect->GetSize().Width * pos.X + GetPosition().X;
+   const int relative_y = static_cast<float>(GetSize().Height) / mKinect->GetSize().Height * pos.Y + GetPosition().Y;
+   return {relative_x, relative_y};
 }

@@ -17,6 +17,7 @@ class Sprite;
 class Particle;
 class Background;
 class Player;
+class Enemy;
 
 class Logic
 {
@@ -44,6 +45,7 @@ private:
    std::shared_ptr<ResourceCache> mResCache;
    std::shared_ptr<Background> mBackground;
    std::shared_ptr<Player> mPlayer;
+   std::shared_ptr<Enemy> mEnemy;
    std::list<std::shared_ptr<Sprite>> mSprites;
 //   std::list<std::shared_ptr<Particle>> mParticles;
 

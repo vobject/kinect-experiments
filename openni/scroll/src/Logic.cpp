@@ -2,10 +2,11 @@
 #include "Renderer.hpp"
 #include "ResourceCache.hpp"
 #include "Kinect.hpp"
-#include "Sprite.h"
+#include "Sprite.hpp"
 //#include "Particle.hpp"
 #include "Background.h"
 #include "Player.hpp"
+#include "Enemy.hpp"
 #include "Utils.hpp"
 
 #include <algorithm>
@@ -39,7 +40,12 @@ Logic::Logic(
    // TODO: Background must have a "buttom" coordinate.
 
    mPlayer = std::make_shared<Player>(kinect);
-   mPlayer->SetSize({ 320_px, 400_px });
+   mPlayer->SetSize({ 468_px, 324_px });
+   mPlayer->SetPosition({ 100, 140 });
+
+   mEnemy = std::make_shared<Enemy>(mResCache->GetSprite("enemy1"));
+   mEnemy->SetSize({ 164_px, 360_px });
+   mEnemy->SetPosition({ 450, 178 });
 
    srand(time(NULL));
 }
@@ -149,8 +155,9 @@ void Logic::Render()
 
    mRenderer->PreRender();
    mRenderer->Render(mBackground);
-   mRenderer->Render(mSprites);
+   mRenderer->Render(mEnemy);
    mRenderer->Render(mPlayer);
+   mRenderer->Render(mSprites);
 
 //   for (auto& obj : mParticles) {
 //      SDL_Rect rect = { (Sint16)obj->GetPosition().X, (Sint16)obj->GetPosition().Y,
@@ -160,16 +167,6 @@ void Logic::Render()
 
    mRenderer->PostRender();
 }
-
-//void Logic::SetScreenSize(const Size& res)
-//{
-//   mScreenSize = res;
-//
-//   mBackground->SetScreenResolution(mScreenSize.Width, mScreenSize.Height);
-//
-////   mPlayer->SetPosition({ (mXScreen / 2) - (mPlayer->GetSize().Width / 2),
-////                          (mYScreen / 2) + (mPlayer->GetSize().Height / 2) });
-//}
 
 void Logic::UpdateBackground(const int app_time, const int elapsed_time)
 {
@@ -237,25 +234,36 @@ void Logic::UpdatePlayer(const int app_time, const int elapsed_time)
 //   }
 
    mPlayer->Update(elapsed_time);
+
+   if (!mPlayer->IsVisible()) {
+      return;
+   }
+
+   // HACK
+   static bool still_colliding = false;
+
+   Point collision(0, 0);
+   if (mPlayer->CheckCollision(*mEnemy, collision))
+   {
+      if (!still_colliding)
+      {
+         auto obj = std::make_shared<Sprite>(mResCache->GetSprite("blood_b"));
+         obj->SetSize({ 256_px, 256_px });
+         obj->SetPosition({ collision.X - (obj->GetSize().Width / 2) + 24, collision.Y - (obj->GetSize().Height / 2) });
+//         obj->SetPosition({ collision.X, collision.Y });
+         mSprites.push_back(obj);
+         still_colliding = true;
+      }
+
+   }
+   else
+   {
+      still_colliding = false;
+   }
 }
 
 void Logic::UpdateEnemies(const int app_time, const int elapsed_time)
 {
-//   mSprites.erase(
-//      std::remove_if(
-//         mSprites.begin(),
-//         mSprites.end(),
-//         [&](std::shared_ptr<Sprite> obj) -> bool {
-//            if (obj->IsAlive()) {
-//               obj->Update(elapsed_time);
-//               return false; // Do not remove the element.
-//            }
-//            return true; // Remove the element.
-//         }
-//      ),
-//      mSprites.end()
-//   );
-
    auto obj = std::begin(mSprites);
 
    while (obj != std::end(mSprites))
