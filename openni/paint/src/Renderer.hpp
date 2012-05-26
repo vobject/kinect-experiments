@@ -5,7 +5,7 @@
 #include <list>
 
 class NuiBackground;
-class PaintStatus;
+struct PaintStatus;
 
 class Renderer
 {

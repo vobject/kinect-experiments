@@ -3,7 +3,7 @@
 
 #include "Renderer.hpp"
 
-class SDL_Surface;
+struct SDL_Surface;
 
 class GlRenderer : public Renderer
 {

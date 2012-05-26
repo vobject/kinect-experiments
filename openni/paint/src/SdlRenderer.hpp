@@ -6,9 +6,9 @@
 namespace kinex {
    class Nui;
 }
-class Point;
+struct Point;
 
-class SDL_Surface;
+struct SDL_Surface;
 
 class SdlRenderer : public Renderer
 {

@@ -7,7 +7,7 @@
 namespace kinex {
    class Nui;
 }
-class Size;
+struct Size;
 
 class NuiBackground
 {

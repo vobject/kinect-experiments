@@ -9,7 +9,7 @@ namespace kinex {
 class ResourceCache;
 class Renderer;
 class Logic;
-class Size;
+struct Size;
 
 class ScrollApp : public kinex::KinectApp
 {

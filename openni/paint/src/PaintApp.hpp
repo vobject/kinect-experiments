@@ -11,7 +11,7 @@ namespace kinex {
 }
 class Renderer;
 class NuiBackground;
-class Point;
+struct Point;
 
 struct PaintStatus
 {

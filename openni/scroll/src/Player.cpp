@@ -29,6 +29,8 @@ Player::~Player()
 
 void Player::Update(const int elapsed_time)
 {
+   (void) elapsed_time;
+
    const auto users = mKinect->GetUsers();
    if (users.empty() || !IsUserDataValid(users[0])) {
       SetVisible(false);

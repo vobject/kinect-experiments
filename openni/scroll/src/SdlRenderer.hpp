@@ -5,7 +5,7 @@
 
 class ResourceCache;
 
-class SDL_Surface;
+struct SDL_Surface;
 
 class SdlRenderer : public Renderer
 {
