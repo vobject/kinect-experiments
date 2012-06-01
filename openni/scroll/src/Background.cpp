@@ -9,6 +9,8 @@ Background::Background(const BackgroundResource& res)
    SetResourceId(res.GetId());
    SetSize(res.GetSize());
    SetZOrder(ZOrder::zo_Background);
+
+   // TODO: Background must have a "buttom" coordinate.
 }
 
 Background::~Background()

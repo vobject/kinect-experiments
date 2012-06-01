@@ -29,7 +29,7 @@ void ScrollApp::Initialize()
    }
 
    mCurrentVideoMode = VideoMode::Software;
-   mCurrentResolution = {800_px, 600_px};
+   mCurrentResolution = {640_px, 480_px};
 
    InitVideo();
    InitKinect("");

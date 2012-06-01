@@ -2,6 +2,8 @@
 #include "Kinect.hpp"
 #include "UserData.hpp"
 
+#include <algorithm>
+
 Player::Player(const std::shared_ptr<kinex::Nui>& kinect)
    : mKinect(kinect)
    , mUserData(kinex::UserData::INVALID_USER_ID)
@@ -39,6 +41,8 @@ void Player::Update(const int elapsed_time)
 
    mUserData = users[0];
    SetVisible(true);
+
+   // TODO: Change player state, e.g. add visual enhancements.
 }
 
 //void Actor::SetInputData(const UserData& user)
@@ -46,44 +50,87 @@ void Player::Update(const int elapsed_time)
 //   mUserData.reset(new UserData(user));
 //}
 
-bool Player::CheckCollision(const SceneObject& obj, Point& collision) const
+PlayerOrientation Player::GetOrientation() const
 {
    auto joints = mUserData.GetPerspectiveJoints();
-   const auto left_hand = GetRelativePerspectiveJointPosition(joints[XN_SKEL_LEFT_HAND]);
-   const auto right_hand = GetRelativePerspectiveJointPosition(joints[XN_SKEL_RIGHT_HAND]);
+   const auto head = GetRelativePerspectiveJointPosition(joints[XN_SKEL_HEAD]);
+   const auto torso = GetRelativePerspectiveJointPosition(joints[XN_SKEL_TORSO]);
+   return (head.X < torso.X) ? PlayerOrientation::Left : PlayerOrientation::Right;
+}
 
-   if ((left_hand.X > obj.GetPosition().X) &&
-       (left_hand.X < obj.GetPosition().X + obj.GetSize().Width) &&
-       (left_hand.Y > obj.GetPosition().Y) &&
-       (left_hand.Y < obj.GetPosition().Y + obj.GetSize().Height))
+bool Player::CheckAttackCollision(const std::shared_ptr<SceneObject>& obj, Point& collision)
+{
+   auto joints = mUserData.GetPerspectiveJoints();
+
+   const auto left_hand = GetRelativePerspectiveJointPosition(joints[XN_SKEL_LEFT_HAND]);
+   if (CheckCollision(left_hand, *obj))
    {
+      if (CollisionInProgress(mLeftHandAttacks, obj)) {
+         return false;
+      }
+      mLeftHandAttacks.push_back(obj);
       collision.X = left_hand.X;
       collision.Y = left_hand.Y;
       return true;
    }
+   mLeftHandAttacks.remove(obj);
 
-   if ((right_hand.X > obj.GetPosition().X) &&
-       (right_hand.X < obj.GetPosition().X + obj.GetSize().Width) &&
-       (right_hand.Y > obj.GetPosition().Y) &&
-       (right_hand.Y < obj.GetPosition().Y + obj.GetSize().Height))
+   const auto right_hand = GetRelativePerspectiveJointPosition(joints[XN_SKEL_RIGHT_HAND]);
+   if (CheckCollision(right_hand, *obj))
    {
+      if (CollisionInProgress(mRightHandAttacks, obj)) {
+         return false;
+      }
+      mRightHandAttacks.push_back(obj);
       collision.X = right_hand.X;
       collision.Y = right_hand.Y;
       return true;
    }
+   mRightHandAttacks.remove(obj);
+
+   const auto left_foot = GetRelativePerspectiveJointPosition(joints[XN_SKEL_LEFT_FOOT]);
+   if (CheckCollision(left_foot, *obj))
+   {
+      if (CollisionInProgress(mLeftFootAttacks, obj)) {
+         return false;
+      }
+      mLeftFootAttacks.push_back(obj);
+      collision.X = left_foot.X;
+      collision.Y = left_foot.Y;
+      return true;
+   }
+   mLeftFootAttacks.remove(obj);
+
+   const auto right_foot = GetRelativePerspectiveJointPosition(joints[XN_SKEL_RIGHT_FOOT]);
+   if (CheckCollision(right_foot, *obj))
+   {
+      if (CollisionInProgress(mRightFootAttacks, obj)) {
+         return false;
+      }
+      mRightFootAttacks.push_back(obj);
+      collision.X = right_foot.X;
+      collision.Y = right_foot.Y;
+      return true;
+   }
+   mRightFootAttacks.remove(obj);
 
    return false;
 }
 
-int Player::GetXCenter()
+bool Player::CheckGenericCollision(const std::shared_ptr<SceneObject>& obj, Point& collision)
 {
-   return mUserData.GetRealWorldJoints()[XN_SKEL_TORSO].X;
+   return false;
 }
 
-int Player::GetYCenter()
-{
-   return mUserData.GetRealWorldJoints()[XN_SKEL_TORSO].Y;
-}
+//int Player::GetXCenter()
+//{
+//   return mUserData.GetRealWorldJoints()[XN_SKEL_TORSO].X;
+//}
+//
+//int Player::GetYCenter()
+//{
+//   return mUserData.GetRealWorldJoints()[XN_SKEL_TORSO].Y;
+//}
 
 SDL_Surface* Player::GetFrame() const
 {
@@ -131,4 +178,24 @@ Point Player::GetRelativePerspectiveJointPosition(const XnPoint3D& pos) const
    const int relative_x = static_cast<float>(GetSize().Width) / mKinect->GetSize().Width * pos.X + GetPosition().X;
    const int relative_y = static_cast<float>(GetSize().Height) / mKinect->GetSize().Height * pos.Y + GetPosition().Y;
    return {relative_x, relative_y};
+}
+
+bool Player::CheckCollision(const Point& pt, const SceneObject& obj) const
+{
+   return (pt.X > obj.GetPosition().X) &&
+          (pt.X < obj.GetPosition().X + obj.GetSize().Width) &&
+          (pt.Y > obj.GetPosition().Y) &&
+          (pt.Y < obj.GetPosition().Y + obj.GetSize().Height);
+}
+
+bool Player::CollisionInProgress(
+   const std::list<std::shared_ptr<SceneObject>>& collisions,
+   const std::shared_ptr<SceneObject>& obj
+) const
+{
+   const auto existing = std::find(collisions.begin(), collisions.end(), obj);
+
+   // The object to check is inside the "currently colliding with"-list.
+   // By convention we return true only for the initial collision.
+   return existing != collisions.end();
 }

@@ -13,11 +13,12 @@ namespace kinex {
 }
 class Renderer;
 class ResourceCache;
+class Level;
 class Sprite;
-class Particle;
-class Background;
+//class Particle;
+//class Background;
 class Player;
-class Enemy;
+//class Enemy;
 
 class Logic
 {
@@ -37,19 +38,20 @@ public:
    virtual void Render();
 
 private:
-   void UpdateBackground(int app_time, int elapsed_time);
-   void UpdatePlayer(int app_time, int elapsed_time);
-   void UpdateEnemies(int app_time, int elapsed_time);
+//   void UpdateBackground(int app_time, int elapsed_time);
+//   void UpdatePlayer(int app_time, int elapsed_time);
+//   void UpdateEnemies(int app_time, int elapsed_time);
 
    std::shared_ptr<Renderer> mRenderer;
    std::shared_ptr<ResourceCache> mResCache;
-   std::shared_ptr<Background> mBackground;
+//   std::shared_ptr<Background> mBackground;
+   std::shared_ptr<Level> mLevel;
    std::shared_ptr<Player> mPlayer;
-   std::shared_ptr<Enemy> mEnemy;
+//   std::shared_ptr<Enemy> mEnemy;
    std::list<std::shared_ptr<Sprite>> mSprites;
 //   std::list<std::shared_ptr<Particle>> mParticles;
 
-   Size mScreenSize = { 0, 0 };
+//   Size mScreenSize = { 0, 0 };
 
 //   ProcessManager* m_pProcessManager;
 //   LevelManager* m_pLevelManager;

@@ -19,16 +19,52 @@ ResourceCache::ResourceCache()
 //   Load("res/background/smw.jpg", "smw");
 //   Load("res/background/2zxr32b.png", "smw");
 
-   LoadBackground(mResDir + "/sprite/ken_big.jpg", "background");
+   LoadBackground(mResDir + "/sprite/ken_big.jpg", "bg1");
+   LoadBackground(mResDir + "/sprite/sf2_stage.png", "bg2");
 
    LoadSprite({mResDir + "/sprite/ex2scan-kairi.jpg"}, "enemy1");
    LoadSprite({mResDir + "/sprite/explode1.jpg"}, "arcanister");
+
+   LoadSprite({mResDir + "/sprite/ken000.png",
+               mResDir + "/sprite/ken001.png",
+               mResDir + "/sprite/ken002.png",
+               mResDir + "/sprite/ken003.png",
+               mResDir + "/sprite/ken004.png",
+               mResDir + "/sprite/ken005.png",}, "ken");
+
+   LoadSprite({mResDir + "/sprite/hulk0.png",
+               mResDir + "/sprite/hulk1.png",
+               mResDir + "/sprite/hulk2.png",
+               mResDir + "/sprite/hulk3.png",
+               mResDir + "/sprite/hulk4.png",
+               mResDir + "/sprite/hulk5.png",
+               mResDir + "/sprite/hulk6.png",
+               mResDir + "/sprite/hulk7.png",}, "hulk");
+
+   LoadSprite({mResDir + "/sprite/blood_a/1.png",
+               mResDir + "/sprite/blood_a/2.png",
+               mResDir + "/sprite/blood_a/3.png",
+               mResDir + "/sprite/blood_a/4.png",
+               mResDir + "/sprite/blood_a/5.png",
+               mResDir + "/sprite/blood_a/6.png",}, "blood_a");
    LoadSprite({mResDir + "/sprite/blood_b/1.png",
                mResDir + "/sprite/blood_b/2.png",
                mResDir + "/sprite/blood_b/3.png",
                mResDir + "/sprite/blood_b/4.png",
                mResDir + "/sprite/blood_b/5.png",
                mResDir + "/sprite/blood_b/6.png",}, "blood_b");
+   LoadSprite({mResDir + "/sprite/blood_c/1.png",
+               mResDir + "/sprite/blood_c/2.png",
+               mResDir + "/sprite/blood_c/3.png",
+               mResDir + "/sprite/blood_c/4.png",
+               mResDir + "/sprite/blood_c/5.png",
+               mResDir + "/sprite/blood_c/6.png",}, "blood_c");
+   LoadSprite({mResDir + "/sprite/blood_d/1.png",
+               mResDir + "/sprite/blood_d/2.png",
+               mResDir + "/sprite/blood_d/3.png",
+               mResDir + "/sprite/blood_d/4.png",
+               mResDir + "/sprite/blood_d/5.png",
+               mResDir + "/sprite/blood_d/6.png",}, "blood_d");
 }
 
 ResourceCache::~ResourceCache()
