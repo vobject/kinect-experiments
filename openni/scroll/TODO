@@ -1,0 +1,19 @@
+TODO:
+  P3 - Do not hard-code loading of resources but via XML files
+  P4 - Create non-kinect player
+  P5 - Wrap all OpenNI specific code/types
+
+DONE:
+  P1 - Do not enforce an actual Kinect connection
+  P2 - Basic collision detection
+  P3 - Put commonly used code into its own library and namespace
+  P3 - Classes for Size, Point, Vector2/3D
+  P3 - Introduce user defined literals for pixels, milliseconds, etc.
+
+ETERNAL:
+  - Clean and sensible use of C++11 features
+  - Performance
+  - Code cleanup
+  - Clean, modular, easy to understand design
+  - Get an idea of what it should be when its done
+
