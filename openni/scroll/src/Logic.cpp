@@ -150,7 +150,7 @@ void Logic::Update(const int app_time, const int elapsed_time)
          // player deals damage
 
          const auto size = rand() % (512 - 96) + 96;
-         auto pos_shift = size / 100;
+         auto pos_shift = size / 100 * 2;
          auto hit_shift = 24;
          if (PlayerOrientation::Left == mPlayer->GetOrientation()) {
             pos_shift = -pos_shift;

@@ -1,4 +1,6 @@
 TODO:
+  P? - Input-class that encapsulates the current gestures inputs from Kinect
+  P2 - Fix OpenGL renderer
   P3 - Do not hard-code loading of resources but via XML files
   P4 - Create non-kinect player
   P5 - Wrap all OpenNI specific code/types
@@ -11,7 +13,7 @@ DONE:
   P3 - Introduce user defined literals for pixels, milliseconds, etc.
 
 ETERNAL:
-  - Clean and sensible use of C++11 features
+  - Sensible use of C++11 features
   - Performance
   - Code cleanup
   - Clean, modular, easy to understand design

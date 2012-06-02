@@ -23,7 +23,7 @@ ScrollApp::~ScrollApp()
 
 void ScrollApp::Initialize()
 {
-   // HACK for ubuntu1024: https://github.com/DrMcCoy/xoreos/commit/9a6c84d5458256ac5a0ff7525055ef2d8761e683
+   // HACK for ubuntu1204: https://github.com/DrMcCoy/xoreos/commit/9a6c84d5458256ac5a0ff7525055ef2d8761e683
    if (!XInitThreads()) {
       throw "Failed to initialize Xlib muti-threading support";
    }
