@@ -7,6 +7,7 @@
 Player::Player(const std::shared_ptr<kinex::Nui>& kinect)
    : mKinect(kinect)
    , mUserData(kinex::UserData::INVALID_USER_ID)
+   , mInput(*this)
 {
    SetResourceId("player");
    SetPosition({ 0, 0 });
@@ -50,6 +51,12 @@ void Player::Update(const int elapsed_time)
 //   mUserData.reset(new UserData(user));
 //}
 
+PlayerInput Player::GetInput()
+{
+   mInput.Update(mUserData);
+   return mInput;
+}
+
 PlayerOrientation Player::GetOrientation() const
 {
    auto joints = mUserData.GetPerspectiveJoints();
@@ -58,69 +65,69 @@ PlayerOrientation Player::GetOrientation() const
    return (head.X < torso.X) ? PlayerOrientation::Left : PlayerOrientation::Right;
 }
 
-bool Player::CheckAttackCollision(const std::shared_ptr<SceneObject>& obj, Point& collision)
-{
-   auto joints = mUserData.GetPerspectiveJoints();
-
-   const auto left_hand = GetRelativePerspectiveJointPosition(joints[XN_SKEL_LEFT_HAND]);
-   if (CheckCollision(left_hand, *obj))
-   {
-      if (CollisionInProgress(mLeftHandAttacks, obj)) {
-         return false;
-      }
-      mLeftHandAttacks.push_back(obj);
-      collision.X = left_hand.X;
-      collision.Y = left_hand.Y;
-      return true;
-   }
-   mLeftHandAttacks.remove(obj);
-
-   const auto right_hand = GetRelativePerspectiveJointPosition(joints[XN_SKEL_RIGHT_HAND]);
-   if (CheckCollision(right_hand, *obj))
-   {
-      if (CollisionInProgress(mRightHandAttacks, obj)) {
-         return false;
-      }
-      mRightHandAttacks.push_back(obj);
-      collision.X = right_hand.X;
-      collision.Y = right_hand.Y;
-      return true;
-   }
-   mRightHandAttacks.remove(obj);
-
-   const auto left_foot = GetRelativePerspectiveJointPosition(joints[XN_SKEL_LEFT_FOOT]);
-   if (CheckCollision(left_foot, *obj))
-   {
-      if (CollisionInProgress(mLeftFootAttacks, obj)) {
-         return false;
-      }
-      mLeftFootAttacks.push_back(obj);
-      collision.X = left_foot.X;
-      collision.Y = left_foot.Y;
-      return true;
-   }
-   mLeftFootAttacks.remove(obj);
-
-   const auto right_foot = GetRelativePerspectiveJointPosition(joints[XN_SKEL_RIGHT_FOOT]);
-   if (CheckCollision(right_foot, *obj))
-   {
-      if (CollisionInProgress(mRightFootAttacks, obj)) {
-         return false;
-      }
-      mRightFootAttacks.push_back(obj);
-      collision.X = right_foot.X;
-      collision.Y = right_foot.Y;
-      return true;
-   }
-   mRightFootAttacks.remove(obj);
-
-   return false;
-}
-
-bool Player::CheckGenericCollision(const std::shared_ptr<SceneObject>& obj, Point& collision)
-{
-   return false;
-}
+//bool Player::CheckAttackCollision(const std::shared_ptr<SceneObject>& obj, Point& collision)
+//{
+//   auto joints = mUserData.GetPerspectiveJoints();
+//
+//   const auto left_hand = GetRelativePerspectiveJointPosition(joints[XN_SKEL_LEFT_HAND]);
+//   if (CheckCollision(left_hand, *obj))
+//   {
+//      if (CollisionInProgress(mLeftHandAttacks, obj)) {
+//         return false;
+//      }
+//      mLeftHandAttacks.push_back(obj);
+//      collision.X = left_hand.X;
+//      collision.Y = left_hand.Y;
+//      return true;
+//   }
+//   mLeftHandAttacks.remove(obj);
+//
+//   const auto right_hand = GetRelativePerspectiveJointPosition(joints[XN_SKEL_RIGHT_HAND]);
+//   if (CheckCollision(right_hand, *obj))
+//   {
+//      if (CollisionInProgress(mRightHandAttacks, obj)) {
+//         return false;
+//      }
+//      mRightHandAttacks.push_back(obj);
+//      collision.X = right_hand.X;
+//      collision.Y = right_hand.Y;
+//      return true;
+//   }
+//   mRightHandAttacks.remove(obj);
+//
+//   const auto left_foot = GetRelativePerspectiveJointPosition(joints[XN_SKEL_LEFT_FOOT]);
+//   if (CheckCollision(left_foot, *obj))
+//   {
+//      if (CollisionInProgress(mLeftFootAttacks, obj)) {
+//         return false;
+//      }
+//      mLeftFootAttacks.push_back(obj);
+//      collision.X = left_foot.X;
+//      collision.Y = left_foot.Y;
+//      return true;
+//   }
+//   mLeftFootAttacks.remove(obj);
+//
+//   const auto right_foot = GetRelativePerspectiveJointPosition(joints[XN_SKEL_RIGHT_FOOT]);
+//   if (CheckCollision(right_foot, *obj))
+//   {
+//      if (CollisionInProgress(mRightFootAttacks, obj)) {
+//         return false;
+//      }
+//      mRightFootAttacks.push_back(obj);
+//      collision.X = right_foot.X;
+//      collision.Y = right_foot.Y;
+//      return true;
+//   }
+//   mRightFootAttacks.remove(obj);
+//
+//   return false;
+//}
+//
+//bool Player::CheckGenericCollision(const std::shared_ptr<SceneObject>& obj, Point& collision)
+//{
+//   return false;
+//}
 
 //int Player::GetXCenter()
 //{
@@ -180,22 +187,22 @@ Point Player::GetRelativePerspectiveJointPosition(const XnPoint3D& pos) const
    return {relative_x, relative_y};
 }
 
-bool Player::CheckCollision(const Point& pt, const SceneObject& obj) const
-{
-   return (pt.X > obj.GetPosition().X) &&
-          (pt.X < obj.GetPosition().X + obj.GetSize().Width) &&
-          (pt.Y > obj.GetPosition().Y) &&
-          (pt.Y < obj.GetPosition().Y + obj.GetSize().Height);
-}
-
-bool Player::CollisionInProgress(
-   const std::list<std::shared_ptr<SceneObject>>& collisions,
-   const std::shared_ptr<SceneObject>& obj
-) const
-{
-   const auto existing = std::find(collisions.begin(), collisions.end(), obj);
-
-   // The object to check is inside the "currently colliding with"-list.
-   // By convention we return true only for the initial collision.
-   return existing != collisions.end();
-}
+//bool Player::CheckCollision(const Point& pt, const SceneObject& obj) const
+//{
+//   return (pt.X > obj.GetPosition().X) &&
+//          (pt.X < obj.GetPosition().X + obj.GetSize().Width) &&
+//          (pt.Y > obj.GetPosition().Y) &&
+//          (pt.Y < obj.GetPosition().Y + obj.GetSize().Height);
+//}
+//
+//bool Player::CollisionInProgress(
+//   const std::list<std::shared_ptr<SceneObject>>& collisions,
+//   const std::shared_ptr<SceneObject>& obj
+//) const
+//{
+//   const auto existing = std::find(collisions.begin(), collisions.end(), obj);
+//
+//   // The object to check is inside the "currently colliding with"-list.
+//   // By convention we return true only for the initial collision.
+//   return existing != collisions.end();
+//}

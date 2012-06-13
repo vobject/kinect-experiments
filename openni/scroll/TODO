@@ -4,6 +4,9 @@ TODO:
   P3 - Do not hard-code loading of resources but via XML files
   P4 - Create non-kinect player
   P5 - Wrap all OpenNI specific code/types
+  P? - Rename SceneObject to Entity
+  P? - Check if a View class is needed
+  P2 - Find out the direction of a player by checking the Z of the shoulders
 
 DONE:
   P1 - Do not enforce an actual Kinect connection

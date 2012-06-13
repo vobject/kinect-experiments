@@ -38,6 +38,14 @@ struct Rect
    int Height;
 };
 
+struct ScreenPos
+{
+   constexpr ScreenPos(float x, float y) : X(x), Y(y) { }
+
+   float X;
+   float Y;
+};
+
 constexpr int operator"" _pt(unsigned long long point_size)
 {
    return point_size;

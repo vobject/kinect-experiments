@@ -7,6 +7,7 @@
 //#include "Particle.hpp"
 //#include "Background.h"
 #include "Player.hpp"
+#include "PlayerInput.hpp"
 //#include "Enemy.hpp"
 #include "Utils.hpp"
 
@@ -42,14 +43,13 @@ Logic::Logic(
 //   // TODO: Background must have a "buttom" coordinate.
 
    mPlayer = std::make_shared<Player>(kinect);
-   mPlayer->SetSize({ 468_px, 324_px });
-   mPlayer->SetPosition({ 100, 140 });
+   mPlayer->SetSize({ 900_px, 650_px });
+   mPlayer->SetPosition({ 0, 100 });
+//   mPlayer->SetSize({ 640_px, 480_px });
 
 //   mEnemy = std::make_shared<Enemy>(mResCache->GetSprite("enemy1"));
 //   mEnemy->SetSize({ 164_px, 360_px });
 //   mEnemy->SetPosition({ 450, 178 });
-
-   srand(time(NULL));
 }
 
 Logic::~Logic()
@@ -111,81 +111,62 @@ void Logic::ProcessInput(const SDL_MouseButtonEvent& ev)
 //   }
 }
 
-//void Logic::ProcessInput(const Kinect& kinect)
-//{
-//   const auto users = kinect.GetUsers();
-//   if (users.empty()) {
-//      mActor->SetVisible(false);
-//      return;
-//   }
-//
-//   mActor->SetInputData(users[0]);
-//}
+void Logic::ProcessInput(const kinex::Nui& kinect)
+{
+   // FIXME: This gets input data from one frame ago instead of the current one.
+   mLevel->ProcessInput(mPlayer->GetInput());
+}
 
 void Logic::Update(const int app_time, const int elapsed_time)
 {
    mLevel->Update(elapsed_time);
    mPlayer->Update(elapsed_time);
 
-   auto obj = std::begin(mSprites);
-   while (obj != std::end(mSprites))
-   {
-       if ((*obj)->IsAlive())
-       {
-          (*obj)->Update(elapsed_time);
-          obj++;
-       }
-       else
-       {
-          obj = mSprites.erase(obj); // Remove dead sprite.
-       }
-   }
-
-   for (auto obj : mLevel->mSprites)
-   {
-      Point collision(0, 0);
-
-      if (mPlayer->CheckAttackCollision(obj, collision))
-      {
-         // player deals damage
-
-         const auto size = rand() % (512 - 96) + 96;
-         auto pos_shift = size / 100 * 2;
-         auto hit_shift = 24;
-         if (PlayerOrientation::Left == mPlayer->GetOrientation()) {
-            pos_shift = -pos_shift;
-            hit_shift = -hit_shift;
-         }
-
-         const auto anim = rand() % 4;
-         std::string anim_name;
-         switch (anim) {
-            case 0:
-               anim_name = "blood_a";
-               break;
-            case 1:
-               anim_name = "blood_b";
-               break;
-            case 2:
-               anim_name = "blood_c";
-               break;
-            case 3:
-               anim_name = "blood_d";
-               break;
-         }
-
-         auto dam = std::make_shared<Sprite>(mResCache->GetSprite(anim_name));
-         dam->SetSize({ size, size });
-         dam->SetPosition({ collision.X - (dam->GetSize().Width / 2) + hit_shift, collision.Y - (dam->GetSize().Height / 2) });
-         mSprites.push_back(dam);
-
-         obj->SetPosition({obj->GetPosition().X + pos_shift, obj->GetPosition().Y});
-      }
-      else if (mPlayer->CheckGenericCollision(obj, collision))
-      {
-         // player takes damage
-      }
-   }
+//   for (auto obj : mLevel->mSprites)
+//   {
+//      Point collision(0, 0);
+//
+//      if (mPlayer->CheckAttackCollision(obj, collision))
+//      {
+//         // player deals damage
+//
+//         const auto size = rand() % (512 - 96) + 96;
+//         auto pos_shift = size / 100 * 2;
+//         auto hit_shift = 24;
+//         if (PlayerOrientation::Left == mPlayer->GetOrientation()) {
+//            pos_shift = -pos_shift;
+//            hit_shift = -hit_shift;
+//         }
+//
+//         const auto anim = rand() % 4;
+//         std::string anim_name;
+//         switch (anim) {
+//            case 0:
+//               anim_name = "blood_a";
+//               break;
+//            case 1:
+//               anim_name = "blood_b";
+//               break;
+//            case 2:
+//               anim_name = "blood_c";
+//               break;
+//            case 3:
+//               anim_name = "blood_d";
+//               break;
+//         }
+//
+//         auto dam = std::make_shared<Sprite>(mResCache->GetSprite(anim_name));
+//         dam->SetSize({ size, size });
+//         dam->SetPosition({ collision.X - (dam->GetSize().Width / 2) + hit_shift, collision.Y - (dam->GetSize().Height / 2) });
+//         mSprites.push_back(dam);
+//
+//         obj->SetPosition({obj->GetPosition().X + pos_shift, obj->GetPosition().Y});
+//      }
+//      else if (mPlayer->CheckGenericCollision(obj, collision))
+//      {
+//         // player takes damage
+//      }
+//   }
 
 //   // HACK
 //   static bool still_colliding = false;
@@ -242,10 +223,11 @@ void Logic::Render()
 
    mRenderer->PreRender();
    mRenderer->Render(mLevel->mBackground);
+   mRenderer->Render(mLevel->mEnemies);
    mRenderer->Render(mLevel->mSprites);
 //   mRenderer->Render(mEnemy);
    mRenderer->Render(mPlayer);
-   mRenderer->Render(mSprites);
+//   mRenderer->Render(mSprites);
 
 //   for (auto& obj : mParticles) {
 //      SDL_Rect rect = { (Sint16)obj->GetPosition().X, (Sint16)obj->GetPosition().Y,

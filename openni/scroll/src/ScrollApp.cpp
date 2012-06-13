@@ -29,7 +29,8 @@ void ScrollApp::Initialize()
    }
 
    mCurrentVideoMode = VideoMode::Software;
-   mCurrentResolution = {640_px, 480_px};
+//   mCurrentResolution = {640_px, 480_px};
+   mCurrentResolution = {1024_px, 768_px};
 
    InitVideo();
    InitKinect("");
@@ -70,6 +71,8 @@ void ScrollApp::UpdateScene(const int app_time, const int elapsed_time)
 
    // Poll for Kinect input on every update cycle.
    mKinect->NextFrame();
+   mLogic->ProcessInput(*mKinect);
+
    mLogic->Update(app_time, elapsed_time);
 }
 

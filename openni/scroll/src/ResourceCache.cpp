@@ -19,11 +19,21 @@ ResourceCache::ResourceCache()
 //   Load("res/background/smw.jpg", "smw");
 //   Load("res/background/2zxr32b.png", "smw");
 
+   LoadBackground(mResDir + "/sprite/bg0.jpg", "bg0");
    LoadBackground(mResDir + "/sprite/ken_big.jpg", "bg1");
    LoadBackground(mResDir + "/sprite/sf2_stage.png", "bg2");
 
    LoadSprite({mResDir + "/sprite/ex2scan-kairi.jpg"}, "enemy1");
    LoadSprite({mResDir + "/sprite/explode1.jpg"}, "arcanister");
+
+   LoadSprite({mResDir + "/sprite/fb0.png",
+               mResDir + "/sprite/fb1.png",
+               mResDir + "/sprite/fb2.png",
+               mResDir + "/sprite/fb3.png",
+               mResDir + "/sprite/fb4.png",
+               mResDir + "/sprite/fb5.png",
+               mResDir + "/sprite/fb6.png",
+               mResDir + "/sprite/fb7.png",}, "fireball");
 
    LoadSprite({mResDir + "/sprite/ken000.png",
                mResDir + "/sprite/ken001.png",
