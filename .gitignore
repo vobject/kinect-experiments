@@ -32,6 +32,10 @@ openni/paint/bin/
 openni/paint/Debug/
 openni/paint/Release/
 
+openni/bomberperson/.settings/
+openni/bomberperson/Debug/
+openni/bomberperson/Release/
+
 *.ipch
 *.opensdf
 *.sdf
