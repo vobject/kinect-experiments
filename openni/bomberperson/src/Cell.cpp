@@ -8,7 +8,7 @@ Cell::Cell(
    const std::string& name,
    const int field_pos_x,
    const int field_pos_y,
-   const Field& field,
+   const std::shared_ptr<Field>& field,
    const CellType type
 )
    : mFieldPosX(field_pos_x)
@@ -62,22 +62,22 @@ void Cell::SetType(const CellType type)
 
 std::shared_ptr<Cell> Cell::GetTopCell() const
 {
-   return mField.GetCellAboveOf(mFieldPosX, mFieldPosY);
+   return mField->GetCellAboveOf(mFieldPosX, mFieldPosY);
 }
 
 std::shared_ptr<Cell> Cell::GetDownCell() const
 {
-   return mField.GetCellBelowOf(mFieldPosX, mFieldPosY);
+   return mField->GetCellBelowOf(mFieldPosX, mFieldPosY);
 }
 
 std::shared_ptr<Cell> Cell::GetLeftCell() const
 {
-   return mField.GetCellLeftOf(mFieldPosX, mFieldPosY);
+   return mField->GetCellLeftOf(mFieldPosX, mFieldPosY);
 }
 
 std::shared_ptr<Cell> Cell::GetRightCell() const
 {
-   return mField.GetCellRightOf(mFieldPosX, mFieldPosY);
+   return mField->GetCellRightOf(mFieldPosX, mFieldPosY);
 }
 
 bool Cell::IsBlocking() const

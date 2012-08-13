@@ -3,6 +3,7 @@
 #include "Match.hpp"
 #include "KeyboardInput.hpp"
 #include "Kinect.hpp"
+#include "FieldGenerator.hpp"
 #include "Field.hpp"
 #include "Cell.hpp"
 #include "Player.hpp"
@@ -20,11 +21,11 @@ Logic::Logic(
    // This should usually just be done when the app cahnges from mainmenu-state
    //  or from the choose-match-options-state into the actual game-state.
 
-   Point field_pos(30, 30);
-   Size field_size(480, 480);
-   auto playing_field = std::make_shared<Field>("test_field",
-                                                field_pos,
-                                                field_size);
+   mFieldGen = std::make_shared<FieldGenerator>();
+   mFieldGen->SetFieldPosition({ 30, 30 });
+   mFieldGen->SetFieldSize({ 480, 480 });
+
+   auto playing_field = mFieldGen->GetDefaultField(11, 11, 2);
 
    const std::vector<std::shared_ptr<Player>> players = {
       std::make_shared<Player>("player_1",
@@ -34,13 +35,13 @@ Logic::Logic(
                                                                SDLK_RIGHT,
                                                                SDLK_SPACE),
                                playing_field->GetCellFromCoordinates(1, 1))
-//    , std::make_shared<Player>("player_2",
-//                               std::make_shared<KeyboardInput>(SDLK_w,
-//                                                               SDLK_s,
-//                                                               SDLK_a,
-//                                                               SDLK_d,
-//                                                               SDLK_LCTRL),
-//                               playing_field->GetCellFromCoordinates(2, 1))
+    , std::make_shared<Player>("player_2",
+                               std::make_shared<KeyboardInput>(SDLK_w,
+                                                               SDLK_s,
+                                                               SDLK_a,
+                                                               SDLK_d,
+                                                               SDLK_LCTRL),
+                               playing_field->GetCellFromCoordinates(9, 9))
    };
 
    mMatch = std::make_shared<Match>(playing_field, players);

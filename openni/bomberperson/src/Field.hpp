@@ -15,7 +15,7 @@ enum class CellItem;
 class Field : public SceneObject
 {
 public:
-   Field(const std::string& name, const Point& pos, const Size& size);
+   Field(const std::string& name);
    virtual ~Field();
 
    Field(const Field&) = delete;
@@ -23,9 +23,10 @@ public:
 
    void Update(int elapsed_time) override;
 
-   int GetXCells() const;
-   int GetYCells() const;
+   void SetDimensions(int cells_x, int cells_y);
+
    std::vector<std::shared_ptr<Cell>> GetCells() const;
+   void SetCells(const std::vector<std::shared_ptr<Cell>>& cells);
 
    std::shared_ptr<Cell> GetCellFromPosition(const Point& pos) const;
    std::shared_ptr<Cell> GetCellFromCoordinates(int cell_x, int cell_y) const;
@@ -39,9 +40,6 @@ private:
    Size GetCellSize() const;
    std::tuple<int, int> IndexToFieldPos(int index) const;
    int FieldPosToIndex(int cell_x, int cell_y) const;
-
-   bool ShouldCellGetItem() const;
-   CellItem GetRandomCellItem() const;
 
    int mXCells;
    int mYCells;

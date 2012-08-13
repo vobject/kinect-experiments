@@ -10,6 +10,7 @@ namespace kinex {
    class Nui;
 }
 class Renderer;
+class FieldGenerator;
 class Match;
 
 class Logic
@@ -30,6 +31,7 @@ public:
 
 private:
    std::shared_ptr<Renderer> mRenderer;
+   std::shared_ptr<FieldGenerator> mFieldGen;
    std::shared_ptr<Match> mMatch;
 };
 

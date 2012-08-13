@@ -29,7 +29,7 @@ public:
    Cell(const std::string& name,
         int field_pos_x,
         int field_pos_y,
-        const Field& field,
+        const std::shared_ptr<Field>& field,
         CellType type);
    virtual ~Cell();
 
@@ -64,7 +64,7 @@ private:
    // (X,Y) index on the playing field.
    const int mFieldPosX;
    const int mFieldPosY;
-   const Field& mField;
+   const std::shared_ptr<Field> mField;
 
    CellType mType;
    CellItem mItem;
