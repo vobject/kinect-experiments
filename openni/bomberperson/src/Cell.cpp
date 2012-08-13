@@ -15,6 +15,7 @@ Cell::Cell(
    , mFieldPosY(field_pos_y)
    , mField(field) // Do not use inside the ctor - object is not ready yet.
    , mType(type)
+   , mItem(CellItem::None)
    , mBomb(nullptr)
    , mExplosion(nullptr)
 {
@@ -124,12 +125,17 @@ void Cell::SetExplosion(const std::shared_ptr<Explosion>& explosion)
    mExplosion = explosion;
 }
 
-//CellItem Cell::GetItem() const
-//{
-//   return mItem;
-//}
-//
-//void Cell::SetItem(const CellItem item)
-//{
-//   mItem = item;
-//}
+bool Cell::HasItem() const
+{
+   return (CellItem::None != mItem);
+}
+
+CellItem Cell::GetItem() const
+{
+   return mItem;
+}
+
+void Cell::SetItem(const CellItem item)
+{
+   mItem = item;
+}

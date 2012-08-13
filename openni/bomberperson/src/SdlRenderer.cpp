@@ -73,11 +73,46 @@ void SdlRenderer::Render(const std::shared_ptr<Cell>& cell)
                      static_cast<Uint16>(size.Height - 2) };
 
    int color = 0;
-   if (CellType::Floor == type) { color = 0x7f7f00; }
-   else if (CellType::IndestructibleWall == type) { color = 0x4f4f4f; }
-   else if (CellType::DestructibleWall == type) { color = 0x7f7f7f; }
+   if (CellType::IndestructibleWall == type) {
+      color = 0x4f4f4f;
+      SDL_FillRect(mScreen, &rect, color);
+      return;
+   }
+   else if (CellType::DestructibleWall == type) {
+      color = 0x7f7f7f;
+      SDL_FillRect(mScreen, &rect, color);
+      return;
+   }
+   else if (CellType::Floor == type) {
+      color = 0x7f7f00;
+      SDL_FillRect(mScreen, &rect, color);
+   }
 
-   SDL_FillRect(mScreen, &rect, color);
+   if (!cell->HasItem()) {
+      return;
+   }
+
+   SDL_Rect item_rect = { static_cast<Sint16>(pos.X + 3),
+                          static_cast<Sint16>(pos.Y + 3),
+                          static_cast<Uint16>(10),
+                          static_cast<Uint16>(10) };
+   int item_color = 0;
+
+   switch (cell->GetItem())
+   {
+      case CellItem::Speed:
+         item_color = 0xff0000;
+         break;
+      case CellItem::BombRange:
+         item_color = 0x00ff00;
+         break;
+      case CellItem::BombSupply:
+         item_color = 0x0000ff;
+         break;
+      default:
+         break;
+   }
+   SDL_FillRect(mScreen, &item_rect, item_color);
 }
 
 void SdlRenderer::Render(const std::shared_ptr<Player>& player)

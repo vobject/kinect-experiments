@@ -78,6 +78,12 @@ void Bomb::PlantTopRangeExplosion() const
          break;
       }
 
+      if (range_cell->HasItem())
+      {
+         range_cell->SetItem(CellItem::None);
+         break;
+      }
+
       if (range_cell->HasBomb())
       {
          range_cell->GetBomb()->Detonate();
@@ -108,6 +114,12 @@ void Bomb::PlantDownRangeExplosion() const
       if (CellType::DestructibleWall == range_cell->GetType())
       {
          range_cell->SetType(CellType::Floor);
+         break;
+      }
+
+      if (range_cell->HasItem())
+      {
+         range_cell->SetItem(CellItem::None);
          break;
       }
 
@@ -144,6 +156,12 @@ void Bomb::PlantLeftRangeExplosion() const
          break;
       }
 
+      if (range_cell->HasItem())
+      {
+         range_cell->SetItem(CellItem::None);
+         break;
+      }
+
       if (range_cell->HasBomb())
       {
          range_cell->GetBomb()->Detonate();
@@ -174,6 +192,12 @@ void Bomb::PlantRightRangeExplosion() const
       if (CellType::DestructibleWall == range_cell->GetType())
       {
          range_cell->SetType(CellType::Floor);
+         break;
+      }
+
+      if (range_cell->HasItem())
+      {
+         range_cell->SetItem(CellItem::None);
          break;
       }
 

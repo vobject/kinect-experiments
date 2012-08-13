@@ -26,18 +26,13 @@ Player::~Player()
 void Player::Update(const int elapsed_time)
 {
    mMoveIdleTime += elapsed_time;
-   if (mMoveIdleTime > MOVE_PIXEL_DELAY)
+   if (mMoveIdleTime > mSpeed)
    {
       UpdateMovement(elapsed_time);
       mMoveIdleTime = 0;
    }
 
-   mBombIdleTime += elapsed_time;
-   if ((mBombIdleTime > PLANT_BOMB_DELAY) && mInput->TestPlantBomb())
-   {
-      UpdateBombing(elapsed_time);
-      mBombIdleTime = 0;
-   }
+   UpdateBombing(elapsed_time);
 }
 
 std::shared_ptr<InputDevice> Player::GetInputDevice() const
@@ -51,6 +46,25 @@ void Player::SetParentCell(const std::shared_ptr<Cell>& cell)
 
    if (mParentCell->HasExplosion()) {
       SetAlive(false);
+   }
+
+   if (mParentCell->HasItem())
+   {
+      switch (mParentCell->GetItem())
+      {
+         case CellItem::Speed:
+            IncreaseSpeed();
+            break;
+         case CellItem::BombRange:
+            mBombRange++;
+            break;
+         case CellItem::BombSupply:
+            mBombSupply++;
+            break;
+         default:
+            break;
+      }
+      mParentCell->SetItem(CellItem::None);
    }
 }
 
@@ -79,6 +93,32 @@ void Player::UpdateMovement(const int elapsed_time)
    }
 
    SetPosition({ GetPosition().X - left + right, GetPosition().Y - up + down});
+}
+
+void Player::UpdateBombing(const int elapsed_time)
+{
+   if (!mInput->TestPlantBomb())
+   {
+      // The user did not request to plant a bomb.
+      return;
+   }
+
+   if (mParentCell->HasBomb()) {
+      // Only one bomb per cell.
+      return;
+   }
+
+   if (!CanPlantBomb()) {
+      // Out of bomb supply. Wait till an older bomb exploded.
+      return;
+   }
+
+   auto bomb = std::make_shared<Bomb>("bomb_1", mParentCell);
+   bomb->SetRange(mBombRange);
+   bomb->SetPosition({ mParentCell->GetPosition().X + 1,
+                       mParentCell->GetPosition().Y + 1 });
+   mParentCell->SetBomb(bomb);
+   mPlantedBombs.push_back(bomb);
 }
 
 bool Player::CanMoveUp(const Point& cell_pos, const Size& cell_size, const int distance) const
@@ -149,15 +189,30 @@ bool Player::CanMoveRight(const Point& cell_pos, const Size& cell_size, const in
    return false;
 }
 
-void Player::UpdateBombing(const int elapsed_time)
+bool Player::CanPlantBomb()
 {
-   if (mParentCell->HasBomb()) {
-      return; // Only one bomb per cell.
+   int bombs_alive = 0;
+   for (const auto& bomb : mPlantedBombs)
+   {
+      if (bomb->IsAlive())
+      {
+         bombs_alive++;
+      }
    }
 
-   auto bomb = std::make_shared<Bomb>("bomb_1", mParentCell);
-   bomb->SetRange(3); // TODO: Set depending on players modifications.
-   bomb->SetPosition({ mParentCell->GetPosition().X + 1,
-                       mParentCell->GetPosition().Y + 1});
-   mParentCell->SetBomb(bomb);
+   // Garbage collection of the planted-bombs-vector.
+   if (!bombs_alive) {
+      mPlantedBombs.clear();
+   }
+
+   return (mBombSupply > bombs_alive);
+}
+
+void Player::IncreaseSpeed()
+{
+   if (mSpeed <= 2) {
+      // The player has already the maximum speed.
+      return;
+   }
+   mSpeed--;
 }

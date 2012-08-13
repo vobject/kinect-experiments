@@ -14,12 +14,14 @@ enum class CellType
    DestructibleWall
 };
 
-//enum class CellItem
-//{
-//   None,
-//   VerticalExplosion,
-//   HorizontalExplosion
-//};
+enum class CellItem
+{
+   None,
+   Speed,
+   BombRange,
+   BombSupply,
+   CELL_ITEM_COUNT
+};
 
 class Cell : public SceneObject
 {
@@ -54,8 +56,9 @@ public:
    std::shared_ptr<Explosion> GetExplosion() const;
    void SetExplosion(const std::shared_ptr<Explosion>& explosion);
 
-//   CellItem GetItem() const;
-//   void SetItem(CellItem item);
+   bool HasItem() const;
+   CellItem GetItem() const;
+   void SetItem(CellItem item);
 
 private:
    // (X,Y) index on the playing field.
@@ -64,7 +67,7 @@ private:
    const Field& mField;
 
    CellType mType;
-//   CellItem mItem = CellItem::None;
+   CellItem mItem;
 
    std::shared_ptr<Bomb> mBomb;
    std::shared_ptr<Explosion> mExplosion;

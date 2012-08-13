@@ -10,6 +10,7 @@
 class Cell;
 class Point;
 class Size;
+enum class CellItem;
 
 class Field : public SceneObject
 {
@@ -38,6 +39,9 @@ private:
    Size GetCellSize() const;
    std::tuple<int, int> IndexToFieldPos(int index) const;
    int FieldPosToIndex(int cell_x, int cell_y) const;
+
+   bool ShouldCellGetItem() const;
+   CellItem GetRandomCellItem() const;
 
    int mXCells;
    int mYCells;

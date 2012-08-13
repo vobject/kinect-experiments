@@ -2,11 +2,15 @@
 #include "Cell.hpp"
 #include "Utils.hpp"
 
+#include <time.h>
+
 Field::Field(const std::string& name, const Point& pos, const Size& size)
 {
    SetResourceId(name);
    SetPosition(pos);
    SetSize(size);
+
+   srand(time(nullptr));
 
    // TODO: get this from ResourceCache.
    mXCells = 9;
@@ -31,13 +35,17 @@ Field::Field(const std::string& name, const Point& pos, const Size& size)
                           GetPosition().Y + (cell_size.Height * cell_field_pos_y) });
       cell->SetSize(cell_size);
 
-      // Create a field boundary out of indestructible cells.
+      // Use indestructible cells to create a field boundary.
       if ((cell_field_pos_x == 0) ||
           (cell_field_pos_x == (mXCells - 1)) ||
           (cell_field_pos_y == 0) ||
           (cell_field_pos_y == (mYCells - 1)))
       {
          cell->SetType(CellType::IndestructibleWall);
+      }
+      else if (ShouldCellGetItem())
+      {
+         cell->SetItem(GetRandomCellItem());
       }
 
       mCells.push_back(cell);
@@ -56,6 +64,16 @@ Field::Field(const std::string& name, const Point& pos, const Size& size)
    mCells[FieldPosToIndex(6, 2)]->SetType(CellType::IndestructibleWall);
    mCells[FieldPosToIndex(6, 4)]->SetType(CellType::IndestructibleWall);
    mCells[FieldPosToIndex(6, 6)]->SetType(CellType::IndestructibleWall);
+
+   mCells[FieldPosToIndex(2, 2)]->SetItem(CellItem::None);
+   mCells[FieldPosToIndex(2, 4)]->SetItem(CellItem::None);
+   mCells[FieldPosToIndex(2, 6)]->SetItem(CellItem::None);
+   mCells[FieldPosToIndex(4, 2)]->SetItem(CellItem::None);
+   mCells[FieldPosToIndex(4, 4)]->SetItem(CellItem::None);
+   mCells[FieldPosToIndex(4, 6)]->SetItem(CellItem::None);
+   mCells[FieldPosToIndex(6, 2)]->SetItem(CellItem::None);
+   mCells[FieldPosToIndex(6, 4)]->SetItem(CellItem::None);
+   mCells[FieldPosToIndex(6, 6)]->SetItem(CellItem::None);
 }
 
 Field::~Field()
@@ -145,4 +163,17 @@ std::tuple<int, int> Field::IndexToFieldPos(const int index) const
 int Field::FieldPosToIndex(const int cell_x, const int cell_y) const
 {
    return (cell_x + (cell_y * mYCells));
+}
+
+bool Field::ShouldCellGetItem() const
+{
+   // 25% chance to generate '0' and return true.
+   return !(rand() % 4);
+}
+
+CellItem Field::GetRandomCellItem() const
+{
+   const int limit = static_cast<int>(CellItem::CELL_ITEM_COUNT) - 1;
+   const int item_id = (rand() % limit) + 1;
+   return static_cast<CellItem>(item_id);
 }
