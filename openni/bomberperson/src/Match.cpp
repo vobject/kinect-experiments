@@ -23,11 +23,19 @@ void Match::Update(const int elapsed_time)
 {
    mField->Update(elapsed_time);
 
-   for (auto& player : mPlayers)
+   auto player = std::begin(mPlayers);
+   while (player != std::end(mPlayers))
    {
-      const auto cell = GetCellFromObject(player);
-      player->SetParentCell(cell);
-      player->Update(elapsed_time);
+      if ((*player)->IsAlive())
+      {
+         (*player)->Update(elapsed_time);
+         (*player)->SetParentCell(GetCellFromObject(*player));
+         player++;
+      }
+      else
+      {
+         player = mPlayers.erase(player);
+      }
    }
 }
 

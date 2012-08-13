@@ -46,9 +46,11 @@ public:
 
    bool IsBlocking() const;
 
+   bool HasBomb() const;
    std::shared_ptr<Bomb> GetBomb() const;
    void SetBomb(const std::shared_ptr<Bomb>& bomb);
 
+   bool HasExplosion() const;
    std::shared_ptr<Explosion> GetExplosion() const;
    void SetExplosion(const std::shared_ptr<Explosion>& explosion);
 

@@ -98,14 +98,12 @@ void Logic::Render()
    for (const auto& cell : playing_field->GetCells()) {
       mRenderer->Render(cell);
 
-      const auto bomb = cell->GetBomb();
-      if (bomb) {
-         bombs.push_back(bomb);
+      if (cell->HasBomb()) {
+         bombs.push_back(cell->GetBomb());
       }
 
-      const auto explosion = cell->GetExplosion();
-      if (explosion) {
-         explosions.push_back(explosion);
+      if (cell->HasExplosion()) {
+         explosions.push_back(cell->GetExplosion());
       }
    }
 

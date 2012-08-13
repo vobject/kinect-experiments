@@ -41,6 +41,11 @@ void Bomb::SetRange(const int range)
    mRange = range;
 }
 
+void Bomb::Detonate()
+{
+   mLifeTime = DEFAULT_LIFETIME;
+}
+
 void Bomb::PlantCenterExplosion() const
 {
    auto explosion = std::make_shared<Explosion>("explosion_center",
@@ -73,6 +78,11 @@ void Bomb::PlantTopRangeExplosion() const
          break;
       }
 
+      if (range_cell->HasBomb())
+      {
+         range_cell->GetBomb()->Detonate();
+      }
+
       range_cell = range_cell->GetTopCell();
       range_to_go--;
    }
@@ -99,6 +109,11 @@ void Bomb::PlantDownRangeExplosion() const
       {
          range_cell->SetType(CellType::Floor);
          break;
+      }
+
+      if (range_cell->HasBomb())
+      {
+         range_cell->GetBomb()->Detonate();
       }
 
       range_cell = range_cell->GetDownCell();
@@ -129,6 +144,11 @@ void Bomb::PlantLeftRangeExplosion() const
          break;
       }
 
+      if (range_cell->HasBomb())
+      {
+         range_cell->GetBomb()->Detonate();
+      }
+
       range_cell = range_cell->GetLeftCell();
       range_to_go--;
    }
@@ -155,6 +175,11 @@ void Bomb::PlantRightRangeExplosion() const
       {
          range_cell->SetType(CellType::Floor);
          break;
+      }
+
+      if (range_cell->HasBomb())
+      {
+         range_cell->GetBomb()->Detonate();
       }
 
       range_cell = range_cell->GetRightCell();

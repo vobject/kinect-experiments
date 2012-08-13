@@ -94,6 +94,11 @@ bool Cell::IsBlocking() const
    return false;
 }
 
+bool Cell::HasBomb() const
+{
+   return (mBomb != nullptr);
+}
+
 std::shared_ptr<Bomb> Cell::GetBomb() const
 {
    return mBomb;
@@ -102,6 +107,11 @@ std::shared_ptr<Bomb> Cell::GetBomb() const
 void Cell::SetBomb(const std::shared_ptr<Bomb>& bomb)
 {
    mBomb = bomb;
+}
+
+bool Cell::HasExplosion() const
+{
+   return (mExplosion != nullptr);
 }
 
 std::shared_ptr<Explosion> Cell::GetExplosion() const

@@ -44,6 +44,7 @@ Field::Field(const std::string& name, const Point& pos, const Size& size)
    }
 
    mCells[FieldPosToIndex(1, 1)]->SetType(CellType::Floor);
+   mCells[FieldPosToIndex(1, 2)]->SetType(CellType::Floor);
    mCells[FieldPosToIndex(2, 1)]->SetType(CellType::Floor);
 
    mCells[FieldPosToIndex(2, 2)]->SetType(CellType::IndestructibleWall);

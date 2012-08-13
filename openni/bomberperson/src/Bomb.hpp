@@ -23,8 +23,10 @@ public:
    int GetRange() const;
    void SetRange(int range);
 
+   void Detonate();
+
 private:
-   static const int DEFAULT_LIFETIME = 2000_ms;
+   static const int DEFAULT_LIFETIME = 3000_ms;
 
    void PlantCenterExplosion() const;
    void PlantTopRangeExplosion() const;

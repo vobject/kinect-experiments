@@ -48,6 +48,10 @@ std::shared_ptr<InputDevice> Player::GetInputDevice() const
 void Player::SetParentCell(const std::shared_ptr<Cell>& cell)
 {
    mParentCell = cell;
+
+   if (mParentCell->HasExplosion()) {
+      SetAlive(false);
+   }
 }
 
 void Player::UpdateMovement(const int elapsed_time)
@@ -147,6 +151,10 @@ bool Player::CanMoveRight(const Point& cell_pos, const Size& cell_size, const in
 
 void Player::UpdateBombing(const int elapsed_time)
 {
+   if (mParentCell->HasBomb()) {
+      return; // Only one bomb per cell.
+   }
+
    auto bomb = std::make_shared<Bomb>("bomb_1", mParentCell);
    bomb->SetRange(3); // TODO: Set depending on players modifications.
    bomb->SetPosition({ mParentCell->GetPosition().X + 1,

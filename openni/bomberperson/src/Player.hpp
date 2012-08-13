@@ -51,7 +51,7 @@ private:
    // How many milliseconds does the player have to wait to move another pixel?
    static const int MOVE_PIXEL_DELAY = 6;
    // How many milliseconds does the player have to wait to plant another bomb?
-   static const int PLANT_BOMB_DELAY = 1000;
+   static const int PLANT_BOMB_DELAY = 750;
 
    void UpdateMovement(int elapsed_time);
    void UpdateBombing(int elapsed_time);
