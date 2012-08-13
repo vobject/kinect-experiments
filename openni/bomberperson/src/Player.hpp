@@ -10,6 +10,7 @@
 #include <string>
 
 class InputDevice;
+class Cell;
 class Bomb;
 
 //enum class PlayerOrientation
@@ -32,7 +33,9 @@ class Bomb;
 class Player : public SceneObject
 {
 public:
-   Player(const std::string& name, const std::shared_ptr<InputDevice>& input);
+   Player(const std::string& name,
+          const std::shared_ptr<InputDevice>& input,
+          const std::shared_ptr<Cell>& cell);
    virtual ~Player();
 
    Player(const Player&) = delete;
@@ -41,6 +44,8 @@ public:
    void Update(int elapsed_time) override;
 
    std::shared_ptr<InputDevice> GetInputDevice() const;
+
+   void SetCurrentCell(const std::shared_ptr<Cell>& cell);
 
    // TODO: Pass a reference to the owning Level object, so the player can
    //  directly plant bombs in the level/field/cell on Update() -> sensible?
@@ -77,8 +82,13 @@ private:
    // How many milliseconds does the player have to wait to plant another bomb?
    static const int PLANT_BOMB_DELAY = 1000;
 
-   void HandleMovementUpdate(int elapsed_time);
-   void HandleBombUpdate(int elapsed_time);
+   void UpdateMovement(int elapsed_time);
+   void UpdateBombing(int elapsed_time);
+
+   bool CanMoveUp(const Point& cell_pos, const Size& cell_size, int distance) const;
+   bool CanMoveDown(const Point& cell_pos, const Size& cell_size, int distance) const;
+   bool CanMoveLeft(const Point& cell_pos, const Size& cell_size, int distance) const;
+   bool CanMoveRight(const Point& cell_pos, const Size& cell_size, int distance) const;
 
 //   bool IsUserDataValid(const kinex::UserData& user) const;
 //   Point GetRelativePerspectiveJointPosition(const XnPoint3D& pos) const;
@@ -93,6 +103,7 @@ private:
 //
 //   PlayerId mId;
    std::shared_ptr<InputDevice> mInput;
+   std::shared_ptr<Cell> mParentCell;
    int mMoveIdleTime = 0;
    int mBombIdleTime = 0;
    bool mWantToPlantBomb = false;

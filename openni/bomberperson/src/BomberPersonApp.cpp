@@ -56,11 +56,10 @@ void BomberPersonApp::RenderScene()
 
 void BomberPersonApp::SelectRenderer()
 {
-//   if (VideoMode::OpenGL == mCurrentVideoMode) {
-//      mRenderer = std::make_shared<GlRenderer>();
-//   }
-//   else
-   if (VideoMode::Software == mCurrentVideoMode) {
+   if (VideoMode::OpenGL == mCurrentVideoMode) {
+      mRenderer = std::make_shared<GlRenderer>();
+   }
+   else if (VideoMode::Software == mCurrentVideoMode) {
       mRenderer = std::make_shared<SdlRenderer>(*mKinect);
    }
    else {

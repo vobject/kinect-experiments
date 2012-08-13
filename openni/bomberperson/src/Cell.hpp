@@ -3,6 +3,10 @@
 
 #include "SceneObject.hpp"
 
+class Field;
+class Bomb;
+class Explosion;
+
 enum class CellType
 {
    Floor,
@@ -20,7 +24,11 @@ enum class CellType
 class Cell : public SceneObject
 {
 public:
-   Cell(const std::string& name, int field_pos_x, int field_pos_y, CellType type);
+   Cell(const std::string& name,
+        int field_pos_x,
+        int field_pos_y,
+        const Field& field,
+        CellType type);
    virtual ~Cell();
 
    Cell(const Cell&) = delete;
@@ -34,7 +42,18 @@ public:
    CellType GetType() const;
    void SetType(CellType type);
 
-   bool Blocking() const;
+   std::shared_ptr<Cell> GetTopCell() const;
+   std::shared_ptr<Cell> GetDownCell() const;
+   std::shared_ptr<Cell> GetLeftCell() const;
+   std::shared_ptr<Cell> GetRightCell() const;
+
+   bool IsBlocking() const;
+
+   std::shared_ptr<Bomb> GetBomb() const;
+   void SetBomb(const std::shared_ptr<Bomb>& bomb);
+
+   std::shared_ptr<Explosion> GetExplosion() const;
+   void SetExplosion(const std::shared_ptr<Explosion>& explosion);
 
 //   CellItem GetItem() const;
 //   void SetItem(CellItem item);
@@ -43,9 +62,13 @@ private:
    // (X,Y) index on the playing field.
    const int mFieldPosX;
    const int mFieldPosY;
+   const Field& mField;
 
    CellType mType;
 //   CellItem mItem = CellItem::None;
+
+   std::shared_ptr<Bomb> mBomb;
+   std::shared_ptr<Explosion> mExplosion;
 };
 
 #endif // CELL_HPP

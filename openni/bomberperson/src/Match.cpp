@@ -52,11 +52,20 @@ Match::~Match()
 
 void Match::Update(const int elapsed_time)
 {
+   mField->Update(elapsed_time);
+
+   for (auto& player : mPlayers)
+   {
+      const auto cell = GetCellFromObject(player);
+      player->SetCurrentCell(cell);
+      player->Update(elapsed_time);
+   }
+
 //   for (auto& player : mPlayers)
 //   {
 //      HandlePlayerUpdate(player, elapsed_time);
 //   }
-//
+
 //   HandleBombUpdate(elapsed_time);
 //   HandleExplosionUpdate(elapsed_time);
 }
@@ -71,14 +80,21 @@ std::vector<std::shared_ptr<Player>> Match::GetPlayers() const
    return mPlayers;
 }
 
-std::vector<std::shared_ptr<Bomb>> Match::GetBombs() const
-{
-   return mBombs;
-}
+//std::vector<std::shared_ptr<Bomb>> Match::GetBombs() const
+//{
+//   return mBombs;
+//}
 
 std::vector<std::shared_ptr<Explosion>> Match::GetExplosions() const
 {
    return mExplosions;
+}
+
+std::shared_ptr<Cell> Match::GetCellFromObject(const std::shared_ptr<SceneObject>& obj) const
+{
+   const Point pos = { obj->GetPosition().X + (obj->GetSize().Width / 2),
+                       obj->GetPosition().Y + (obj->GetSize().Height / 2) };
+   return mField->GetCellFromPosition(pos);
 }
 
 ////int Level::GetRows() const

@@ -7,12 +7,12 @@
 #include <memory>
 #include <string>
 
-class Explosion;
+class Cell;
 
 class Bomb : public SceneObject
 {
 public:
-   Bomb(const std::string& name);
+   Bomb(const std::string& name, const std::shared_ptr<Cell>& cell);
    virtual ~Bomb();
 
    Bomb(const Bomb&) = delete;
@@ -23,11 +23,16 @@ public:
    int GetRange() const;
    void SetRange(int range);
 
-   std::shared_ptr<Explosion> GetExplosion();
-
 private:
-   static const int DEFAULT_LIFETIME = 3000_ms;
+   static const int DEFAULT_LIFETIME = 2000_ms;
 
+   void PlantCenterExplosion() const;
+   void PlantTopRangeExplosion() const;
+   void PlantDownRangeExplosion() const;
+   void PlantLeftRangeExplosion() const;
+   void PlantRightRangeExplosion() const;
+
+   std::shared_ptr<Cell> mParentCell;
    int mLifeTime = 0;
    int mRange = 1;
 };

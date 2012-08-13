@@ -20,9 +20,11 @@ Logic::Logic(
    // This should usually just be done when the app cahnges from mainmenu-state
    //  or from the choose-match-options-state into the actual game-state.
 
-   auto playing_field = std::make_shared<Field>("test_field");
-   playing_field->SetSize({ 480, 480 });
-   playing_field->SetPosition({ 30, 30 });
+   Point field_pos(30, 30);
+   Size field_size(480, 480);
+   auto playing_field = std::make_shared<Field>("test_field",
+                                                field_pos,
+                                                field_size);
 
    const std::vector<std::shared_ptr<Player>> players = {
       std::make_shared<Player>("player_1",
@@ -30,13 +32,15 @@ Logic::Logic(
                                                                SDLK_DOWN,
                                                                SDLK_LEFT,
                                                                SDLK_RIGHT,
-                                                               SDLK_SPACE))
+                                                               SDLK_SPACE),
+                               playing_field->GetCellFromCoordinates(1, 1))
 //    , std::make_shared<Player>("player_2",
 //                               std::make_shared<KeyboardInput>(SDLK_w,
 //                                                               SDLK_s,
 //                                                               SDLK_a,
 //                                                               SDLK_d,
-//                                                               SDLK_LCTRL))
+//                                                               SDLK_LCTRL),
+//                               playing_field->GetCellFromCoordinates(2, 1))
    };
 
    mMatch = std::make_shared<Match>(playing_field, players);
@@ -90,19 +94,33 @@ void Logic::Render()
    const auto playing_field = mMatch->GetField();
    mRenderer->Render(playing_field);
 
+   // Collect all bombs and explosions from the cells for later rendering.
+   std::vector<std::shared_ptr<Bomb>> bombs;
+   std::vector<std::shared_ptr<Explosion>> explosions;
+
    for (const auto& cell : playing_field->GetCells()) {
       mRenderer->Render(cell);
+
+      const auto bomb = cell->GetBomb();
+      if (bomb) {
+         bombs.push_back(bomb);
+      }
+
+      const auto explosion = cell->GetExplosion();
+      if (explosion) {
+         explosions.push_back(explosion);
+      }
+   }
+
+   for (const auto& bomb : bombs) {
+      mRenderer->Render(bomb);
    }
 
    for (const auto& player : mMatch->GetPlayers()) {
       mRenderer->Render(player);
    }
 
-   for (const auto& bomb : mMatch->GetBombs()) {
-      mRenderer->Render(bomb);
-   }
-
-   for (const auto& explosion : mMatch->GetExplosions()) {
+   for (const auto& explosion : explosions) {
       mRenderer->Render(explosion);
    }
 

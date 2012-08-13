@@ -51,42 +51,87 @@ void SdlRenderer::PostRender()
 
 void SdlRenderer::Render(const std::shared_ptr<Field>& field)
 {
+   const Point pos = field->GetPosition();
+   const Size size = field->GetSize();
 
+   SDL_Rect rect = { static_cast<Sint16>(pos.X),
+                     static_cast<Sint16>(pos.Y),
+                     static_cast<Uint16>(size.Width),
+                     static_cast<Uint16>(size.Height) };
+   SDL_FillRect(mScreen, &rect, 0xefefef);
 }
 
 void SdlRenderer::Render(const std::shared_ptr<Cell>& cell)
 {
+   const Point pos = cell->GetPosition();
+   const Size size = cell->GetSize();
+   const CellType type = cell->GetType();
 
+   SDL_Rect rect = { static_cast<Sint16>(pos.X + 1),
+                     static_cast<Sint16>(pos.Y + 1),
+                     static_cast<Uint16>(size.Width - 2),
+                     static_cast<Uint16>(size.Height - 2) };
+
+   int color = 0;
+   if (CellType::Floor == type) { color = 0x7f7f00; }
+   else if (CellType::IndestructibleWall == type) { color = 0x4f4f4f; }
+   else if (CellType::DestructibleWall == type) { color = 0x7f7f7f; }
+
+   SDL_FillRect(mScreen, &rect, color);
 }
 
 void SdlRenderer::Render(const std::shared_ptr<Player>& player)
 {
+   const Point pos = player->GetPosition();
+   const Size size = player->GetSize();
 
+   SDL_Rect rect = { static_cast<Sint16>(pos.X),
+                     static_cast<Sint16>(pos.Y),
+                     static_cast<Uint16>(size.Width),
+                     static_cast<Uint16>(size.Height) };
+   SDL_FillRect(mScreen, &rect, 0x00afaf);
 }
 
 void SdlRenderer::Render(const std::shared_ptr<Bomb>& bomb)
 {
+   const Point pos = bomb->GetPosition();
+   const Size size = bomb->GetSize();
 
+   SDL_Rect rect = { static_cast<Sint16>(pos.X),
+                     static_cast<Sint16>(pos.Y),
+                     static_cast<Uint16>(size.Width),
+                     static_cast<Uint16>(size.Height) };
+   SDL_FillRect(mScreen, &rect, 0x000000);
 }
 
 void SdlRenderer::Render(const std::shared_ptr<Explosion>& explosion)
 {
+   const Point pos = explosion->GetPosition();
+   const Size size = explosion->GetSize();
 
+   SDL_Rect rect = { static_cast<Sint16>(pos.X),
+                     static_cast<Sint16>(pos.Y),
+                     static_cast<Uint16>(size.Width),
+                     static_cast<Uint16>(size.Height) };
+   SDL_FillRect(mScreen, &rect, 0xffff00);
 }
 
 void SdlRenderer::Render(const std::shared_ptr<SceneObject>& obj)
 {
+   const Point pos = obj->GetPosition();
+   const Size size = obj->GetSize();
 
+   SDL_Rect rect = { static_cast<Sint16>(pos.X),
+                     static_cast<Sint16>(pos.Y),
+                     static_cast<Uint16>(size.Width),
+                     static_cast<Uint16>(size.Height) };
+   SDL_FillRect(mScreen, &rect, 0xffffff);
 }
 
 //void SdlRenderer::Render(const std::shared_ptr<Match>& level)
 //{
 //   const Point level_pos = level->GetPosition();
 //   const Size level_size = level->GetSize();
-//
-//   SDL_Rect level_rect = { level_pos.X, level_pos.Y,
-//                           level_size.Width, level_size.Height};
-//   SDL_FillRect(mScreen, &level_rect, 0xefefef);
 //
 //   Point cell_pos(level_pos);
 //   for (const auto& row : level->mField->mCells)

@@ -13,6 +13,7 @@ class Cell;
 class Player;
 class Bomb;
 class Explosion;
+class SceneObject;
 
 class Match
 {
@@ -28,7 +29,7 @@ public:
 
    std::shared_ptr<Field> GetField() const;
    std::vector<std::shared_ptr<Player>> GetPlayers() const;
-   std::vector<std::shared_ptr<Bomb>> GetBombs() const;
+//   std::vector<std::shared_ptr<Bomb>> GetBombs() const;
    std::vector<std::shared_ptr<Explosion>> GetExplosions() const;
 
 //   int GetRows() const;
@@ -37,6 +38,7 @@ public:
 //   int GetCellHeight() const;
 
 private:
+   std::shared_ptr<Cell> GetCellFromObject(const std::shared_ptr<SceneObject>& obj) const;
 //   void HandlePlayerUpdate(std::shared_ptr<Player>& player, int elapsed_time);
 //   void HandleBombUpdate(int elapsed_time);
 //   void HandleExplosionUpdate(int elapsed_time);
@@ -58,7 +60,7 @@ private:
 
    std::shared_ptr<Field> mField;
    std::vector<std::shared_ptr<Player>> mPlayers;
-   std::vector<std::shared_ptr<Bomb>> mBombs;
+//   std::vector<std::shared_ptr<Bomb>> mBombs;
    std::vector<std::shared_ptr<Explosion>> mExplosions;
 
 //   std::shared_ptr<ResourceCache> mResCache;
