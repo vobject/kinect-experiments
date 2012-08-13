@@ -25,7 +25,7 @@ Field::Field(const std::string& name, const Point& pos, const Size& size)
                                          cell_field_pos_x,
                                          cell_field_pos_y,
                                          *this,
-                                         CellType::Floor);
+                                         CellType::DestructibleWall);
 
       cell->SetPosition({ GetPosition().X + (cell_size.Width * cell_field_pos_x),
                           GetPosition().Y + (cell_size.Height * cell_field_pos_y) });
@@ -129,12 +129,6 @@ std::shared_ptr<Cell> Field::GetCellRightOf(const int cell_x, const int cell_y) 
 {
    return GetCellFromCoordinates(cell_x + 1, cell_y);
 }
-
-//std::shared_ptr<Cell> Field::GetCellLeftOf(const std::shared_ptr<Cell>& cell) const
-//{
-//   // TODO
-//   return nullptr;
-//}
 
 Size Field::GetCellSize() const
 {

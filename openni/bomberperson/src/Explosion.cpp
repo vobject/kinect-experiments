@@ -1,7 +1,8 @@
 #include "Explosion.hpp"
 #include "Utils.hpp"
 
-Explosion::Explosion(const std::string& name)
+Explosion::Explosion(const std::string& name, const ExplosionType type)
+   : mType(type)
 {
    SetResourceId(name);
    SetSize({ 25, 25 });
@@ -26,18 +27,3 @@ ExplosionType Explosion::GetType() const
 {
    return mType;
 }
-
-void Explosion::SetType(const ExplosionType type)
-{
-   mType = type;
-}
-
-//int Explosion::GetRange() const
-//{
-//   return mRange;
-//}
-//
-//void Explosion::SetRange(const int range)
-//{
-//   mRange = range;
-//}

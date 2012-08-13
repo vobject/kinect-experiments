@@ -6,15 +6,19 @@
 
 enum class ExplosionType
 {
-   CrosswayExplosion,
-   VerticalExplosion,
-   HorizontalExplosion
+   Crossway,
+   Vertical,
+   VerticalLeftEnd,
+   VerticalRightEnd,
+   Horizontal,
+   HorizontalLeftEnd,
+   HorizontalRightEnd
 };
 
 class Explosion : public SceneObject
 {
 public:
-   Explosion(const std::string& name);
+   Explosion(const std::string& name, ExplosionType type);
    virtual ~Explosion();
 
    Explosion(const Explosion&) = delete;
@@ -23,17 +27,12 @@ public:
    void Update(int elapsed_time) override;
 
    ExplosionType GetType() const;
-   void SetType(ExplosionType type);
-
-//   int GetRange() const;
-//   void SetRange(int range);
 
 private:
    static const int DEFAULT_LIFETIME = 1000_ms;
 
-   ExplosionType mType = ExplosionType::CrosswayExplosion;
+   ExplosionType mType;
    int mLifeTime = 0;
-//   int mRange = 1;
 };
 
 #endif // EXPLOSION_HPP

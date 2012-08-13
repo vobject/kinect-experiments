@@ -128,63 +128,6 @@ void SdlRenderer::Render(const std::shared_ptr<SceneObject>& obj)
    SDL_FillRect(mScreen, &rect, 0xffffff);
 }
 
-//void SdlRenderer::Render(const std::shared_ptr<Match>& level)
-//{
-//   const Point level_pos = level->GetPosition();
-//   const Size level_size = level->GetSize();
-//
-//   Point cell_pos(level_pos);
-//   for (const auto& row : level->mField->mCells)
-//   {
-//      for (const auto& cell : row)
-//      {
-//         SDL_Rect cell_rect = { cell_pos.X + 1,
-//                                cell_pos.Y + 1,
-//                                level->GetCellWidth() - 2,
-//                                level->GetCellHeight() - 2};
-//
-//         int cell_color = 0;
-//         if (CellType::Floor == cell->GetType()) { cell_color = 0x7f7f00; }
-//         else if (CellType::IndestructibleWall == cell->GetType()) { cell_color = 0x4f4f4f; }
-//         else if (CellType::DestructibleWall == cell->GetType()) { cell_color = 0x7f7f7f; }
-//
-//         SDL_FillRect(mScreen, &cell_rect, cell_color);
-//
-//         cell_pos.X += level->GetCellWidth();
-//      }
-//
-//      cell_pos.X = level_pos.X; // carriage return
-//      cell_pos.Y += level->GetCellHeight(); // line feed
-//   }
-//
-//   for (const auto& player : level->mPlayers)
-//   {
-//      SDL_Rect player_rect = { level_pos.X + player->GetPosition().X,
-//                               level_pos.Y + player->GetPosition().Y,
-//                               player->GetSize().Width,
-//                               player->GetSize().Height};
-//      SDL_FillRect(mScreen, &player_rect, 0x00afaf);
-//   }
-//
-//   for (const auto& bomb : level->mBombs)
-//   {
-//      SDL_Rect bomb_rect = { level_pos.X + bomb->GetPosition().X,
-//                             level_pos.Y + bomb->GetPosition().Y,
-//                             bomb->GetSize().Width,
-//                             bomb->GetSize().Height};
-//      SDL_FillRect(mScreen, &bomb_rect, 0x000000);
-//   }
-//
-//   for (const auto& explosion : level->mExplosions)
-//   {
-//      SDL_Rect explosion_rect = { level_pos.X + explosion->GetPosition().X,
-//                                  level_pos.Y + explosion->GetPosition().Y,
-//                                  explosion->GetSize().Width,
-//                                  explosion->GetSize().Height};
-//      SDL_FillRect(mScreen, &explosion_rect, 0xffff00);
-//   }
-//}
-
 void SdlRenderer::DrawLine(const Point& src_pos, const Point& dest_pos, const unsigned int color)
 {
    // based on http://alawibaba.com/projects/whiteboard/drawing-SDL.c

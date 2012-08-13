@@ -13,7 +13,7 @@ Cell::Cell(
 )
    : mFieldPosX(field_pos_x)
    , mFieldPosY(field_pos_y)
-   , mField(field) // Do not use inside the ctor - object is not yet ready.
+   , mField(field) // Do not use inside the ctor - object is not ready yet.
    , mType(type)
    , mBomb(nullptr)
    , mExplosion(nullptr)
@@ -48,16 +48,6 @@ void Cell::Update(const int elapsed_time)
 
    // TODO: call Update for other items that could be present on this cell.
 }
-
-//int Cell::GetFieldPositionX() const
-//{
-//   return mFieldPosX;
-//}
-//
-//int Cell::GetFieldPositionY() const
-//{
-//   return mFieldPosY;
-//}
 
 CellType Cell::GetType() const
 {

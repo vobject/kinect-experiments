@@ -36,9 +36,6 @@ public:
 
    void Update(int elapsed_time) override;
 
-//   int GetFieldPositionX() const;
-//   int GetFieldPositionY() const;
-
    CellType GetType() const;
    void SetType(CellType type);
 

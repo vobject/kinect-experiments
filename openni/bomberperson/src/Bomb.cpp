@@ -43,7 +43,8 @@ void Bomb::SetRange(const int range)
 
 void Bomb::PlantCenterExplosion() const
 {
-   auto explosion = std::make_shared<Explosion>("explosion_center");
+   auto explosion = std::make_shared<Explosion>("explosion_center",
+                                                ExplosionType::Crossway);
    explosion->SetPosition({ mParentCell->GetPosition().X + 1,
                             mParentCell->GetPosition().Y + 1});
    mParentCell->SetExplosion(explosion);
@@ -60,7 +61,8 @@ void Bomb::PlantTopRangeExplosion() const
          break;
       }
 
-      auto range_exp = std::make_shared<Explosion>("explosion_top");
+      auto range_exp = std::make_shared<Explosion>("explosion_top",
+                                                   ExplosionType::Vertical);
       range_exp->SetPosition({ range_cell->GetPosition().X + 1,
                                range_cell->GetPosition().Y + 1});
       range_cell->SetExplosion(range_exp);
@@ -87,7 +89,8 @@ void Bomb::PlantDownRangeExplosion() const
          break;
       }
 
-      auto range_exp = std::make_shared<Explosion>("explosion_down");
+      auto range_exp = std::make_shared<Explosion>("explosion_down",
+                                                   ExplosionType::Vertical);
       range_exp->SetPosition({ range_cell->GetPosition().X + 1,
                                range_cell->GetPosition().Y + 1});
       range_cell->SetExplosion(range_exp);
@@ -114,7 +117,8 @@ void Bomb::PlantLeftRangeExplosion() const
          break;
       }
 
-      auto range_exp = std::make_shared<Explosion>("explosion_left");
+      auto range_exp = std::make_shared<Explosion>("explosion_left",
+                                                   ExplosionType::Horizontal);
       range_exp->SetPosition({ range_cell->GetPosition().X + 1,
                                range_cell->GetPosition().Y + 1});
       range_cell->SetExplosion(range_exp);
@@ -141,7 +145,8 @@ void Bomb::PlantRightRangeExplosion() const
          break;
       }
 
-      auto range_exp = std::make_shared<Explosion>("explosion_right");
+      auto range_exp = std::make_shared<Explosion>("explosion_right",
+                                                   ExplosionType::Horizontal);
       range_exp->SetPosition({ range_cell->GetPosition().X + 1,
                                range_cell->GetPosition().Y + 1});
       range_cell->SetExplosion(range_exp);

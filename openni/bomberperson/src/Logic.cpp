@@ -55,9 +55,6 @@ void Logic::ProcessInput(const SDL_KeyboardEvent& ev)
 {
    // TODO: Find out if non-Up/Down Handling is a better choice: GetKeystate()
 
-   // If the app is in game-running-state, get the input devices registered
-   //  for the currently running game and check (only) them.
-
    const auto players = mMatch->GetPlayers();
 
    if (SDL_KEYDOWN == ev.type)

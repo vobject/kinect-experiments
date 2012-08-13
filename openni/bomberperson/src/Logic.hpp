@@ -10,7 +10,6 @@ namespace kinex {
    class Nui;
 }
 class Renderer;
-//class InputDevice;
 class Match;
 
 class Logic
@@ -31,8 +30,6 @@ public:
 
 private:
    std::shared_ptr<Renderer> mRenderer;
-//   std::shared_ptr<InputDevice> mKeyboard_1;
-//   std::shared_ptr<InputDevice> mKeyboard_2;
    std::shared_ptr<Match> mMatch;
 };
 
