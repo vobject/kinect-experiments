@@ -21,30 +21,33 @@ Logic::Logic(
    // This should usually just be done when the app cahnges from mainmenu-state
    //  or from the choose-match-options-state into the actual game-state.
 
+   const int player_count = 2;
+   const int arena_size_x = 16;
+   const int arena_size_y = 16;
+
    mFieldGen = std::make_shared<FieldGenerator>();
    mFieldGen->SetFieldPosition({ 30, 30 });
    mFieldGen->SetFieldSize({ 480, 480 });
 
-   auto playing_field = mFieldGen->GetDefaultField(11, 11, 2);
-
    const std::vector<std::shared_ptr<Player>> players = {
-      std::make_shared<Player>("player_1",
-                               std::make_shared<KeyboardInput>(SDLK_UP,
-                                                               SDLK_DOWN,
-                                                               SDLK_LEFT,
-                                                               SDLK_RIGHT,
-                                                               SDLK_SPACE),
-                               playing_field->GetCellFromCoordinates(1, 1))
-    , std::make_shared<Player>("player_2",
-                               std::make_shared<KeyboardInput>(SDLK_w,
-                                                               SDLK_s,
-                                                               SDLK_a,
-                                                               SDLK_d,
-                                                               SDLK_LCTRL),
-                               playing_field->GetCellFromCoordinates(9, 9))
+      std::make_shared<Player>("player_1")
+    , std::make_shared<Player>("player_2")
    };
+   auto area = mFieldGen->GetDefaultArena(arena_size_x, arena_size_y, player_count);
 
-   mMatch = std::make_shared<Match>(playing_field, players);
+   const auto input_p1 = std::make_shared<KeyboardInput>(SDLK_UP, SDLK_DOWN, SDLK_LEFT, SDLK_RIGHT, SDLK_SPACE);
+   const auto parent_cell_p1 = area->GetCellFromCoordinates(1, 1);
+   players[0]->SetInputDevice(input_p1);
+   players[0]->SetParentCell(parent_cell_p1);
+   players[0]->SetPosition(parent_cell_p1->GetPosition());
+
+   const auto input_p2 = std::make_shared<KeyboardInput>(SDLK_w, SDLK_s, SDLK_a, SDLK_d, SDLK_LCTRL);
+   const auto parent_cell_p2 = area->GetCellFromCoordinates(arena_size_x - 2, arena_size_y - 2);
+   players[1]->SetInputDevice(input_p2);
+   players[1]->SetParentCell(parent_cell_p2);
+   players[1]->SetPosition(parent_cell_p2->GetPosition());
+
+   mMatch = std::make_shared<Match>(area, players);
 }
 
 Logic::~Logic()

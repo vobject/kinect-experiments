@@ -67,10 +67,10 @@ void SdlRenderer::Render(const std::shared_ptr<Cell>& cell)
    const Size size = cell->GetSize();
    const CellType type = cell->GetType();
 
-   SDL_Rect rect = { static_cast<Sint16>(pos.X + 1),
-                     static_cast<Sint16>(pos.Y + 1),
-                     static_cast<Uint16>(size.Width - 2),
-                     static_cast<Uint16>(size.Height - 2) };
+   SDL_Rect rect = { static_cast<Sint16>(pos.X),
+                     static_cast<Sint16>(pos.Y),
+                     static_cast<Uint16>(size.Width),
+                     static_cast<Uint16>(size.Height) };
 
    int color = 0;
    if (CellType::IndestructibleWall == type) {

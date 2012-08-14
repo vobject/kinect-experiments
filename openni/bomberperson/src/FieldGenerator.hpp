@@ -25,12 +25,11 @@ public:
    void SetFieldSize(const Size& size);
 
 //   std::shared_ptr<Field> FromLevel(const std::string& name) const;
-   std::shared_ptr<Field> GetDefaultField(int cells_x, int cells_y, int players) const;
+   std::shared_ptr<Field> GetDefaultArena(int cells_x, int cells_y, int players) const;
 
 private:
    std::vector<std::shared_ptr<Cell>> CreateDefaultCells(int cells_x,
          int cells_y, const std::shared_ptr<Field>& field) const;
-   void ScatterCellItems(const std::vector<std::shared_ptr<Cell>>& cells) const;
 
    Size GetCellSize(int cells_x, int cells_y) const;
    bool ShouldCreateItem() const;

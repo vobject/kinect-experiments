@@ -4,17 +4,9 @@
 #include "Bomb.hpp"
 #include "Utils.hpp"
 
-Player::Player(
-   const std::string& name,
-   const std::shared_ptr<InputDevice>& input,
-   const std::shared_ptr<Cell>& cell
-)
-   : mInput(input)
-   , mParentCell(cell)
+Player::Player(const std::string& res_name)
 {
-   SetResourceId(name);
-   SetPosition({ mParentCell->GetPosition().X + 10,
-                 mParentCell->GetPosition().Y + 10 });
+   SetResourceId(res_name);
    SetSize({ 25, 25 });
 }
 
@@ -38,6 +30,11 @@ void Player::Update(const int elapsed_time)
 std::shared_ptr<InputDevice> Player::GetInputDevice() const
 {
    return mInput;
+}
+
+void Player::SetInputDevice(const std::shared_ptr<InputDevice>& input)
+{
+   mInput = input;
 }
 
 void Player::SetParentCell(const std::shared_ptr<Cell>& cell)

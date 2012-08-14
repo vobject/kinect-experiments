@@ -33,9 +33,7 @@ class Bomb;
 class Player : public SceneObject
 {
 public:
-   Player(const std::string& name,
-          const std::shared_ptr<InputDevice>& input,
-          const std::shared_ptr<Cell>& cell);
+   Player(const std::string& res_name);
    virtual ~Player();
 
    Player(const Player&) = delete;
@@ -44,6 +42,7 @@ public:
    void Update(int elapsed_time) override;
 
    std::shared_ptr<InputDevice> GetInputDevice() const;
+   void SetInputDevice(const std::shared_ptr<InputDevice>& input);
 
    void SetParentCell(const std::shared_ptr<Cell>& cell);
 

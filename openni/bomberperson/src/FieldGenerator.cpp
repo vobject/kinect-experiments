@@ -25,16 +25,37 @@ void FieldGenerator::SetFieldSize(const Size& size)
    mSize = size;
 }
 
-std::shared_ptr<Field> FieldGenerator::GetDefaultField(
+std::shared_ptr<Field> FieldGenerator::GetDefaultArena(
    const int cells_x,
    const int cells_y,
    const int players
 ) const
 {
-   auto playing_field = std::make_shared<Field>("field_random");
+   auto playing_field = std::make_shared<Field>("field_default");
 
    const auto cells = CreateDefaultCells(cells_x, cells_y, playing_field);
-   ScatterCellItems(cells);
+
+   if (players >= 1) {
+      cells[1 + (1 * cells_y)]->SetType(CellType::Floor);
+      cells[1 + (2 * cells_y)]->SetType(CellType::Floor);
+      cells[2 + (1 * cells_y)]->SetType(CellType::Floor);
+   }
+   if (players >= 2) {
+      cells[(cells_x - 3) + ((cells_x - 2) * cells_y)]->SetType(CellType::Floor);
+      cells[(cells_x - 2) + ((cells_x - 3) * cells_y)]->SetType(CellType::Floor);
+      cells[(cells_x - 2) + ((cells_x - 2) * cells_y)]->SetType(CellType::Floor);
+   }
+
+   for (auto& cell : cells)
+   {
+      if (CellType::DestructibleWall != cell->GetType()) {
+         continue;
+      }
+
+      if (ShouldCreateItem()) {
+         cell->SetItem(GetRandomCellItem());
+      }
+   }
 
    playing_field->SetPosition(mPos);
    playing_field->SetSize(mSize);
@@ -57,7 +78,7 @@ std::vector<std::shared_ptr<Cell>> FieldGenerator::CreateDefaultCells(
       const int cell_field_pos_x = i % cells_y;
       const int cell_field_pos_y = i / cells_y;
 
-      auto cell = std::make_shared<Cell>("cell_random",
+      auto cell = std::make_shared<Cell>("cell_0",
                                          cell_field_pos_x,
                                          cell_field_pos_y,
                                          field,
@@ -76,42 +97,9 @@ std::vector<std::shared_ptr<Cell>> FieldGenerator::CreateDefaultCells(
       {
          cell->SetType(CellType::IndestructibleWall);
       }
-
-      // Create starting place for player 1:
-      if (((cell_field_pos_x == 1) && (cell_field_pos_y == 1)) ||
-          ((cell_field_pos_x == 1) && (cell_field_pos_y == 2)) ||
-          ((cell_field_pos_x == 2) && (cell_field_pos_y == 1)))
-      {
-         cell->SetType(CellType::Floor);
-      }
-
-      // Create starting place for player 2:
-      if (((cell_field_pos_x == (cells_x - 3)) && (cell_field_pos_y == (cells_y - 2))) ||
-          ((cell_field_pos_x == (cells_x - 2)) && (cell_field_pos_y == (cells_y - 3))) ||
-          ((cell_field_pos_x == (cells_x - 2)) && (cell_field_pos_y == (cells_y - 2))))
-      {
-         cell->SetType(CellType::Floor);
-      }
       cells[i] = cell;
    }
    return cells;
-}
-
-void FieldGenerator::ScatterCellItems(
-   const std::vector<std::shared_ptr<Cell>>& cells
-) const
-{
-   for (auto& cell : cells)
-   {
-      if (CellType::DestructibleWall != cell->GetType()) {
-         continue;
-      }
-
-      if (ShouldCreateItem())
-      {
-         cell->SetItem(GetRandomCellItem());
-      }
-   }
 }
 
 Size FieldGenerator::GetCellSize(const int cells_x, const int cells_y) const

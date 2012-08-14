@@ -24,6 +24,7 @@ public:
    void Update(int elapsed_time) override;
 
    void SetDimensions(int cells_x, int cells_y);
+//   void SetPlayerStart();
 
    std::vector<std::shared_ptr<Cell>> GetCells() const;
    void SetCells(const std::vector<std::shared_ptr<Cell>>& cells);
