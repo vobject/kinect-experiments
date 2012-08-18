@@ -8,9 +8,26 @@
 
 #include <SDL.h>
 
-SdlNoRes::SdlNoRes()
+SdlNoRes::SdlNoRes(const Size res)
 {
+   if (0 > SDL_Init(SDL_INIT_VIDEO)) {
+      throw "Cannot init SDL video subsystem.";
+   }
+   atexit(SDL_Quit);
 
+   const auto screen = SDL_SetVideoMode(res.Width,
+                                        res.Height,
+                                        32,
+                                        SDL_ANYFORMAT |
+                                           SDL_SWSURFACE |
+                                           SDL_DOUBLEBUF |
+                                           SDL_RESIZABLE);
+   if (!screen) {
+      throw "SDL_SetVideoMode() failed.";
+   }
+
+   // The return value of SDL_SetVideoMode() (-> screen) should not be freed
+   //  by the caller. The man page tells us to rely on SDL_Quit() to do this.
 }
 
 SdlNoRes::~SdlNoRes()

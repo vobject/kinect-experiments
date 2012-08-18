@@ -6,8 +6,22 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
 
-GlNoRes::GlNoRes()
+GlNoRes::GlNoRes(const Size res)
 {
+   if (0 > SDL_Init(SDL_INIT_VIDEO)) {
+      throw "Cannot init SDL video subsystem.";
+   }
+   atexit(SDL_Quit);
+
+   SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+   const auto screen = SDL_SetVideoMode(res.Width,
+                                        res.Height,
+                                        32,
+                                        SDL_OPENGL | SDL_RESIZABLE);
+   if (!screen) {
+      throw "SDL_SetVideoMode() failed.";
+   }
+
    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);

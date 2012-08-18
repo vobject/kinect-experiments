@@ -33,7 +33,7 @@ void BomberPersonApp::Mainloop()
 //   auto stead = std::chrono::steady_clock::now();
 //   auto high = std::chrono::high_resolution_clock::now();
 
-   const int delta_time = 15;
+   const int delta_time = 1;
    int current_time = SDL_GetTicks();
    int game_time = 0;
    int accumulator = 0;
@@ -65,13 +65,9 @@ void BomberPersonApp::Initialize()
       throw "Failed to initialize Xlib muti-threading support";
    }
 
-   mVideoMode = VideoMode::Software;
-   mVideoResolution = { 800_px, 600_px };
-
    InitNui();
-   InitVideo(mVideoMode, mVideoResolution);
 
-   mRenderer = std::make_shared<SdlNoRes>();
+   mRenderer = std::make_shared<SdlNoRes>(Size(800_px, 600_px));
    mWndFrame = std::make_shared<WindowFrame>("BomberPerson");
    mLogic = std::make_shared<Logic>(mRenderer, mNui);
 }
@@ -146,52 +142,5 @@ void BomberPersonApp::InitNui()
 
       mNui = std::make_shared<KinectDummy>();
       mNui->Init();
-   }
-}
-
-void BomberPersonApp::InitVideo(const VideoMode mode, const Size res) const
-{
-   if (0 > SDL_Init(SDL_INIT_VIDEO)) {
-      throw "Cannot init SDL video subsystem.";
-   }
-   atexit(SDL_Quit);
-
-   if (VideoMode::OpenGL == mode) {
-      SelectGlVideo(res);
-   }
-   else if (VideoMode::Software == mode) {
-      SelectSdlVideo(res);
-   }
-   else {
-      throw "Invalid video mode.";
-   }
-}
-
-void BomberPersonApp::SelectSdlVideo(const Size res) const
-{
-   const auto screen = SDL_SetVideoMode(res.Width,
-                                        res.Height,
-                                        32,
-                                        SDL_ANYFORMAT |
-                                           SDL_SWSURFACE |
-                                           SDL_DOUBLEBUF |
-                                           SDL_RESIZABLE);
-   if (!screen) {
-      throw "SDL_SetVideoMode() failed.";
-   }
-
-   // The return value of SDL_SetVideoMode() (-> screen) should not be freed
-   //  by the caller. The man page tells us to rely on SDL_Quit() to do this.
-}
-
-void BomberPersonApp::SelectGlVideo(const Size res) const
-{
-   SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-   const auto screen = SDL_SetVideoMode(res.Width,
-                                        res.Height,
-                                        32,
-                                        SDL_OPENGL | SDL_RESIZABLE);
-   if (!screen) {
-      throw "SDL_SetVideoMode() failed.";
    }
 }

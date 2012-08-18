@@ -36,12 +36,7 @@ private:
    void RenderScene();
 
    void InitNui();
-   void InitVideo(VideoMode mode, Size res) const;
-   void SelectSdlVideo(Size res) const;
-   void SelectGlVideo(Size res) const;
 
-   VideoMode mVideoMode = VideoMode::Software;
-   Size mVideoResolution = { 640_px, 480_px };
    bool mQuitRequested = false;
 
    std::shared_ptr<Nui> mNui;

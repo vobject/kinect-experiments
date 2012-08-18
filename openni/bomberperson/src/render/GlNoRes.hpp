@@ -3,12 +3,13 @@
 
 #include "Renderer.hpp"
 
+struct Size;
 struct SDL_Surface;
 
 class GlNoRes : public Renderer
 {
 public:
-   GlNoRes();
+   GlNoRes(Size res);
    virtual ~GlNoRes();
 
    GlNoRes(const GlNoRes&) = delete;
