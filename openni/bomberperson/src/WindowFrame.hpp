@@ -1,7 +1,7 @@
 #ifndef WINDOW_FRAME_HPP
 #define WINDOW_FRAME_HPP
 
-#include "../utils/Utils.hpp"
+#include "utils/Utils.hpp"
 
 #include <SDL.h>
 

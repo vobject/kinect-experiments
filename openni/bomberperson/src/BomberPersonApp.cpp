@@ -1,7 +1,7 @@
 #include "BomberPersonApp.hpp"
+#include "WindowFrame.hpp"
 #include "nui/Kinect.hpp"
 #include "nui/KinectDummy.hpp"
-#include "video/WindowFrame.hpp"
 #include "render/GlNoRes.hpp"
 #include "render/SdlNoRes.hpp"
 #include "game/Logic.hpp"
@@ -28,22 +28,25 @@ void BomberPersonApp::Start()
 
 void BomberPersonApp::Mainloop()
 {
+   // Mainloop based on an article from Glenn Fiedler:
+   //  http://gafferongames.com/game-physics/fix-your-timestep/
+
    // TODO: Replace SDL times with sd::chonos classes.
 //   auto sys = std::chrono::system_clock::now();
 //   auto stead = std::chrono::steady_clock::now();
 //   auto high = std::chrono::high_resolution_clock::now();
 
-   const int delta_time = 1;
-   int current_time = SDL_GetTicks();
+   const int delta_time = 10_ms; // Milliseconds to wait for a game update.
+   int old_time = SDL_GetTicks();
    int game_time = 0;
    int accumulator = 0;
 
    while(!mQuitRequested)
    {
       const int new_time = SDL_GetTicks();
-      int frame_time = new_time - current_time;
+      int frame_time = new_time - old_time;
 
-      current_time = new_time;
+      old_time = new_time;
       accumulator += frame_time;
 
       while (accumulator >= delta_time)
