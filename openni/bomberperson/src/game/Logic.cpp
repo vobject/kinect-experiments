@@ -1,19 +1,19 @@
 #include "Logic.hpp"
-#include "Renderer.hpp"
 #include "Match.hpp"
-#include "KeyboardInput.hpp"
-#include "Kinect.hpp"
 #include "FieldGenerator.hpp"
 #include "Field.hpp"
 #include "Cell.hpp"
 #include "Player.hpp"
-#include "Utils.hpp"
+#include "../nui/Kinect.hpp"
+#include "../input/KeyboardInput.hpp"
+#include "../render/Renderer.hpp"
+#include "../utils/Utils.hpp"
 
 #include <SDL_events.h>
 
 Logic::Logic(
    const std::shared_ptr<Renderer>& renderer,
-   const std::shared_ptr<kinex::Nui>& kinect
+   const std::shared_ptr<Nui>& kinect
 )
    : mRenderer(renderer)
 {

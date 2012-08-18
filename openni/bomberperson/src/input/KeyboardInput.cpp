@@ -1,5 +1,5 @@
 #include "KeyboardInput.hpp"
-#include "Utils.hpp"
+#include "../utils/Utils.hpp"
 
 KeyboardInput::KeyboardInput(
    const int up_keycode,

@@ -2,7 +2,7 @@
 #define EXPLOSION_HPP
 
 #include "SceneObject.hpp"
-#include "Utils.hpp"
+#include "../utils/Utils.hpp"
 
 enum class ExplosionType
 {

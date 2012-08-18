@@ -2,7 +2,7 @@
 #include "Field.hpp"
 #include "Bomb.hpp"
 #include "Explosion.hpp"
-#include "Utils.hpp"
+#include "../utils/Utils.hpp"
 
 Cell::Cell(
    const std::string& name,

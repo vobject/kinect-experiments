@@ -1,7 +1,6 @@
 #include "Bomb.hpp"
 #include "Cell.hpp"
 #include "Explosion.hpp"
-#include "Utils.hpp"
 
 Bomb::Bomb(const std::string& name, const std::shared_ptr<Cell>& cell)
    : mParentCell(cell)

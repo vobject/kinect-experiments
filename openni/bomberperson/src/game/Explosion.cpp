@@ -1,5 +1,4 @@
 #include "Explosion.hpp"
-#include "Utils.hpp"
 
 Explosion::Explosion(const std::string& name, const ExplosionType type)
    : mType(type)

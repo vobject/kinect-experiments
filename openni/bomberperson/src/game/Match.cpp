@@ -2,7 +2,7 @@
 #include "Field.hpp"
 #include "Cell.hpp"
 #include "Player.hpp"
-#include "Utils.hpp"
+#include "../utils/Utils.hpp"
 
 Match::Match(
    const std::shared_ptr<Field>& playing_field,

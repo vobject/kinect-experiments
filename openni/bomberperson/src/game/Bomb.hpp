@@ -2,10 +2,9 @@
 #define BOMB_HPP
 
 #include "SceneObject.hpp"
-#include "Utils.hpp"
+#include "../utils/Utils.hpp"
 
 #include <memory>
-#include <string>
 
 class Cell;
 

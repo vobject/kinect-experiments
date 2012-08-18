@@ -1,8 +1,8 @@
 #include "Player.hpp"
-#include "InputDevice.hpp"
 #include "Cell.hpp"
 #include "Bomb.hpp"
-#include "Utils.hpp"
+#include "../input/InputDevice.hpp"
+#include "../utils/Utils.hpp"
 
 Player::Player(const std::string& res_name)
 {

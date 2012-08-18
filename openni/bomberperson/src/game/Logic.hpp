@@ -6,9 +6,7 @@
 
 class SDL_KeyboardEvent;
 
-namespace kinex {
-   class Nui;
-}
+class Nui;
 class Renderer;
 class FieldGenerator;
 class Match;
@@ -17,7 +15,7 @@ class Logic
 {
 public:
    Logic(const std::shared_ptr<Renderer>& renderer,
-         const std::shared_ptr<kinex::Nui>& kinect);
+         const std::shared_ptr<Nui>& kinect);
    virtual ~Logic();
 
    Logic(const Logic&) = delete;

@@ -1,7 +1,6 @@
 #include "FieldGenerator.hpp"
 #include "Field.hpp"
 #include "Cell.hpp"
-#include "Utils.hpp"
 
 #include <time.h>
 

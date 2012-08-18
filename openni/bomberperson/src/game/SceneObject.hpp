@@ -1,7 +1,7 @@
 #ifndef SCENE_OBJECT_HPP
 #define SCENE_OBJECT_HPP
 
-#include "Utils.hpp"
+#include "../utils/Utils.hpp"
 
 #include <string>
 

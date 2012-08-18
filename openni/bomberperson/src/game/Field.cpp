@@ -1,8 +1,8 @@
 #include "Field.hpp"
 #include "Cell.hpp"
-#include "Utils.hpp"
+#include "../utils/Utils.hpp"
 
-#include <time.h>
+#include <ctime>
 
 Field::Field(const std::string& name)
 {

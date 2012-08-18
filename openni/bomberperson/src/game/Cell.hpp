@@ -3,6 +3,8 @@
 
 #include "SceneObject.hpp"
 
+#include <memory>
+
 class Field;
 class Bomb;
 class Explosion;

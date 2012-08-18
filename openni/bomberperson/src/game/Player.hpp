@@ -2,11 +2,10 @@
 #define PLAYER_HPP
 
 #include "SceneObject.hpp"
-#include "InputDevice.hpp"
-#include "Utils.hpp"
+#include "../input/InputDevice.hpp"
+#include "../utils/Utils.hpp"
 
 #include <memory>
-#include <string>
 #include <vector>
 
 class InputDevice;
