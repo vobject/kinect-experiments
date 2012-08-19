@@ -1,27 +1,44 @@
-cmake_minimum_required(VERSION 2.8)
+CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 
-project(bomberperson)
+PROJECT(BomberPerson)
 
-add_definitions(-D__GXX_EXPERIMENTAL_CXX0X__)
-add_definitions(-Dlinux)
-add_definitions(-I/usr/include/SDL)
-add_definitions(-I/usr/include/ni)
-add_definitions(-O0)
-add_definitions(-g3)
-add_definitions(-Wall)
-add_definitions(-std=c++11)
+IF (NOT CMAKE_BUILD_TYPE)
+    MESSAGE(STATUS "No build type selected. Default to RELEASE")
+    SET(CMAKE_BUILD_TYPE "RELEASE")
+ENDIF()
 
-#add_subdirectory(src)
+# TODO: Check if USE_OPENNI has been set and set it for the compilation.
 
-file(GLOB bomberperson_SOURCES src/*.cpp src/*/*.cpp)
+# TODO: Check compiler version to be at least g++4.7 or clang++3.1.
 
+FIND_PACKAGE(SDL REQUIRED)
+FIND_PACKAGE(OpenGL REQUIRED) # TODO: Make this optional
+FIND_PACKAGE(X11 REQUIRED) # OpenGL should already have taken care of this...
+# TODO: Check for OpenNI
+#TODO: OpenNI Stuff: ADD_DEFINITIONS(-I/usr/include/ni)
+#TODO: OpenNI Stuff: ADD_DEFINITIONS(-Dlinux)
 
-#add_subdirectory(game)
-#add_subdirectory(input)
-#add_subdirectory(nui)
-#add_subdirectory(render)
-#add_subdirectory(utils)
+INCLUDE_DIRECTORIES(
+   ${SDL_INCLUDE_DIR}
+   ${OPENGL_INCLUDE_DIR}
+   ${X11_INCLUDE_DIR}
+)
 
-add_executable(bomberperson ${bomberperson_SOURCES})
+FILE(GLOB BOMBERPERSON_SOURCES src/*.cpp
+                               src/*/*.cpp)
 
-target_link_libraries (bomberperson SDL SDL_ttf GL OpenNI X11)
+ADD_DEFINITIONS(
+   -Wall
+   -std=c++11
+)
+
+SET(CMAKE_CXX_FLAGS_DEBUG "-O0 -g3")
+
+ADD_EXECUTABLE(BomberPerson ${BOMBERPERSON_SOURCES})
+
+TARGET_LINK_LIBRARIES(
+   ${PROJECT_NAME}
+   ${SDL_LIBRARY}
+   ${OPENGL_LIBRARIES}
+   ${X11_LIBRARIES}
+)
