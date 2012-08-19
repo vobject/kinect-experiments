@@ -2,7 +2,8 @@
 #include "Field.hpp"
 #include "Cell.hpp"
 
-#include <time.h>
+#include <cstdlib>
+#include <ctime>
 
 FieldGenerator::FieldGenerator()
 {
