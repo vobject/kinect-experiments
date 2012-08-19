@@ -1,6 +1,7 @@
 #ifndef KINECT_HPP
 #define KINECT_HPP
 
+#if defined(USE_OPENNI)
 #include "Nui.hpp"
 #include "UserTracking.hpp"
 
@@ -41,5 +42,6 @@ private:
    
    bool mPlaybackMode = false;
 };
+#endif // USE_OPENNI
 
 #endif // KINECT_HPP

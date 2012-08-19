@@ -1,5 +1,6 @@
 #include "Kinect.hpp"
 
+#if defined(USE_OPENNI)
 Kinect::Kinect()
 {
 
@@ -98,3 +99,4 @@ std::shared_ptr<xn::SceneMetaData> Kinect::GetUserPixels(const UserData& user) c
 {
    return mUserTracking.GetUserPixels(user);
 }
+#endif // USE_OPENNI

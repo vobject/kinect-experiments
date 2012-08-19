@@ -72,7 +72,7 @@ void BomberPersonApp::Initialize()
 
    mRenderer = std::make_shared<SdlNoRes>(Size(800_px, 600_px));
    mWndFrame = std::make_shared<WindowFrame>("BomberPerson");
-   mLogic = std::make_shared<Logic>(mRenderer, mNui);
+   mLogic = std::make_shared<Logic>(mRenderer);
 }
 
 void BomberPersonApp::ProcessInput()
@@ -132,6 +132,7 @@ void BomberPersonApp::RenderScene()
 
 void BomberPersonApp::InitNui()
 {
+#if defined(USE_OPENNI)
    mNui = std::make_shared<Kinect>();
    try
    {
@@ -146,4 +147,5 @@ void BomberPersonApp::InitNui()
       mNui = std::make_shared<KinectDummy>();
       mNui->Init();
    }
+#endif // USE_OPENNI
 }

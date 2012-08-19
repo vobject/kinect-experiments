@@ -4,17 +4,13 @@
 #include "Field.hpp"
 #include "Cell.hpp"
 #include "Player.hpp"
-#include "../nui/Kinect.hpp"
 #include "../input/KeyboardInput.hpp"
 #include "../render/Renderer.hpp"
 #include "../utils/Utils.hpp"
 
 #include <SDL_events.h>
 
-Logic::Logic(
-   const std::shared_ptr<Renderer>& renderer,
-   const std::shared_ptr<Nui>& kinect
-)
+Logic::Logic(const std::shared_ptr<Renderer>& renderer)
    : mRenderer(renderer)
 {
    // Create a new game and start it.

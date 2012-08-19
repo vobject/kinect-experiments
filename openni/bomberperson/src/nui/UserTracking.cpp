@@ -1,6 +1,7 @@
 #include "UserTracking.hpp"
 #include "../utils/Utils.hpp"
 
+#if defined(USE_OPENNI)
 #include <array>
 
 // Callback functions for xn::UserGenerator class.
@@ -172,3 +173,4 @@ void XN_CALLBACK_TYPE CalibEndCB(
       args->user_gen->GetPoseDetectionCap().StartPoseDetection("Psi", id);
    }
 }
+#endif // USE_OPENNI

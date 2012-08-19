@@ -5,7 +5,9 @@
 
 #include <memory>
 
+#if defined(USE_OPENNI)
 class Nui;
+#endif // USE_OPENNI
 class WindowFrame;
 class Renderer;
 class Logic;
@@ -39,7 +41,9 @@ private:
 
    bool mQuitRequested = false;
 
+#if defined(USE_OPENNI)
    std::shared_ptr<Nui> mNui;
+#endif // USE_OPENNI
    std::shared_ptr<WindowFrame> mWndFrame;
    std::shared_ptr<Renderer> mRenderer;
    std::shared_ptr<Logic> mLogic;

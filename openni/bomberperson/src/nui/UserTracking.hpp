@@ -1,6 +1,7 @@
 #ifndef USER_TRACKING_HPP
 #define USER_TRACKING_HPP
 
+#if defined(USE_OPENNI)
 #include "UserData.hpp"
 
 #include "openni_all.h"
@@ -44,5 +45,6 @@ private:
 
    UserTrackerCallbackArgs mCallbackArgs;
 };
+#endif // USE_OPENNI
 
 #endif // USER_TRACKING_HPP

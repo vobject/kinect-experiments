@@ -1,6 +1,7 @@
 #ifndef NUI_HPP
 #define NUI_HPP
 
+#if defined(USE_OPENNI)
 #include "UserData.hpp"
 #include "../utils/Utils.hpp"
 
@@ -33,5 +34,6 @@ public:
 protected:
    Size mRes;
 };
+#endif // USE_OPENNI
 
 #endif // NUI_HPP

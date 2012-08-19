@@ -1,6 +1,7 @@
 #ifndef KINECT_DUMMY_HPP
 #define KINECT_DUMMY_HPP
 
+#if defined(USE_OPENNI)
 #include "Nui.hpp"
 
 class KinectDummy : public Nui
@@ -33,5 +34,6 @@ private:
    std::vector<XnRGB24Pixel> mRgbDummyData;
    std::vector<XnDepthPixel> mDepthDummyData;
 };
+#endif // USE_OPENNI
 
 #endif // KINECT_DUMMY_HPP

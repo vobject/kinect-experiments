@@ -1,6 +1,7 @@
 #ifndef USER_DATA_HPP
 #define USER_DATA_HPP
 
+#if defined(USE_OPENNI)
 #include "openni_all.h"
 
 #include <map>
@@ -30,5 +31,6 @@ private:
    std::map<int, XnPoint3D> mRealWorldJoints;
    std::map<int, XnPoint3D> mPerspectiveJoints;
 };
+#endif // USE_OPENNI
 
 #endif // USER_DATA_HPP

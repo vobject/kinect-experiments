@@ -6,7 +6,6 @@
 
 class SDL_KeyboardEvent;
 
-class Nui;
 class Renderer;
 class FieldGenerator;
 class Match;
@@ -14,8 +13,7 @@ class Match;
 class Logic
 {
 public:
-   Logic(const std::shared_ptr<Renderer>& renderer,
-         const std::shared_ptr<Nui>& kinect);
+   Logic(const std::shared_ptr<Renderer>& renderer);
    virtual ~Logic();
 
    Logic(const Logic&) = delete;
