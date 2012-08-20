@@ -1,7 +1,7 @@
 #include "Logic.hpp"
 #include "Match.hpp"
-#include "FieldGenerator.hpp"
-#include "Field.hpp"
+#include "ArenaGenerator.hpp"
+#include "Arena.hpp"
 #include "Cell.hpp"
 #include "Player.hpp"
 #include "../input/KeyboardInput.hpp"
@@ -21,9 +21,9 @@ Logic::Logic(const std::shared_ptr<Renderer>& renderer)
    const int arena_size_x = 16;
    const int arena_size_y = 16;
 
-   mFieldGen = std::make_shared<FieldGenerator>();
-   mFieldGen->SetFieldPosition({ 30, 30 });
-   mFieldGen->SetFieldSize({ 512, 512 });
+   mFieldGen = std::make_shared<ArenaGenerator>();
+   mFieldGen->SetArenaPosition({ 30, 30 });
+   mFieldGen->SetArenaSize({ 512, 512 });
 
    const std::vector<std::shared_ptr<Player>> players = {
       std::make_shared<Player>("player_1")
@@ -92,37 +92,6 @@ void Logic::Update(const int app_time, const int elapsed_time)
 void Logic::Render()
 {
    mRenderer->PreRender();
-
-   const auto playing_field = mMatch->GetField();
-   mRenderer->Render(playing_field);
-
-   // Collect all bombs and explosions from the cells for later rendering.
-   std::vector<std::shared_ptr<Bomb>> bombs;
-   std::vector<std::shared_ptr<Explosion>> explosions;
-
-   for (const auto& cell : playing_field->GetCells()) {
-      mRenderer->Render(cell);
-
-      if (cell->HasBomb()) {
-         bombs.push_back(cell->GetBomb());
-      }
-
-      if (cell->HasExplosion()) {
-         explosions.push_back(cell->GetExplosion());
-      }
-   }
-
-   for (const auto& bomb : bombs) {
-      mRenderer->Render(bomb);
-   }
-
-   for (const auto& player : mMatch->GetPlayers()) {
-      mRenderer->Render(player);
-   }
-
-   for (const auto& explosion : explosions) {
-      mRenderer->Render(explosion);
-   }
-
+   mRenderer->Render(mMatch);
    mRenderer->PostRender();
 }

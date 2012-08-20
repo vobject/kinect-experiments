@@ -5,25 +5,27 @@
 
 #include <memory>
 
-class Field;
+class Arena;
+class Wall;
+class Extra;
 class Bomb;
 class Explosion;
 
-enum class CellType
-{
-   Floor,
-   IndestructibleWall,
-   DestructibleWall
-};
-
-enum class CellItem
-{
-   None,
-   Speed,
-   BombRange,
-   BombSupply,
-   CELL_ITEM_COUNT
-};
+//enum class CellType
+//{
+//   Floor,
+//   IndestructibleWall,
+//   DestructibleWall
+//};
+//
+//enum class CellItem
+//{
+//   None,
+//   Speed,
+//   BombRange,
+//   BombSupply,
+//   CELL_ITEM_COUNT
+//};
 
 //class CellObject
 //{
@@ -47,37 +49,13 @@ enum class CellItem
 //
 //};
 
-//class Cell;
-//
-//class Item : public Cell
-//{
-//   //ctor
-//   //dtor
-//
-//};
-//
-//class Indestructible : public Cell
-//{
-//
-//};
-//
-//class Destructible : public Cell
-//{
-//
-//};
-//
-//class Exploding??? : public Cell
-//{
-//
-//};
-
 class Cell : public SceneObject
 {
 public:
    Cell(const std::string& name,
         int field_pos_x,
         int field_pos_y,
-        const std::shared_ptr<Field>& field);
+        const std::shared_ptr<Arena>& field);
    virtual ~Cell();
 
    Cell(const Cell&) = delete;
@@ -85,41 +63,38 @@ public:
 
    void Update(int elapsed_time) override;
 
-   CellType GetType() const; // TODO: Remove Me!
-   void SetType(CellType type);
+   bool HasWall() const;
+   std::shared_ptr<Wall> GetWall() const;
+   void SetWall(const std::shared_ptr<Wall>& wall);
+   void DestroyWall();
+
+   bool HasExtra() const;
+   std::shared_ptr<Extra> GetExtra() const;
+   void SetExtra(const std::shared_ptr<Extra>& extra);
+   void DestroyExtra();
+   std::shared_ptr<Extra> CollectExtra();
 
    bool HasBomb() const;
    std::shared_ptr<Bomb> GetBomb() const;
    void SetBomb(const std::shared_ptr<Bomb>& bomb);
+   void DetonateBomb();
 
    bool HasExplosion() const;
    std::shared_ptr<Explosion> GetExplosion() const;
    void SetExplosion(const std::shared_ptr<Explosion>& explosion);
 
-   bool HasItem() const;
-   CellItem GetItem() const;
-   void SetItem(CellItem item);
-
-   bool IsBlocking() const;
-   bool IsDestructible() const;
-
-   std::shared_ptr<Cell> GetCell(Direction dir) const;
+   std::shared_ptr<Cell> GetNeighborCell(Direction dir) const;
 
 private:
    // (X,Y) index on the playing field.
    const int mFieldPosX;
    const int mFieldPosY;
-   const std::shared_ptr<Field> mField;
+   const std::shared_ptr<Arena> mField;
 
-   CellType mType;
-   CellItem mItem;
-
-   // Will be dynamically casted to get its derived type.
-   // Yes, this is ugly, but still better than maintaining two pointers
-   //  with potentially contradictory state -> a cell can not have both,
-   //  a bomb and an explosion, but the public interface allows consecutive
-   //  calls to SetBomb() and SetExplosion().
-   std::shared_ptr<SceneObject> mBombOrExplosion;
+   std::shared_ptr<Wall> mWall = nullptr;
+   std::shared_ptr<Extra> mExtra = nullptr;
+   std::shared_ptr<Bomb> mBomb = nullptr;
+   std::shared_ptr<Explosion> mExplosion = nullptr;
 };
 
 #endif // CELL_HPP

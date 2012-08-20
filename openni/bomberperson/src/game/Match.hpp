@@ -5,7 +5,7 @@
 #include <tuple>
 #include <vector>
 
-class Field;
+class Arena;
 class Player;
 class Cell;
 class SceneObject;
@@ -13,7 +13,7 @@ class SceneObject;
 class Match
 {
 public:
-   Match(const std::shared_ptr<Field>& playing_field,
+   Match(const std::shared_ptr<Arena>& arena,
          const std::vector<std::shared_ptr<Player>>& players);
    virtual ~Match();
 
@@ -22,13 +22,13 @@ public:
 
    void Update(int elapsed_time);
 
-   std::shared_ptr<Field> GetField() const;
+   std::shared_ptr<Arena> GetArena() const;
    std::vector<std::shared_ptr<Player>> GetPlayers() const;
 
 private:
    std::shared_ptr<Cell> GetCellFromObject(const std::shared_ptr<SceneObject>& obj) const;
 
-   std::shared_ptr<Field> mField;
+   std::shared_ptr<Arena> mArena;
    std::vector<std::shared_ptr<Player>> mPlayers;
 };
 

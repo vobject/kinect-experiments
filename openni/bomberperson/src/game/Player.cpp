@@ -1,5 +1,6 @@
 #include "Player.hpp"
 #include "Cell.hpp"
+#include "Extra.hpp"
 #include "Bomb.hpp"
 #include "../input/InputDevice.hpp"
 #include "../utils/Utils.hpp"
@@ -43,51 +44,50 @@ void Player::SetParentCell(const std::shared_ptr<Cell>& cell)
 {
    mParentCell = cell;
 
-   if (mParentCell->HasExplosion()) {
+   if (mParentCell->HasExplosion())
+   {
+      // Explosions kill the player instantly.
       SetAlive(false);
+      return;
    }
 
-   if (mParentCell->HasItem())
+   if (mParentCell->HasExtra())
    {
-      switch (mParentCell->GetItem())
+      switch (mParentCell->CollectExtra()->GetType())
       {
-         case CellItem::Speed:
+         case ExtraType::Speed:
             IncreaseSpeed();
             break;
-         case CellItem::BombRange:
+         case ExtraType::BombRange:
             mBombRange++;
             break;
-         case CellItem::BombSupply:
+         case ExtraType::BombSupply:
             mBombSupply++;
             break;
          default:
             break;
       }
-      mParentCell->SetItem(CellItem::None);
    }
 }
 
 void Player::UpdateMovement(const int elapsed_time)
 {
-   const Point cell_pos = mParentCell->GetPosition();
-   const Size cell_size = mParentCell->GetSize();
-
    const int distance = 1;
    int up = 0;
    int down = 0;
    int left = 0;
    int right = 0;
 
-   if (mInput->TestUp() && CanMoveUp(cell_pos, cell_size, distance)) {
+   if (mInput->TestUp() && CanMove(Direction::Up, distance)) {
       up++;
    }
-   if (mInput->TestDown() && CanMoveDown(cell_pos, cell_size, distance)) {
+   if (mInput->TestDown() && CanMove(Direction::Down, distance)) {
       down++;
    }
-   if (mInput->TestLeft() && CanMoveLeft(cell_pos, cell_size, distance)) {
+   if (mInput->TestLeft() && CanMove(Direction::Left, distance)) {
       left++;
    }
-   if (mInput->TestRight() && CanMoveRight(cell_pos, cell_size, distance)) {
+   if (mInput->TestRight() && CanMove(Direction::Right, distance)) {
       right++;
    }
 
@@ -123,68 +123,40 @@ void Player::UpdateBombing(const int elapsed_time)
    mBombIdleTime = 0;
 }
 
-bool Player::CanMoveUp(const Point& cell_pos, const Size& cell_size, const int distance) const
+bool Player::CanMove(const Direction dir, const int distance) const
 {
-   if ((GetPosition().Y - distance) >= cell_pos.Y)
+   const Point cell_pos = mParentCell->GetPosition();
+   const Size cell_size = mParentCell->GetSize();
+
+   // Check for movement inside the current cell.
+   // Movement inside the current cell is always ok.
+   switch (dir)
    {
-      // Movement inside the current cell is ok.
-      return true;
+      case Direction::Up:
+         if ((GetPosition().Y - distance) >= cell_pos.Y)
+            return true;
+         break;
+      case Direction::Down:
+         if ((GetPosition().Y + GetSize().Height + distance) <= (cell_pos.Y + cell_size.Height))
+            return true;
+         break;
+      case Direction::Left:
+         if ((GetPosition().X - distance) >= cell_pos.X)
+            return true;
+         break;
+      case Direction::Right:
+         if ((GetPosition().X + GetSize().Width + distance) <= (cell_pos.X + cell_size.Width))
+            return true;
+         break;
    }
 
-   // Player wants to walk inside the cell on top - check if that is allowed.
-   const auto top_cell = mParentCell->GetCell(Direction::Up);
-   if (top_cell && !top_cell->IsBlocking())
+   // Player wants to walk to another cell - check if that is allowed.
+   const auto neighbor_cell = mParentCell->GetNeighborCell(dir);
+   if (neighbor_cell &&
+       !neighbor_cell->HasWall() &&
+       !neighbor_cell->HasBomb())
    {
       // A cell exists and does not block the player.
-      return true;
-   }
-   // TODO: Should cells with bombs also block? Probably YES!
-
-   return false;
-}
-
-bool Player::CanMoveDown(const Point& cell_pos, const Size& cell_size, const int distance) const
-{
-   if ((GetPosition().Y + GetSize().Height + distance) <= (cell_pos.Y + cell_size.Height))
-   {
-      return true;
-   }
-
-   const auto down_cell = mParentCell->GetCell(Direction::Down);
-   if (down_cell && !down_cell->IsBlocking())
-   {
-      return true;
-   }
-
-   return false;
-}
-
-bool Player::CanMoveLeft(const Point& cell_pos, const Size& cell_size, const int distance) const
-{
-   if ((GetPosition().X - distance) >= cell_pos.X)
-   {
-      return true;
-   }
-
-   const auto left_cell = mParentCell->GetCell(Direction::Left);
-   if (left_cell && !left_cell->IsBlocking())
-   {
-      return true;
-   }
-
-   return false;
-}
-
-bool Player::CanMoveRight(const Point& cell_pos, const Size& cell_size, const int distance) const
-{
-   if ((GetPosition().X + GetSize().Width + distance) <= (cell_pos.X + cell_size.Width))
-   {
-      return true;
-   }
-
-   const auto right_cell = mParentCell->GetCell(Direction::Right);
-   if (right_cell && !right_cell->IsBlocking())
-   {
       return true;
    }
 
@@ -213,7 +185,7 @@ bool Player::CanPlantBomb()
 void Player::IncreaseSpeed()
 {
    if (mMovementSpeed > 2) {
-      mMovementSpeed--;
+      mMovementSpeed -= 2;
    }
-   // The player has already the maximum speed.
+   // The player is already at maximum speed.
 }

@@ -1,5 +1,5 @@
-#ifndef FIELD_HPP
-#define FIELD_HPP
+#ifndef ARENA_HPP
+#define ARENA_HPP
 
 #include "SceneObject.hpp"
 
@@ -12,15 +12,14 @@ class Point;
 class Size;
 enum class CellItem;
 
-//TODO: Rename this class to Area
-class Field : public SceneObject
+class Arena : public SceneObject
 {
 public:
-   Field(const std::string& name);
-   virtual ~Field();
+   Arena(const std::string& name);
+   virtual ~Arena();
 
-   Field(const Field&) = delete;
-   Field& operator=(const Field&) = delete;
+   Arena(const Arena&) = delete;
+   Arena& operator=(const Arena&) = delete;
 
    void Update(int elapsed_time) override;
 
@@ -40,12 +39,12 @@ public:
    std::shared_ptr<Cell> GetCellRightOf(int cell_x, int cell_y) const;
 
 private:
-   std::tuple<int, int> IndexToFieldPos(int index) const;
-   int FieldPosToIndex(int cell_x, int cell_y) const;
+   std::tuple<int, int> IndexToArenaPos(int index) const;
+   int ArenaPosToIndex(int cell_x, int cell_y) const;
 
    int mXCells;
    int mYCells;
    std::vector<std::shared_ptr<Cell>> mCells;
 };
 
-#endif // FIELD_HPP
+#endif // ARENA_HPP

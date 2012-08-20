@@ -49,11 +49,7 @@ private:
    void UpdateMovement(int elapsed_time);
    void UpdateBombing(int elapsed_time);
 
-   bool CanMoveUp(const Point& cell_pos, const Size& cell_size, int distance) const;
-   bool CanMoveDown(const Point& cell_pos, const Size& cell_size, int distance) const;
-   bool CanMoveLeft(const Point& cell_pos, const Size& cell_size, int distance) const;
-   bool CanMoveRight(const Point& cell_pos, const Size& cell_size, int distance) const;
-
+   bool CanMove(Direction dir, int distance) const;
    bool CanPlantBomb();
 
    void IncreaseSpeed();
@@ -64,12 +60,12 @@ private:
    int mBombIdleTime = 0;
 
    // Number of milliseconds the player has to wait to move another pixel.
-   int mMovementSpeed = 1;
+   int mMovementSpeed = 16;
    // How many milliseconds does the player have to wait to plant another bomb?
    int mPlantingSpeed = 200;
 
-   int mBombRange = 3;
-   int mBombSupply = 3;
+   int mBombRange = 1;
+   int mBombSupply = 1;
    std::vector<std::shared_ptr<Bomb>> mPlantedBombs;
 };
 

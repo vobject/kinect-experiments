@@ -1,28 +1,31 @@
-#ifndef SDL_NORES_RENDERER_HPP
-#define SDL_NORES_RENDERER_HPP
+#ifndef SIMPLE_SDL_RENDERER_HPP
+#define SIMPLE_SDL_RENDERER_HPP
 
 #include "Renderer.hpp"
 
 struct Size;
 struct SDL_Surface;
 
-class SdlNoRes : public Renderer
+class SimpleSdlRenderer : public Renderer
 {
 public:
-   SdlNoRes(Size res);
-   virtual ~SdlNoRes();
+   SimpleSdlRenderer(Size res);
+   virtual ~SimpleSdlRenderer();
 
-   SdlNoRes(const SdlNoRes&) = delete;
-   SdlNoRes& operator=(const SdlNoRes&) = delete;
+   SimpleSdlRenderer(const SimpleSdlRenderer&) = delete;
+   SimpleSdlRenderer& operator=(const SimpleSdlRenderer&) = delete;
 
    void PreRender() override;
    void PostRender() override;
 
-   void Render(const std::shared_ptr<Field>& field) override;
+   void Render(const std::shared_ptr<Match>& match) override;
+   void Render(const std::shared_ptr<Arena>& arena) override;
    void Render(const std::shared_ptr<Cell>& cell) override;
-   void Render(const std::shared_ptr<Player>& player) override;
+   void Render(const std::shared_ptr<Wall>& explosion) override;
+   void Render(const std::shared_ptr<Extra>& bomb) override;
    void Render(const std::shared_ptr<Bomb>& bomb) override;
    void Render(const std::shared_ptr<Explosion>& explosion) override;
+   void Render(const std::shared_ptr<Player>& player) override;
    void Render(const std::shared_ptr<SceneObject>& obj) override;
 
 private:
@@ -33,4 +36,4 @@ private:
    SDL_Surface* mScreen = nullptr;
 };
 
-#endif // SDL_NORES_RENDERER_HPP
+#endif // SIMPLE_SDL_RENDERER_HPP

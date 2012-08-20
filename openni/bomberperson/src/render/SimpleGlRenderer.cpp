@@ -1,4 +1,12 @@
-#include "GlNoRes.hpp"
+#include "SimpleGlRenderer.hpp"
+#include "../game/Match.hpp"
+#include "../game/Arena.hpp"
+#include "../game/Cell.hpp"
+#include "../game/Wall.hpp"
+#include "../game/Extra.hpp"
+#include "../game/Bomb.hpp"
+#include "../game/Explosion.hpp"
+#include "../game/Player.hpp"
 #include "../utils/Utils.hpp"
 
 #include <SDL.h>
@@ -6,7 +14,7 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
 
-GlNoRes::GlNoRes(const Size res)
+SimpleGlRenderer::SimpleGlRenderer(const Size res)
 {
    if (0 > SDL_Init(SDL_INIT_VIDEO)) {
       throw "Cannot init SDL video subsystem.";
@@ -31,12 +39,12 @@ GlNoRes::GlNoRes(const Size res)
    glEnable(GL_LINE_SMOOTH);
 }
 
-GlNoRes::~GlNoRes()
+SimpleGlRenderer::~SimpleGlRenderer()
 {
 
 }
 
-void GlNoRes::PreRender()
+void SimpleGlRenderer::PreRender()
 {
    // Screen size might have changed.
    mScreen = SDL_GetVideoSurface();
@@ -49,37 +57,52 @@ void GlNoRes::PreRender()
    glClear(GL_COLOR_BUFFER_BIT);
 }
 
-void GlNoRes::PostRender()
+void SimpleGlRenderer::PostRender()
 {
    SDL_GL_SwapBuffers();
 }
 
-void GlNoRes::Render(const std::shared_ptr<Field>& field)
+void SimpleGlRenderer::Render(const std::shared_ptr<Match>& match)
 {
    // TODO: Implement Me!
 }
 
-void GlNoRes::Render(const std::shared_ptr<Cell>& cell)
+void SimpleGlRenderer::Render(const std::shared_ptr<Arena>& arena)
 {
    // TODO: Implement Me!
 }
 
-void GlNoRes::Render(const std::shared_ptr<Player>& player)
+void SimpleGlRenderer::Render(const std::shared_ptr<Cell>& cell)
 {
    // TODO: Implement Me!
 }
 
-void GlNoRes::Render(const std::shared_ptr<Bomb>& bomb)
+void SimpleGlRenderer::Render(const std::shared_ptr<Wall>& wall)
 {
    // TODO: Implement Me!
 }
 
-void GlNoRes::Render(const std::shared_ptr<Explosion>& explosion)
+void SimpleGlRenderer::Render(const std::shared_ptr<Extra>& extra)
 {
    // TODO: Implement Me!
 }
 
-void GlNoRes::Render(const std::shared_ptr<SceneObject>& obj)
+void SimpleGlRenderer::Render(const std::shared_ptr<Bomb>& bomb)
+{
+   // TODO: Implement Me!
+}
+
+void SimpleGlRenderer::Render(const std::shared_ptr<Explosion>& explosion)
+{
+   // TODO: Implement Me!
+}
+
+void SimpleGlRenderer::Render(const std::shared_ptr<Player>& player)
+{
+   // TODO: Implement Me!
+}
+
+void SimpleGlRenderer::Render(const std::shared_ptr<SceneObject>& obj)
 {
    // TODO: Implement Me!
 }

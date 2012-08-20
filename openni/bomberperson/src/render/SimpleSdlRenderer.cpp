@@ -1,14 +1,17 @@
-#include "SdlNoRes.hpp"
-#include "../game/Field.hpp"
+#include "SimpleSdlRenderer.hpp"
+#include "../game/Match.hpp"
+#include "../game/Arena.hpp"
 #include "../game/Cell.hpp"
-#include "../game/Player.hpp"
+#include "../game/Wall.hpp"
+#include "../game/Extra.hpp"
 #include "../game/Bomb.hpp"
 #include "../game/Explosion.hpp"
+#include "../game/Player.hpp"
 #include "../utils/Utils.hpp"
 
 #include <SDL.h>
 
-SdlNoRes::SdlNoRes(const Size res)
+SimpleSdlRenderer::SimpleSdlRenderer(const Size res)
 {
    if (0 > SDL_Init(SDL_INIT_VIDEO)) {
       throw "Cannot init SDL video subsystem.";
@@ -30,42 +33,76 @@ SdlNoRes::SdlNoRes(const Size res)
    //  by the caller. The man page tells us to rely on SDL_Quit() to do this.
 }
 
-SdlNoRes::~SdlNoRes()
+SimpleSdlRenderer::~SimpleSdlRenderer()
 {
 
 }
 
-void SdlNoRes::PreRender()
+void SimpleSdlRenderer::PreRender()
 {
    // Screen size might have changed.
    mScreen = SDL_GetVideoSurface();
 
-   const auto black = SDL_MapRGB(mScreen->format, 0x00, 0x00, 0x00);
+   const auto black = SDL_MapRGB(mScreen->format, 0, 0, 0);
    SDL_FillRect(mScreen, NULL, black);
 }
 
-void SdlNoRes::PostRender()
+void SimpleSdlRenderer::PostRender()
 {
    SDL_Flip(mScreen);
 }
 
-void SdlNoRes::Render(const std::shared_ptr<Field>& field)
+void SimpleSdlRenderer::Render(const std::shared_ptr<Match>& match)
 {
-   const Point pos = field->GetPosition();
-   const Size size = field->GetSize();
+   Render(match->GetArena());
+
+   for (const auto& player : match->GetPlayers())
+   {
+      Render(player);
+   }
+}
+
+void SimpleSdlRenderer::Render(const std::shared_ptr<Arena>& arena)
+{
+   const auto pos = arena->GetPosition();
+   const auto size = arena->GetSize();
 
    SDL_Rect rect = { static_cast<Sint16>(pos.X),
                      static_cast<Sint16>(pos.Y),
                      static_cast<Uint16>(size.Width),
                      static_cast<Uint16>(size.Height) };
-   SDL_FillRect(mScreen, &rect, 0xefefef);
+   SDL_FillRect(mScreen, &rect, 0x7f7f00);
+
+   for (const auto& cell : arena->GetCells())
+   {
+      Render(cell);
+   }
 }
 
-void SdlNoRes::Render(const std::shared_ptr<Cell>& cell)
+void SimpleSdlRenderer::Render(const std::shared_ptr<Cell>& cell)
 {
-   const Point pos = cell->GetPosition();
-   const Size size = cell->GetSize();
-   const CellType type = cell->GetType();
+   if (cell->HasWall()) {
+      Render(cell->GetWall());
+      return;
+   }
+
+   if (cell->HasExtra()) {
+      Render(cell->GetExtra());
+   }
+
+   if (cell->HasBomb()) {
+      Render(cell->GetBomb());
+   }
+
+   if (cell->HasExplosion()) {
+      Render(cell->GetExplosion());
+   }
+}
+
+void SimpleSdlRenderer::Render(const std::shared_ptr<Wall>& wall)
+{
+   const auto pos = wall->GetPosition();
+   const auto size = wall->GetSize();
 
    SDL_Rect rect = { static_cast<Sint16>(pos.X),
                      static_cast<Sint16>(pos.Y),
@@ -73,49 +110,74 @@ void SdlNoRes::Render(const std::shared_ptr<Cell>& cell)
                      static_cast<Uint16>(size.Height) };
 
    int color = 0;
-   if (CellType::IndestructibleWall == type) {
-      color = 0x4f4f4f;
-      SDL_FillRect(mScreen, &rect, color);
-      return;
-   }
-   else if (CellType::DestructibleWall == type) {
-      color = 0x7f7f7f;
-      SDL_FillRect(mScreen, &rect, color);
-      return;
-   }
-   else if (CellType::Floor == type) {
-      color = 0x7f7f00;
-      SDL_FillRect(mScreen, &rect, color);
-   }
 
-   if (!cell->HasItem()) {
-      return;
-   }
-
-   SDL_Rect item_rect = { static_cast<Sint16>(pos.X + 3),
-                          static_cast<Sint16>(pos.Y + 3),
-                          static_cast<Uint16>(10),
-                          static_cast<Uint16>(10) };
-   int item_color = 0;
-
-   switch (cell->GetItem())
+   if (wall->IsDestructible())
    {
-      case CellItem::Speed:
-         item_color = 0xff0000;
+      color = 0x7f7f7f;
+   }
+   else
+   {
+      color = 0x4f4f4f;
+   }
+
+   SDL_FillRect(mScreen, &rect, color);
+}
+
+void SimpleSdlRenderer::Render(const std::shared_ptr<Extra>& extra)
+{
+   const auto pos = extra->GetPosition();
+   const auto size = extra->GetSize();
+
+   SDL_Rect rect = { static_cast<Sint16>(pos.X),
+                     static_cast<Sint16>(pos.Y),
+                     static_cast<Uint16>(size.Width),
+                     static_cast<Uint16>(size.Height) };
+
+   int color = 0;
+
+   switch (extra->GetType())
+   {
+      case ExtraType::Speed:
+         color = 0xff0000;
          break;
-      case CellItem::BombRange:
-         item_color = 0x00ff00;
+      case ExtraType::BombRange:
+         color = 0x00ff00;
          break;
-      case CellItem::BombSupply:
-         item_color = 0x0000ff;
+      case ExtraType::BombSupply:
+         color = 0x0000ff;
          break;
       default:
          break;
    }
-   SDL_FillRect(mScreen, &item_rect, item_color);
+
+   SDL_FillRect(mScreen, &rect, color);
 }
 
-void SdlNoRes::Render(const std::shared_ptr<Player>& player)
+void SimpleSdlRenderer::Render(const std::shared_ptr<Bomb>& bomb)
+{
+   const auto pos = bomb->GetPosition();
+   const auto size = bomb->GetSize();
+
+   SDL_Rect rect = { static_cast<Sint16>(pos.X),
+                     static_cast<Sint16>(pos.Y),
+                     static_cast<Uint16>(size.Width),
+                     static_cast<Uint16>(size.Height) };
+   SDL_FillRect(mScreen, &rect, 0x000000);
+}
+
+void SimpleSdlRenderer::Render(const std::shared_ptr<Explosion>& explosion)
+{
+   const auto pos = explosion->GetPosition();
+   const auto size = explosion->GetSize();
+
+   SDL_Rect rect = { static_cast<Sint16>(pos.X),
+                     static_cast<Sint16>(pos.Y),
+                     static_cast<Uint16>(size.Width),
+                     static_cast<Uint16>(size.Height) };
+   SDL_FillRect(mScreen, &rect, 0xffff00);
+}
+
+void SimpleSdlRenderer::Render(const std::shared_ptr<Player>& player)
 {
    const auto pos = player->GetPosition();
    const auto size = player->GetSize();
@@ -127,34 +189,10 @@ void SdlNoRes::Render(const std::shared_ptr<Player>& player)
    SDL_FillRect(mScreen, &rect, 0x00afaf);
 }
 
-void SdlNoRes::Render(const std::shared_ptr<Bomb>& bomb)
+void SimpleSdlRenderer::Render(const std::shared_ptr<SceneObject>& obj)
 {
-   const Point pos = bomb->GetPosition();
-   const Size size = bomb->GetSize();
-
-   SDL_Rect rect = { static_cast<Sint16>(pos.X),
-                     static_cast<Sint16>(pos.Y),
-                     static_cast<Uint16>(size.Width),
-                     static_cast<Uint16>(size.Height) };
-   SDL_FillRect(mScreen, &rect, 0x000000);
-}
-
-void SdlNoRes::Render(const std::shared_ptr<Explosion>& explosion)
-{
-   const Point pos = explosion->GetPosition();
-   const Size size = explosion->GetSize();
-
-   SDL_Rect rect = { static_cast<Sint16>(pos.X),
-                     static_cast<Sint16>(pos.Y),
-                     static_cast<Uint16>(size.Width),
-                     static_cast<Uint16>(size.Height) };
-   SDL_FillRect(mScreen, &rect, 0xffff00);
-}
-
-void SdlNoRes::Render(const std::shared_ptr<SceneObject>& obj)
-{
-   const Point pos = obj->GetPosition();
-   const Size size = obj->GetSize();
+   const auto pos = obj->GetPosition();
+   const auto size = obj->GetSize();
 
    SDL_Rect rect = { static_cast<Sint16>(pos.X),
                      static_cast<Sint16>(pos.Y),
@@ -163,7 +201,7 @@ void SdlNoRes::Render(const std::shared_ptr<SceneObject>& obj)
    SDL_FillRect(mScreen, &rect, 0xffffff);
 }
 
-//void SdlRenderer::DrawLine(const Point& src_pos, const Point& dest_pos, const unsigned int color)
+//void SimpleSdlRenderer::DrawLine(const Point& src_pos, const Point& dest_pos, const unsigned int color)
 //{
 //   // based on http://alawibaba.com/projects/whiteboard/drawing-SDL.c
 //
@@ -222,7 +260,7 @@ void SdlNoRes::Render(const std::shared_ptr<SceneObject>& obj)
 //   DrawPixel({x1, y1}, color);
 //}
 //
-//void SdlRenderer::DrawPixel(const Point& pos, const unsigned int color)
+//void SimpleSdlRenderer::DrawPixel(const Point& pos, const unsigned int color)
 //{
 //   const auto bpp = mScreen->format->BytesPerPixel;
 //   const auto offset = (mScreen->pitch * pos.Y) + (pos.X * bpp);

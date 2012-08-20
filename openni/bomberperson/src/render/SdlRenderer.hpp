@@ -10,27 +10,33 @@ class ResourceCache;
 struct Size;
 struct SDL_Surface;
 
-class Sdl : public Renderer
+class SdlRenderer : public Renderer
 {
 public:
-   Sdl(Size res);
-   virtual ~Sdl();
+   SdlRenderer(Size res);
+   virtual ~SdlRenderer();
 
-   Sdl(const Sdl&) = delete;
-   Sdl& operator=(const Sdl&) = delete;
+   SdlRenderer(const SdlRenderer&) = delete;
+   SdlRenderer& operator=(const SdlRenderer&) = delete;
 
    void PreRender() override;
    void PostRender() override;
 
-   void Render(const std::shared_ptr<Field>& field) override;
+   void Render(const std::shared_ptr<Match>& match) override;
+   void Render(const std::shared_ptr<Arena>& field) override;
    void Render(const std::shared_ptr<Cell>& cell) override;
-   void Render(const std::shared_ptr<Player>& player) override;
+   void Render(const std::shared_ptr<Wall>& explosion) override;
+   void Render(const std::shared_ptr<Extra>& bomb) override;
    void Render(const std::shared_ptr<Bomb>& bomb) override;
    void Render(const std::shared_ptr<Explosion>& explosion) override;
+   void Render(const std::shared_ptr<Player>& player) override;
    void Render(const std::shared_ptr<SceneObject>& obj) override;
 
 private:
    SDL_Surface* GetScaledSurface(const SceneObject& obj);
+
+   // The screen will be cleared to this color before each render cycle.
+   int mClearColor; // Will be initilized after the screen was set up in ctor.
 
    // Writing to the video surface is ok since we use double buffering.
    SDL_Surface* mScreen = nullptr;
