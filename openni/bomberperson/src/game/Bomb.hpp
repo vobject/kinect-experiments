@@ -2,6 +2,7 @@
 #define BOMB_HPP
 
 #include "SceneObject.hpp"
+#include "Animation.hpp"
 #include "../utils/Utils.hpp"
 
 #include <memory>
@@ -19,6 +20,8 @@ public:
 
    void Update(int elapsed_time) override;
 
+   int GetAnimationFrame() const;
+
    int GetRange() const;
    void SetRange(int range);
 
@@ -33,6 +36,8 @@ private:
    std::shared_ptr<Cell> mParentCell;
    int mLifeTime = 0;
    int mRange = 1;
+
+   Animation mAnimation;
 };
 
 #endif // BOMB_HPP

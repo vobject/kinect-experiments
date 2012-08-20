@@ -7,6 +7,10 @@ Bomb::Bomb(const std::string& name, const std::shared_ptr<Cell>& cell)
    : mParentCell(cell)
 {
    SetResourceId(name);
+
+   mAnimation.SetFrameCount(2);
+   mAnimation.SetLength(500);
+   mAnimation.SetLooping(true);
 }
 
 Bomb::~Bomb()
@@ -28,6 +32,13 @@ void Bomb::Update(const int elapsed_time)
       PlantRangeExplosion(Direction::Left);
       PlantRangeExplosion(Direction::Right);
    }
+
+   mAnimation.Update(elapsed_time);
+}
+
+int Bomb::GetAnimationFrame() const
+{
+   return mAnimation.GetCurrentFrame();
 }
 
 int Bomb::GetRange() const

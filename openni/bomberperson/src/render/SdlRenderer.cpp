@@ -13,6 +13,8 @@
 #include <SDL.h>
 #include <SDL_rotozoom.h>
 
+#include <sstream>
+
 SdlRenderer::SdlRenderer(const Size res)
 {
    if (0 > SDL_Init(SDL_INIT_VIDEO)) {
@@ -125,12 +127,12 @@ void SdlRenderer::Render(const std::shared_ptr<Extra>& extra)
 
 void SdlRenderer::Render(const std::shared_ptr<Bomb>& bomb)
 {
-   Render(std::static_pointer_cast<SceneObject>(bomb));
+   Render(bomb, bomb->GetAnimationFrame());
 }
 
 void SdlRenderer::Render(const std::shared_ptr<Explosion>& explosion)
 {
-   Render(std::static_pointer_cast<SceneObject>(explosion));
+   Render(explosion, explosion->GetAnimationFrame());
 }
 
 void SdlRenderer::Render(const std::shared_ptr<Player>& player)
@@ -172,16 +174,30 @@ void SdlRenderer::Render(const std::shared_ptr<Player>& player)
 
 void SdlRenderer::Render(const std::shared_ptr<SceneObject>& obj)
 {
+   Render(obj, 0);
+}
+
+void SdlRenderer::Render(
+   const std::shared_ptr<SceneObject>& obj,
+   const int frame_index
+)
+{
    const auto pos = obj->GetPosition();
    const auto size = obj->GetSize();
    const auto name = obj->GetResourceId();
+   auto cached_name = name;
+
+   // FIXME: This eats A LOT of performance. Reengineer the resource system.
+   std::ostringstream os;
+   os << "_" << frame_index;
+   cached_name += os.str();
 
    // TODO: fix frame index when introducing animations!
-   const auto src_frame = mResCache->GetSprite(name).GetFrame(0);
+   const auto src_frame = mResCache->GetSprite(name).GetFrame(frame_index);
    if (!src_frame) {
       throw "No texture associated with resource id.";
    }
-   const auto frame = GetScaledSurface(name, size, src_frame);
+   const auto frame = GetScaledSurface(cached_name, size, src_frame);
 
    SDL_Rect rect = { static_cast<Sint16>(pos.X),
                      static_cast<Sint16>(pos.Y),

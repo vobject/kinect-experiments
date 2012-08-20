@@ -34,6 +34,7 @@ public:
    void Render(const std::shared_ptr<SceneObject>& obj) override;
 
 private:
+   void Render(const std::shared_ptr<SceneObject>& obj, int frame_index);
    SDL_Surface* GetScaledSurface(const std::string& cache_name,
                                  const Size& size,
                                  SDL_Surface* frame);

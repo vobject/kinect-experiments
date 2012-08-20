@@ -22,8 +22,14 @@ ResourceCache::ResourceCache()
    LoadSprite("extra_speed", {mResDir + "/sprite/extra_speed.png"});
    LoadSprite("extra_supply", {mResDir + "/sprite/extra_supply.png"});
    LoadSprite("extra_range", {mResDir + "/sprite/extra_range.png"});
-   LoadSprite("bomb", {mResDir + "/sprite/bomb.png"});
-   LoadSprite("explosion", {mResDir + "/sprite/explosion.png"});
+
+   LoadSprite("bomb", {mResDir + "/sprite/bomb_1.png",
+                       mResDir + "/sprite/bomb_2.png"});
+
+   LoadSprite("explosion", {mResDir + "/sprite/explosion_1.png",
+                            mResDir + "/sprite/explosion_2.png",
+                            mResDir + "/sprite/explosion_3.png",
+                            mResDir + "/sprite/explosion_4.png"});
 
    LoadDirectedSprite("player_1",
                       {mResDir + "/sprite/player_1_up.png"},
@@ -35,56 +41,6 @@ ResourceCache::ResourceCache()
                       {mResDir + "/sprite/player_2_down.png"},
                       {mResDir + "/sprite/player_2_left.png"},
                       {mResDir + "/sprite/player_2_right.png"});
-
-//   LoadSprite({mResDir + "/sprite/fb0.png",
-//               mResDir + "/sprite/fb1.png",
-//               mResDir + "/sprite/fb2.png",
-//               mResDir + "/sprite/fb3.png",
-//               mResDir + "/sprite/fb4.png",
-//               mResDir + "/sprite/fb5.png",
-//               mResDir + "/sprite/fb6.png",
-//               mResDir + "/sprite/fb7.png",}, "fireball");
-//
-//   LoadSprite({mResDir + "/sprite/ken000.png",
-//               mResDir + "/sprite/ken001.png",
-//               mResDir + "/sprite/ken002.png",
-//               mResDir + "/sprite/ken003.png",
-//               mResDir + "/sprite/ken004.png",
-//               mResDir + "/sprite/ken005.png",}, "ken");
-//
-//   LoadSprite({mResDir + "/sprite/hulk0.png",
-//               mResDir + "/sprite/hulk1.png",
-//               mResDir + "/sprite/hulk2.png",
-//               mResDir + "/sprite/hulk3.png",
-//               mResDir + "/sprite/hulk4.png",
-//               mResDir + "/sprite/hulk5.png",
-//               mResDir + "/sprite/hulk6.png",
-//               mResDir + "/sprite/hulk7.png",}, "hulk");
-//
-//   LoadSprite({mResDir + "/sprite/blood_a/1.png",
-//               mResDir + "/sprite/blood_a/2.png",
-//               mResDir + "/sprite/blood_a/3.png",
-//               mResDir + "/sprite/blood_a/4.png",
-//               mResDir + "/sprite/blood_a/5.png",
-//               mResDir + "/sprite/blood_a/6.png",}, "blood_a");
-//   LoadSprite({mResDir + "/sprite/blood_b/1.png",
-//               mResDir + "/sprite/blood_b/2.png",
-//               mResDir + "/sprite/blood_b/3.png",
-//               mResDir + "/sprite/blood_b/4.png",
-//               mResDir + "/sprite/blood_b/5.png",
-//               mResDir + "/sprite/blood_b/6.png",}, "blood_b");
-//   LoadSprite({mResDir + "/sprite/blood_c/1.png",
-//               mResDir + "/sprite/blood_c/2.png",
-//               mResDir + "/sprite/blood_c/3.png",
-//               mResDir + "/sprite/blood_c/4.png",
-//               mResDir + "/sprite/blood_c/5.png",
-//               mResDir + "/sprite/blood_c/6.png",}, "blood_c");
-//   LoadSprite({mResDir + "/sprite/blood_d/1.png",
-//               mResDir + "/sprite/blood_d/2.png",
-//               mResDir + "/sprite/blood_d/3.png",
-//               mResDir + "/sprite/blood_d/4.png",
-//               mResDir + "/sprite/blood_d/5.png",
-//               mResDir + "/sprite/blood_d/6.png",}, "blood_d");
 }
 
 ResourceCache::~ResourceCache()

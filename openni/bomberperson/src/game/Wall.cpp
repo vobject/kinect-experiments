@@ -30,4 +30,5 @@ bool Wall::IsDestructible() const
       case WallType::Destructible:
          return true;
    }
+   return false;
 }

@@ -2,6 +2,7 @@
 #define EXPLOSION_HPP
 
 #include "SceneObject.hpp"
+#include "Animation.hpp"
 #include "../utils/Utils.hpp"
 
 enum class ExplosionType
@@ -27,12 +28,15 @@ public:
    void Update(int elapsed_time) override;
 
    ExplosionType GetType() const;
+   int GetAnimationFrame() const;
 
 private:
    static const int DEFAULT_LIFETIME = 1000_ms;
 
    ExplosionType mType;
    int mLifeTime = 0;
+
+   Animation mAnimation;
 };
 
 #endif // EXPLOSION_HPP
