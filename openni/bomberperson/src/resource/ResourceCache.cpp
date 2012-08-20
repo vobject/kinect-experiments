@@ -15,17 +15,26 @@ ResourceCache::ResourceCache()
    }
 
    // FIXME:
-   LoadSprite({mResDir + "/sprite/arena_grey.png"}, "arena");
-   LoadSprite({mResDir + "/sprite/cell.png"}, "cell");
-   LoadSprite({mResDir + "/sprite/wall_bricks.png"}, "wall_bricks");
-   LoadSprite({mResDir + "/sprite/wall_wood.png"}, "wall_wood");
-   LoadSprite({mResDir + "/sprite/extra_speed.png"}, "extra_speed");
-   LoadSprite({mResDir + "/sprite/extra_supply.png"}, "extra_supply");
-   LoadSprite({mResDir + "/sprite/extra_range.png"}, "extra_range");
-   LoadSprite({mResDir + "/sprite/bomb.png"}, "bomb");
-   LoadSprite({mResDir + "/sprite/explosion.png"}, "explosion");
-   LoadSprite({mResDir + "/sprite/player_1.png"}, "player_1");
-   LoadSprite({mResDir + "/sprite/player_2.png"}, "player_2");
+   LoadSprite("arena", {mResDir + "/sprite/arena_grey.png"});
+   LoadSprite("cell", {mResDir + "/sprite/cell.png"});
+   LoadSprite("wall_bricks", {mResDir + "/sprite/wall_bricks.png"});
+   LoadSprite("wall_wood", {mResDir + "/sprite/wall_wood.png"});
+   LoadSprite("extra_speed", {mResDir + "/sprite/extra_speed.png"});
+   LoadSprite("extra_supply", {mResDir + "/sprite/extra_supply.png"});
+   LoadSprite("extra_range", {mResDir + "/sprite/extra_range.png"});
+   LoadSprite("bomb", {mResDir + "/sprite/bomb.png"});
+   LoadSprite("explosion", {mResDir + "/sprite/explosion.png"});
+
+   LoadDirectedSprite("player_1",
+                      {mResDir + "/sprite/player_1_up.png"},
+                      {mResDir + "/sprite/player_1_down.png"},
+                      {mResDir + "/sprite/player_1_left.png"},
+                      {mResDir + "/sprite/player_1_right.png"});
+   LoadDirectedSprite("player_2",
+                      {mResDir + "/sprite/player_2_up.png"},
+                      {mResDir + "/sprite/player_2_down.png"},
+                      {mResDir + "/sprite/player_2_left.png"},
+                      {mResDir + "/sprite/player_2_right.png"});
 
 //   LoadSprite({mResDir + "/sprite/fb0.png",
 //               mResDir + "/sprite/fb1.png",
@@ -124,6 +133,11 @@ SpriteResource ResourceCache::GetSprite(const std::string& id)
    return mSprites[id];
 }
 
+DirectedSpriteResource ResourceCache::GetDirectedSprite(const std::string& id)
+{
+   return mDirectedSprites[id];
+}
+
 //Texture ResourceCache::GetPlayer(const Kinect& kinect)
 //{
 //
@@ -134,7 +148,10 @@ SpriteResource ResourceCache::GetSprite(const std::string& id)
 //   mBackgrounds[id] = { id, LoadTexture(file) };
 //}
 
-void ResourceCache::LoadSprite(const std::vector<std::string>& files, const std::string& id)
+void ResourceCache::LoadSprite(
+   const std::string& id,
+   const std::vector<std::string>& files
+)
 {
    std::vector<SDL_Surface*> textures;
 
@@ -144,6 +161,42 @@ void ResourceCache::LoadSprite(const std::vector<std::string>& files, const std:
    }
 
    mSprites[id] = { id, textures };
+}
+
+void ResourceCache::LoadDirectedSprite(
+   const std::string& id,
+   const std::vector<std::string>& files_up,
+   const std::vector<std::string>& files_down,
+   const std::vector<std::string>& files_left,
+   const std::vector<std::string>& files_right
+)
+{
+   std::vector<SDL_Surface*> textures_up;
+   std::vector<SDL_Surface*> textures_down;
+   std::vector<SDL_Surface*> textures_left;
+   std::vector<SDL_Surface*> textures_right;
+
+   for (const auto& file : files_up)
+   {
+      textures_up.push_back(LoadTexture(file));
+   }
+   for (const auto& file : files_down)
+   {
+      textures_down.push_back(LoadTexture(file));
+   }
+   for (const auto& file : files_left)
+   {
+      textures_left.push_back(LoadTexture(file));
+   }
+   for (const auto& file : files_right)
+   {
+      textures_right.push_back(LoadTexture(file));
+   }
+
+   mDirectedSprites[id] = { id, textures_up,
+                                textures_down,
+                                textures_left,
+                                textures_right};
 }
 
 SDL_Surface* ResourceCache::LoadTexture(const std::string& file)

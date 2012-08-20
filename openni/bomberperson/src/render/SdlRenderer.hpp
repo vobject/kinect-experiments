@@ -5,6 +5,7 @@
 
 #include <map>
 #include <memory>
+#include <string>
 
 class ResourceCache;
 struct Size;
@@ -33,7 +34,9 @@ public:
    void Render(const std::shared_ptr<SceneObject>& obj) override;
 
 private:
-   SDL_Surface* GetScaledSurface(const SceneObject& obj);
+   SDL_Surface* GetScaledSurface(const std::string& cache_name,
+                                 const Size& size,
+                                 SDL_Surface* frame);
 
    // The screen will be cleared to this color before each render cycle.
    int mClearColor; // Will be initilized after the screen was set up in ctor.

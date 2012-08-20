@@ -135,14 +135,33 @@ void SdlRenderer::Render(const std::shared_ptr<Explosion>& explosion)
 
 void SdlRenderer::Render(const std::shared_ptr<Player>& player)
 {
-   Render(std::static_pointer_cast<SceneObject>(player));
-}
+   const auto pos = player->GetPosition();
+   const auto size = player->GetSize();
+   const auto dir = player->GetDirection();
+   const auto name = player->GetResourceId();
+   auto cache_name = name;
 
-void SdlRenderer::Render(const std::shared_ptr<SceneObject>& obj)
-{
-   const auto pos = obj->GetPosition();
-   const auto size = obj->GetSize();
-   const auto frame = GetScaledSurface(*obj);
+   switch (dir)
+   {
+      case Direction::Up:
+         cache_name += "_up";
+         break;
+      case Direction::Down:
+         cache_name += "_down";
+         break;
+      case Direction::Left:
+         cache_name += "_left";
+         break;
+      case Direction::Right:
+         cache_name += "_right";
+         break;
+   }
+
+   const auto src_frame = mResCache->GetDirectedSprite(name).GetFrame(dir, 0);
+   if (!src_frame) {
+      throw "No texture associated with resource id.";
+   }
+   const auto frame = GetScaledSurface(cache_name, size, src_frame);
 
    SDL_Rect rect = { static_cast<Sint16>(pos.X),
                      static_cast<Sint16>(pos.Y),
@@ -151,22 +170,40 @@ void SdlRenderer::Render(const std::shared_ptr<SceneObject>& obj)
    SDL_BlitSurface(frame, NULL, mScreen, &rect);
 }
 
-SDL_Surface* SdlRenderer::GetScaledSurface(const SceneObject& obj)
+void SdlRenderer::Render(const std::shared_ptr<SceneObject>& obj)
 {
-   const auto cached_surface = mScaledSurfaces[obj.GetResourceId()];
+   const auto pos = obj->GetPosition();
+   const auto size = obj->GetSize();
+   const auto name = obj->GetResourceId();
+
+   // TODO: fix frame index when introducing animations!
+   const auto src_frame = mResCache->GetSprite(name).GetFrame(0);
+   if (!src_frame) {
+      throw "No texture associated with resource id.";
+   }
+   const auto frame = GetScaledSurface(name, size, src_frame);
+
+   SDL_Rect rect = { static_cast<Sint16>(pos.X),
+                     static_cast<Sint16>(pos.Y),
+                     static_cast<Uint16>(size.Width),
+                     static_cast<Uint16>(size.Height) };
+   SDL_BlitSurface(frame, NULL, mScreen, &rect);
+}
+
+SDL_Surface* SdlRenderer::GetScaledSurface(
+   const std::string& cache_name,
+   const Size& size,
+   SDL_Surface* frame
+)
+{
+   const auto cached_surface = mScaledSurfaces[cache_name];
    if (cached_surface) {
       return cached_surface;
    }
 
-   // TODO: fix frame index!
-   const auto frame = mResCache->GetSprite(obj.GetResourceId()).GetFrame(0);
-   if (!frame) {
-      throw "No texture associated with resource id.";
-   }
-
    // Stretch the image to the appropriate size.
-   const double x_zoom = static_cast<double>(obj.GetSize().Width) / frame->w;
-   const double y_zoom = static_cast<double>(obj.GetSize().Height) / frame->h;
+   const double x_zoom = static_cast<double>(size.Width) / frame->w;
+   const double y_zoom = static_cast<double>(size.Height) / frame->h;
    const auto zoomed_frame = zoomSurface(frame, x_zoom, y_zoom, 1);
 
    const auto colorkey = SDL_MapRGB(zoomed_frame->format, 0, 0, 0);
@@ -174,6 +211,6 @@ SDL_Surface* SdlRenderer::GetScaledSurface(const SceneObject& obj)
       throw "SDL_SetColorKey failed";
    }
 
-   mScaledSurfaces[obj.GetResourceId()] = zoomed_frame;
+   mScaledSurfaces[cache_name] = zoomed_frame;
    return zoomed_frame;
 }

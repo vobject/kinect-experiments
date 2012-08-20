@@ -42,5 +42,6 @@ Size SpriteResource::GetSize() const
    if (mFrames.empty()) {
       throw "No frames associated with the current sprite";
    }
+   // All frames ought to have the exact same size.
    return { mFrames.at(0)->w, mFrames.at(0)->h };
 }

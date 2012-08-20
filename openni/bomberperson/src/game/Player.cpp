@@ -70,6 +70,11 @@ void Player::SetParentCell(const std::shared_ptr<Cell>& cell)
    }
 }
 
+Direction Player::GetDirection() const
+{
+   return mDirection;
+}
+
 void Player::UpdateMovement(const int elapsed_time)
 {
    const int distance = 1;
@@ -78,17 +83,37 @@ void Player::UpdateMovement(const int elapsed_time)
    int left = 0;
    int right = 0;
 
-   if (mInput->TestUp() && CanMove(Direction::Up, distance)) {
-      up++;
+   if (mInput->TestUp())
+   {
+      mDirection = Direction::Up;
+
+      if (CanMove(mDirection, distance)) {
+         up++;
+      }
    }
-   if (mInput->TestDown() && CanMove(Direction::Down, distance)) {
-      down++;
+   if (mInput->TestDown())
+   {
+      mDirection = Direction::Down;
+
+      if (CanMove(mDirection, distance)) {
+         down++;
+      }
    }
-   if (mInput->TestLeft() && CanMove(Direction::Left, distance)) {
-      left++;
+   if (mInput->TestLeft())
+   {
+      mDirection = Direction::Left;
+
+      if (CanMove(mDirection, distance)) {
+         left++;
+      }
    }
-   if (mInput->TestRight() && CanMove(Direction::Right, distance)) {
-      right++;
+   if (mInput->TestRight())
+   {
+      mDirection = Direction::Right;
+
+      if (CanMove(mDirection, distance)) {
+         right++;
+      }
    }
 
    SetPosition({ GetPosition().X - left + right, GetPosition().Y - up + down});

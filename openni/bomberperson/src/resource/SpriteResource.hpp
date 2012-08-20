@@ -1,7 +1,6 @@
-#ifndef SPRITERESOURCE_HPP
-#define SPRITERESOURCE_HPP
+#ifndef SPRITE_RESOURCE_HPP
+#define SPRITE_RESOURCE_HPP
 
-//#include "Texture.h"
 #include "../utils/Utils.hpp"
 
 #include <string>
@@ -14,7 +13,7 @@ class SpriteResource
 public:
    SpriteResource();
    SpriteResource(const std::string& id, const std::vector<SDL_Surface*>& textures);
-   ~SpriteResource();
+   virtual ~SpriteResource();
 
    SpriteResource(const SpriteResource&) = default;
    SpriteResource& operator=(const SpriteResource&) = default;
@@ -29,4 +28,4 @@ private:
    std::vector<SDL_Surface*> mFrames;
 };
 
-#endif // SPRITERESOURCE_HPP
+#endif // SPRITE_RESOURCE_HPP

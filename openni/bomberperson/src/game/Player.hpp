@@ -45,6 +45,8 @@ public:
 
    void SetParentCell(const std::shared_ptr<Cell>& cell);
 
+   Direction GetDirection() const;
+
 private:
    void UpdateMovement(int elapsed_time);
    void UpdateBombing(int elapsed_time);
@@ -60,13 +62,15 @@ private:
    int mBombIdleTime = 0;
 
    // Number of milliseconds the player has to wait to move another pixel.
-   int mMovementSpeed = 16;
+   int mMovementSpeed = 12;
    // How many milliseconds does the player have to wait to plant another bomb?
    int mPlantingSpeed = 200;
 
    int mBombRange = 1;
    int mBombSupply = 1;
    std::vector<std::shared_ptr<Bomb>> mPlantedBombs;
+
+   Direction mDirection = Direction::Down;
 };
 
 #endif // PLAYER_HPP
