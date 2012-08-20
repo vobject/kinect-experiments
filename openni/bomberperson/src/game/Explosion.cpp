@@ -4,7 +4,6 @@ Explosion::Explosion(const std::string& name, const ExplosionType type)
    : mType(type)
 {
    SetResourceId(name);
-   SetSize({ 25, 25 });
 }
 
 Explosion::~Explosion()

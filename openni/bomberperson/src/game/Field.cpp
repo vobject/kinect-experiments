@@ -30,6 +30,12 @@ void Field::SetDimensions(const int cells_x, const int cells_y)
    mYCells = cells_y;
 }
 
+Size Field::GetCellSize() const
+{
+   const Size field_size = GetSize();
+   return { field_size.Width / mXCells, field_size.Height / mYCells };
+}
+
 void Field::SetCells(const std::vector<std::shared_ptr<Cell>>& cells)
 {
    mCells = cells;
@@ -80,12 +86,6 @@ std::shared_ptr<Cell> Field::GetCellLeftOf(const int cell_x, const int cell_y) c
 std::shared_ptr<Cell> Field::GetCellRightOf(const int cell_x, const int cell_y) const
 {
    return GetCellFromCoordinates(cell_x + 1, cell_y);
-}
-
-Size Field::GetCellSize() const
-{
-   const Size field_size = GetSize();
-   return { field_size.Width / mXCells, field_size.Height / mYCells };
 }
 
 std::tuple<int, int> Field::IndexToFieldPos(const int index) const

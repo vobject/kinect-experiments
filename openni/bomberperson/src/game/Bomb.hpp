@@ -28,10 +28,7 @@ private:
    static const int DEFAULT_LIFETIME = 3000_ms;
 
    void PlantCenterExplosion() const;
-   void PlantTopRangeExplosion() const;
-   void PlantDownRangeExplosion() const;
-   void PlantLeftRangeExplosion() const;
-   void PlantRightRangeExplosion() const;
+   void PlantRangeExplosion(Direction dir) const;
 
    std::shared_ptr<Cell> mParentCell;
    int mLifeTime = 0;

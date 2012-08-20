@@ -4,6 +4,7 @@
 #include "nui/KinectDummy.hpp"
 #include "render/GlNoRes.hpp"
 #include "render/SdlNoRes.hpp"
+#include "render/Sdl.hpp"
 #include "game/Logic.hpp"
 
 #include <SDL.h>
@@ -70,7 +71,7 @@ void BomberPersonApp::Initialize()
 
    InitNui();
 
-   mRenderer = std::make_shared<SdlNoRes>(Size(800_px, 600_px));
+   mRenderer = std::make_shared<Sdl>(Size(800_px, 600_px));
    mWndFrame = std::make_shared<WindowFrame>("BomberPerson");
    mLogic = std::make_shared<Logic>(mRenderer);
 }

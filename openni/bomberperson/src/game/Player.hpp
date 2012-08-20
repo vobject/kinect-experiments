@@ -64,9 +64,12 @@ private:
    int mBombIdleTime = 0;
 
    // Number of milliseconds the player has to wait to move another pixel.
-   int mSpeed = 8;
-   int mBombRange = 1;
-   int mBombSupply = 1;
+   int mMovementSpeed = 1;
+   // How many milliseconds does the player have to wait to plant another bomb?
+   int mPlantingSpeed = 200;
+
+   int mBombRange = 3;
+   int mBombSupply = 3;
    std::vector<std::shared_ptr<Bomb>> mPlantedBombs;
 };
 

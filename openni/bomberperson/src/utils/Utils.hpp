@@ -6,6 +6,14 @@
 #include <memory>
 #include <utility>
 
+enum class Direction
+{
+   Up,
+   Down,
+   Left,
+   Right
+};
+
 struct Point
 {
    constexpr Point(int x, int y) : X(x), Y(y) { }

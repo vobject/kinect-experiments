@@ -6,7 +6,6 @@ Bomb::Bomb(const std::string& name, const std::shared_ptr<Cell>& cell)
    : mParentCell(cell)
 {
    SetResourceId(name);
-   SetSize({ 15, 15 });
 }
 
 Bomb::~Bomb()
@@ -23,10 +22,10 @@ void Bomb::Update(const int elapsed_time)
       SetAlive(false);
 
       PlantCenterExplosion();
-      PlantTopRangeExplosion();
-      PlantDownRangeExplosion();
-      PlantLeftRangeExplosion();
-      PlantRightRangeExplosion();
+      PlantRangeExplosion(Direction::Up);
+      PlantRangeExplosion(Direction::Down);
+      PlantRangeExplosion(Direction::Left);
+      PlantRangeExplosion(Direction::Right);
    }
 }
 
@@ -47,16 +46,17 @@ void Bomb::Detonate()
 
 void Bomb::PlantCenterExplosion() const
 {
-   auto explosion = std::make_shared<Explosion>("explosion_center",
+   auto explosion = std::make_shared<Explosion>("explosion",
                                                 ExplosionType::Crossway);
-   explosion->SetPosition({ mParentCell->GetPosition().X + 1,
-                            mParentCell->GetPosition().Y + 1});
+   explosion->SetSize(mParentCell->GetSize());
+   explosion->SetPosition(mParentCell->GetPosition());
    mParentCell->SetExplosion(explosion);
 }
 
-void Bomb::PlantTopRangeExplosion() const
+void Bomb::PlantRangeExplosion(Direction dir) const
 {
-   auto range_cell = mParentCell->GetTopCell();
+   std::shared_ptr<Cell> range_cell = mParentCell->GetCell(dir);
+
    int range_to_go = GetRange();
 
    while (range_cell && range_to_go)
@@ -65,14 +65,29 @@ void Bomb::PlantTopRangeExplosion() const
          break;
       }
 
-      auto range_exp = std::make_shared<Explosion>("explosion_top",
-                                                   ExplosionType::Vertical);
-      range_exp->SetPosition({ range_cell->GetPosition().X + 1,
-                               range_cell->GetPosition().Y + 1});
+      if (range_cell->HasBomb())
+      {
+         range_cell->GetBomb()->Detonate();
+         break;
+      }
+
+      // TODO: Break if an existing explosion has the same orientation
+      //  as this one, e.g. Vertical or Horizontal.
+
+      // TODO: Select the right ExplosionType.
+      auto range_exp = std::make_shared<Explosion>("explosion",
+                                                   ExplosionType::Crossway);
+      range_exp->SetSize(range_cell->GetSize());
+      range_exp->SetPosition(range_cell->GetPosition());
       range_cell->SetExplosion(range_exp);
 
       if (CellType::DestructibleWall == range_cell->GetType())
       {
+         // FIXME: This has a problem: when the exploding bomb destroys
+         //  a wall and triggers another bomb with a greater range,
+         //  the wall behind the first wall would also be destroyed
+         //  at the same time.
+         // Maybe this could be avoided by introducing an ExplodingWall type.
          range_cell->SetType(CellType::Floor);
          break;
       }
@@ -83,129 +98,7 @@ void Bomb::PlantTopRangeExplosion() const
          break;
       }
 
-      if (range_cell->HasBomb())
-      {
-         range_cell->GetBomb()->Detonate();
-      }
-
-      range_cell = range_cell->GetTopCell();
-      range_to_go--;
-   }
-}
-
-void Bomb::PlantDownRangeExplosion() const
-{
-   auto range_cell = mParentCell->GetDownCell();
-   int range_to_go = GetRange();
-
-   while (range_cell && range_to_go)
-   {
-      if (CellType::IndestructibleWall == range_cell->GetType()) {
-         break;
-      }
-
-      auto range_exp = std::make_shared<Explosion>("explosion_down",
-                                                   ExplosionType::Vertical);
-      range_exp->SetPosition({ range_cell->GetPosition().X + 1,
-                               range_cell->GetPosition().Y + 1});
-      range_cell->SetExplosion(range_exp);
-
-      if (CellType::DestructibleWall == range_cell->GetType())
-      {
-         range_cell->SetType(CellType::Floor);
-         break;
-      }
-
-      if (range_cell->HasItem())
-      {
-         range_cell->SetItem(CellItem::None);
-         break;
-      }
-
-      if (range_cell->HasBomb())
-      {
-         range_cell->GetBomb()->Detonate();
-      }
-
-      range_cell = range_cell->GetDownCell();
-      range_to_go--;
-   }
-}
-
-void Bomb::PlantLeftRangeExplosion() const
-{
-   auto range_cell = mParentCell->GetLeftCell();
-   int range_to_go = GetRange();
-
-   while (range_cell && range_to_go)
-   {
-      if (CellType::IndestructibleWall == range_cell->GetType()) {
-         break;
-      }
-
-      auto range_exp = std::make_shared<Explosion>("explosion_left",
-                                                   ExplosionType::Horizontal);
-      range_exp->SetPosition({ range_cell->GetPosition().X + 1,
-                               range_cell->GetPosition().Y + 1});
-      range_cell->SetExplosion(range_exp);
-
-      if (CellType::DestructibleWall == range_cell->GetType())
-      {
-         range_cell->SetType(CellType::Floor);
-         break;
-      }
-
-      if (range_cell->HasItem())
-      {
-         range_cell->SetItem(CellItem::None);
-         break;
-      }
-
-      if (range_cell->HasBomb())
-      {
-         range_cell->GetBomb()->Detonate();
-      }
-
-      range_cell = range_cell->GetLeftCell();
-      range_to_go--;
-   }
-}
-
-void Bomb::PlantRightRangeExplosion() const
-{
-   auto range_cell = mParentCell->GetRightCell();
-   int range_to_go = GetRange();
-
-   while (range_cell && range_to_go)
-   {
-      if (CellType::IndestructibleWall == range_cell->GetType()) {
-         break;
-      }
-
-      auto range_exp = std::make_shared<Explosion>("explosion_right",
-                                                   ExplosionType::Horizontal);
-      range_exp->SetPosition({ range_cell->GetPosition().X + 1,
-                               range_cell->GetPosition().Y + 1});
-      range_cell->SetExplosion(range_exp);
-
-      if (CellType::DestructibleWall == range_cell->GetType())
-      {
-         range_cell->SetType(CellType::Floor);
-         break;
-      }
-
-      if (range_cell->HasItem())
-      {
-         range_cell->SetItem(CellItem::None);
-         break;
-      }
-
-      if (range_cell->HasBomb())
-      {
-         range_cell->GetBomb()->Detonate();
-      }
-
-      range_cell = range_cell->GetRightCell();
+      range_cell = range_cell->GetCell(dir);
       range_to_go--;
    }
 }

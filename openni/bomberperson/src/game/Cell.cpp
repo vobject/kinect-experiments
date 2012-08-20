@@ -8,16 +8,14 @@ Cell::Cell(
    const std::string& name,
    const int field_pos_x,
    const int field_pos_y,
-   const std::shared_ptr<Field>& field,
-   const CellType type
+   const std::shared_ptr<Field>& field
 )
    : mFieldPosX(field_pos_x)
    , mFieldPosY(field_pos_y)
    , mField(field) // Do not use inside the ctor - object is not ready yet.
-   , mType(type)
+   , mType(CellType::Floor)
    , mItem(CellItem::None)
-   , mBomb(nullptr)
-   , mExplosion(nullptr)
+   , mBombOrExplosion(nullptr)
 {
    SetResourceId(name);
 }
@@ -29,21 +27,12 @@ Cell::~Cell()
 
 void Cell::Update(const int elapsed_time)
 {
-   if (mBomb && mBomb->IsAlive())
+   if (mBombOrExplosion && mBombOrExplosion->IsAlive())
    {
-      mBomb->Update(elapsed_time);
+      mBombOrExplosion->Update(elapsed_time);
 
-      if (!mBomb->IsAlive()) {
-         mBomb = nullptr; // Bomb detonated.
-      }
-   }
-
-   if (mExplosion && mExplosion->IsAlive())
-   {
-      mExplosion->Update(elapsed_time);
-
-      if (!mExplosion->IsAlive()) {
-         mExplosion = nullptr;
+      if (!mBombOrExplosion->IsAlive()) {
+         mBombOrExplosion = nullptr;
       }
    }
 
@@ -58,27 +47,57 @@ CellType Cell::GetType() const
 void Cell::SetType(const CellType type)
 {
    mType = type;
+
+   switch (mType)
+   {
+      case CellType::Floor:
+         SetResourceId("cell_transparent");
+         break;
+      case CellType::DestructibleWall:
+         SetResourceId("cell_wood");
+         break;
+      case CellType::IndestructibleWall:
+         SetResourceId("cell_bricks");
+         break;
+      default:
+         break;
+   }
 }
 
-std::shared_ptr<Cell> Cell::GetTopCell() const
+std::shared_ptr<Cell> Cell::GetCell(Direction dir) const
 {
-   return mField->GetCellAboveOf(mFieldPosX, mFieldPosY);
+   switch (dir)
+   {
+      case Direction::Up:
+         return mField->GetCellAboveOf(mFieldPosX, mFieldPosY);
+      case Direction::Down:
+         return mField->GetCellBelowOf(mFieldPosX, mFieldPosY);
+      case Direction::Left:
+         return mField->GetCellLeftOf(mFieldPosX, mFieldPosY);
+      case Direction::Right:
+         return mField->GetCellRightOf(mFieldPosX, mFieldPosY);
+   }
 }
 
-std::shared_ptr<Cell> Cell::GetDownCell() const
-{
-   return mField->GetCellBelowOf(mFieldPosX, mFieldPosY);
-}
-
-std::shared_ptr<Cell> Cell::GetLeftCell() const
-{
-   return mField->GetCellLeftOf(mFieldPosX, mFieldPosY);
-}
-
-std::shared_ptr<Cell> Cell::GetRightCell() const
-{
-   return mField->GetCellRightOf(mFieldPosX, mFieldPosY);
-}
+//std::shared_ptr<Cell> Cell::GetTopCell() const
+//{
+//   return mField->GetCellAboveOf(mFieldPosX, mFieldPosY);
+//}
+//
+//std::shared_ptr<Cell> Cell::GetDownCell() const
+//{
+//   return mField->GetCellBelowOf(mFieldPosX, mFieldPosY);
+//}
+//
+//std::shared_ptr<Cell> Cell::GetLeftCell() const
+//{
+//   return mField->GetCellLeftOf(mFieldPosX, mFieldPosY);
+//}
+//
+//std::shared_ptr<Cell> Cell::GetRightCell() const
+//{
+//   return mField->GetCellRightOf(mFieldPosX, mFieldPosY);
+//}
 
 bool Cell::IsBlocking() const
 {
@@ -86,7 +105,7 @@ bool Cell::IsBlocking() const
       return true;
    }
 
-   if (mBomb) {
+   if (HasBomb()) {
       return true;
    }
 
@@ -97,32 +116,32 @@ bool Cell::IsBlocking() const
 
 bool Cell::HasBomb() const
 {
-   return (mBomb != nullptr);
+   return (GetBomb() != nullptr);
 }
 
 std::shared_ptr<Bomb> Cell::GetBomb() const
 {
-   return mBomb;
+   return std::dynamic_pointer_cast<Bomb>(mBombOrExplosion);
 }
 
 void Cell::SetBomb(const std::shared_ptr<Bomb>& bomb)
 {
-   mBomb = bomb;
+   mBombOrExplosion = bomb;
 }
 
 bool Cell::HasExplosion() const
 {
-   return (mExplosion != nullptr);
+   return (GetExplosion() != nullptr);
 }
 
 std::shared_ptr<Explosion> Cell::GetExplosion() const
 {
-   return mExplosion;
+   return std::dynamic_pointer_cast<Explosion>(mBombOrExplosion);
 }
 
 void Cell::SetExplosion(const std::shared_ptr<Explosion>& explosion)
 {
-   mExplosion = explosion;
+   mBombOrExplosion = explosion;
 }
 
 bool Cell::HasItem() const

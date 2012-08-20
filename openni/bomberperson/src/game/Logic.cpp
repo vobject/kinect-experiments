@@ -23,25 +23,30 @@ Logic::Logic(const std::shared_ptr<Renderer>& renderer)
 
    mFieldGen = std::make_shared<FieldGenerator>();
    mFieldGen->SetFieldPosition({ 30, 30 });
-   mFieldGen->SetFieldSize({ 480, 480 });
+   mFieldGen->SetFieldSize({ 512, 512 });
 
    const std::vector<std::shared_ptr<Player>> players = {
       std::make_shared<Player>("player_1")
     , std::make_shared<Player>("player_2")
    };
    auto area = mFieldGen->GetDefaultArena(arena_size_x, arena_size_y, player_count);
+   const auto cell_size = area->GetCellSize();
 
    const auto input_p1 = std::make_shared<KeyboardInput>(SDLK_UP, SDLK_DOWN, SDLK_LEFT, SDLK_RIGHT, SDLK_SPACE);
    const auto parent_cell_p1 = area->GetCellFromCoordinates(1, 1);
    players[0]->SetInputDevice(input_p1);
    players[0]->SetParentCell(parent_cell_p1);
    players[0]->SetPosition(parent_cell_p1->GetPosition());
+   players[0]->SetSize({ static_cast<int>(cell_size.Width * .7f),
+                         static_cast<int>(cell_size.Height * .7f) });
 
    const auto input_p2 = std::make_shared<KeyboardInput>(SDLK_w, SDLK_s, SDLK_a, SDLK_d, SDLK_LCTRL);
    const auto parent_cell_p2 = area->GetCellFromCoordinates(arena_size_x - 2, arena_size_y - 2);
    players[1]->SetInputDevice(input_p2);
    players[1]->SetParentCell(parent_cell_p2);
    players[1]->SetPosition(parent_cell_p2->GetPosition());
+   players[1]->SetSize({ static_cast<int>(cell_size.Width * .7f),
+                         static_cast<int>(cell_size.Height * .7f) });
 
    mMatch = std::make_shared<Match>(area, players);
 }

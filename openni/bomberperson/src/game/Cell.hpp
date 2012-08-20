@@ -25,14 +25,59 @@ enum class CellItem
    CELL_ITEM_COUNT
 };
 
+//class CellObject
+//{
+//
+//};
+
+//enum class ExtraType
+//{
+//   Speed,
+//   BombRange,
+//   BombSupply
+//};
+//
+//class Extra : public SceneObject
+//{
+//
+//};
+//
+//class Wall : public SceneObject
+//{
+//
+//};
+
+//class Cell;
+//
+//class Item : public Cell
+//{
+//   //ctor
+//   //dtor
+//
+//};
+//
+//class Indestructible : public Cell
+//{
+//
+//};
+//
+//class Destructible : public Cell
+//{
+//
+//};
+//
+//class Exploding??? : public Cell
+//{
+//
+//};
+
 class Cell : public SceneObject
 {
 public:
    Cell(const std::string& name,
         int field_pos_x,
         int field_pos_y,
-        const std::shared_ptr<Field>& field,
-        CellType type);
+        const std::shared_ptr<Field>& field);
    virtual ~Cell();
 
    Cell(const Cell&) = delete;
@@ -40,15 +85,8 @@ public:
 
    void Update(int elapsed_time) override;
 
-   CellType GetType() const;
+   CellType GetType() const; // TODO: Remove Me!
    void SetType(CellType type);
-
-   std::shared_ptr<Cell> GetTopCell() const;
-   std::shared_ptr<Cell> GetDownCell() const;
-   std::shared_ptr<Cell> GetLeftCell() const;
-   std::shared_ptr<Cell> GetRightCell() const;
-
-   bool IsBlocking() const;
 
    bool HasBomb() const;
    std::shared_ptr<Bomb> GetBomb() const;
@@ -62,6 +100,11 @@ public:
    CellItem GetItem() const;
    void SetItem(CellItem item);
 
+   bool IsBlocking() const;
+   bool IsDestructible() const;
+
+   std::shared_ptr<Cell> GetCell(Direction dir) const;
+
 private:
    // (X,Y) index on the playing field.
    const int mFieldPosX;
@@ -71,8 +114,12 @@ private:
    CellType mType;
    CellItem mItem;
 
-   std::shared_ptr<Bomb> mBomb;
-   std::shared_ptr<Explosion> mExplosion;
+   // Will be dynamically casted to get its derived type.
+   // Yes, this is ugly, but still better than maintaining two pointers
+   //  with potentially contradictory state -> a cell can not have both,
+   //  a bomb and an explosion, but the public interface allows consecutive
+   //  calls to SetBomb() and SetExplosion().
+   std::shared_ptr<SceneObject> mBombOrExplosion;
 };
 
 #endif // CELL_HPP

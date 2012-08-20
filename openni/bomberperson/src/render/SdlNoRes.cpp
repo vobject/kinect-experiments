@@ -117,8 +117,8 @@ void SdlNoRes::Render(const std::shared_ptr<Cell>& cell)
 
 void SdlNoRes::Render(const std::shared_ptr<Player>& player)
 {
-   const Point pos = player->GetPosition();
-   const Size size = player->GetSize();
+   const auto pos = player->GetPosition();
+   const auto size = player->GetSize();
 
    SDL_Rect rect = { static_cast<Sint16>(pos.X),
                      static_cast<Sint16>(pos.Y),

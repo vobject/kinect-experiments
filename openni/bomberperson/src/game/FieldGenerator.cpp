@@ -31,7 +31,7 @@ std::shared_ptr<Field> FieldGenerator::GetDefaultArena(
    const int players
 ) const
 {
-   auto playing_field = std::make_shared<Field>("field_default");
+   auto playing_field = std::make_shared<Field>("area");
 
    const auto cells = CreateDefaultCells(cells_x, cells_y, playing_field);
 
@@ -78,11 +78,10 @@ std::vector<std::shared_ptr<Cell>> FieldGenerator::CreateDefaultCells(
       const int cell_field_pos_x = i % cells_y;
       const int cell_field_pos_y = i / cells_y;
 
-      auto cell = std::make_shared<Cell>("cell_0",
+      auto cell = std::make_shared<Cell>("cell_transparent",
                                          cell_field_pos_x,
                                          cell_field_pos_y,
-                                         field,
-                                         CellType::DestructibleWall);
+                                         field);
 
       cell->SetPosition({ mPos.X + (cell_size.Width * cell_field_pos_x),
                           mPos.Y + (cell_size.Height * cell_field_pos_y) });
@@ -96,6 +95,10 @@ std::vector<std::shared_ptr<Cell>> FieldGenerator::CreateDefaultCells(
           (!(cell_field_pos_x % 2) && !(cell_field_pos_y % 2))) // Pattern
       {
          cell->SetType(CellType::IndestructibleWall);
+      }
+      else
+      {
+         cell->SetType(CellType::DestructibleWall);
       }
       cells[i] = cell;
    }

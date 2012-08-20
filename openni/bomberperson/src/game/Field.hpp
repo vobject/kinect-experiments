@@ -12,6 +12,7 @@ class Point;
 class Size;
 enum class CellItem;
 
+//TODO: Rename this class to Area
 class Field : public SceneObject
 {
 public:
@@ -25,6 +26,7 @@ public:
 
    void SetDimensions(int cells_x, int cells_y);
 //   void SetPlayerStart();
+   Size GetCellSize() const;
 
    std::vector<std::shared_ptr<Cell>> GetCells() const;
    void SetCells(const std::vector<std::shared_ptr<Cell>>& cells);
@@ -38,7 +40,6 @@ public:
    std::shared_ptr<Cell> GetCellRightOf(int cell_x, int cell_y) const;
 
 private:
-   Size GetCellSize() const;
    std::tuple<int, int> IndexToFieldPos(int index) const;
    int FieldPosToIndex(int cell_x, int cell_y) const;
 
