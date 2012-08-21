@@ -1,0 +1,10 @@
+- Refactor:
+   - the resource system (for renderer, directions, animations)
+   - player animation system
+- Find usable sprites
+- Sounds
+- Music
+- Menus
+- Hardware rendering
+- Kinect support (as InputDevice and player sprite)
+- move project into its own github repo
