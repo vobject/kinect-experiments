@@ -5,6 +5,21 @@
 - Sounds
 - Music
 - Menus
+- Level themes (Option class)
 - Hardware rendering
 - Kinect support (as InputDevice and player sprite)
 - move project into its own github repo
+- maintain CMake script
+- Features:
+   - second action key
+   - kickable bombs
+   - elastic bombs
+   - square explosive bombs
+   - golden flame
+   - random extras
+   - interactive cells (teleport, jump)
+   - poisons (slow, fast, reverse input, bombfart
+   - timeattack
+   - player-colored bombs and explosions
+- Network support
+- AI
