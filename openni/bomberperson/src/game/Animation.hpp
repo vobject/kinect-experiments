@@ -17,6 +17,7 @@ public:
    void SetLooping(bool endless_loop);
 
    void Update(int elapsed_time);
+   void Reset();
    int GetCurrentFrame() const;
 
 private:

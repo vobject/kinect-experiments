@@ -5,6 +5,7 @@
 
 #include <map>
 #include <memory>
+#include <sstream>
 #include <string>
 
 class ResourceCache;

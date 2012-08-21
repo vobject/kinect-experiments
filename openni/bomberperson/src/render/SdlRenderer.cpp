@@ -13,8 +13,6 @@
 #include <SDL.h>
 #include <SDL_rotozoom.h>
 
-#include <sstream>
-
 SdlRenderer::SdlRenderer(const Size res)
 {
    if (0 > SDL_Init(SDL_INIT_VIDEO)) {
@@ -140,30 +138,35 @@ void SdlRenderer::Render(const std::shared_ptr<Player>& player)
    const auto pos = player->GetPosition();
    const auto size = player->GetSize();
    const auto dir = player->GetDirection();
+   const auto frame_index = player->GetAnimationFrame();
    const auto name = player->GetResourceId();
-   auto cache_name = name;
+   auto cached_name = name;
 
    switch (dir)
    {
       case Direction::Up:
-         cache_name += "_up";
+         cached_name += "_up";
          break;
       case Direction::Down:
-         cache_name += "_down";
+         cached_name += "_down";
          break;
       case Direction::Left:
-         cache_name += "_left";
+         cached_name += "_left";
          break;
       case Direction::Right:
-         cache_name += "_right";
+         cached_name += "_right";
          break;
    }
 
-   const auto src_frame = mResCache->GetDirectedSprite(name).GetFrame(dir, 0);
+   std::ostringstream os;
+   os << "_" << frame_index;
+   cached_name += os.str();
+
+   const auto src_frame = mResCache->GetDirectedSprite(name).GetFrame(dir, frame_index);
    if (!src_frame) {
       throw "No texture associated with resource id.";
    }
-   const auto frame = GetScaledSurface(cache_name, size, src_frame);
+   const auto frame = GetScaledSurface(cached_name, size, src_frame);
 
    SDL_Rect rect = { static_cast<Sint16>(pos.X),
                      static_cast<Sint16>(pos.Y),

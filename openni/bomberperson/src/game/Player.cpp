@@ -8,6 +8,22 @@
 Player::Player(const std::string& res_name)
 {
    SetResourceId(res_name);
+
+   mWalkUpAnimation.SetFrameCount(mWalkAnimationFrames);
+   mWalkUpAnimation.SetLength(mWalkAnimationLength);
+   mWalkUpAnimation.SetLooping(true);
+
+   mWalkDownAnimation.SetFrameCount(mWalkAnimationFrames);
+   mWalkDownAnimation.SetLength(mWalkAnimationLength);
+   mWalkDownAnimation.SetLooping(true);
+
+   mWalkLeftAnimation.SetFrameCount(mWalkAnimationFrames);
+   mWalkLeftAnimation.SetLength(mWalkAnimationLength);
+   mWalkLeftAnimation.SetLooping(true);
+
+   mWalkRightAnimation.SetFrameCount(mWalkAnimationFrames);
+   mWalkRightAnimation.SetLength(mWalkAnimationLength);
+   mWalkRightAnimation.SetLooping(true);
 }
 
 Player::~Player()
@@ -20,13 +36,13 @@ void Player::Update(const int elapsed_time)
    mMoveIdleTime += elapsed_time;
    if (mMoveIdleTime > mMovementSpeed)
    {
-      UpdateMovement(elapsed_time);
+      UpdateMovement(mMoveIdleTime);
    }
 
    mBombIdleTime += elapsed_time;
    if (mBombIdleTime > mPlantingSpeed)
    {
-      UpdateBombing(elapsed_time);
+      UpdateBombing(mBombIdleTime);
    }
 }
 
@@ -75,6 +91,11 @@ Direction Player::GetDirection() const
    return mDirection;
 }
 
+int Player::GetAnimationFrame() const
+{
+   return GetCurrentDirectionAnimation().GetCurrentFrame();
+}
+
 void Player::UpdateMovement(const int elapsed_time)
 {
    const int distance = 1;
@@ -86,6 +107,7 @@ void Player::UpdateMovement(const int elapsed_time)
    if (mInput->TestUp())
    {
       mDirection = Direction::Up;
+      UpdateAnimation(elapsed_time);
 
       if (CanMove(mDirection, distance)) {
          up++;
@@ -94,6 +116,7 @@ void Player::UpdateMovement(const int elapsed_time)
    if (mInput->TestDown())
    {
       mDirection = Direction::Down;
+      UpdateAnimation(elapsed_time);
 
       if (CanMove(mDirection, distance)) {
          down++;
@@ -102,6 +125,7 @@ void Player::UpdateMovement(const int elapsed_time)
    if (mInput->TestLeft())
    {
       mDirection = Direction::Left;
+      UpdateAnimation(elapsed_time);
 
       if (CanMove(mDirection, distance)) {
          left++;
@@ -110,6 +134,7 @@ void Player::UpdateMovement(const int elapsed_time)
    if (mInput->TestRight())
    {
       mDirection = Direction::Right;
+      UpdateAnimation(elapsed_time);
 
       if (CanMove(mDirection, distance)) {
          right++;
@@ -146,6 +171,37 @@ void Player::UpdateBombing(const int elapsed_time)
 
    mPlantedBombs.push_back(bomb);
    mBombIdleTime = 0;
+}
+
+void Player::UpdateAnimation(const int elapsed_time)
+{
+   switch (mDirection)
+   {
+      case Direction::Up:
+         mWalkUpAnimation.Update(elapsed_time);
+         mWalkDownAnimation.Reset();
+         mWalkLeftAnimation.Reset();
+         mWalkRightAnimation.Reset();
+         break;
+      case Direction::Down:
+         mWalkUpAnimation.Reset();
+         mWalkDownAnimation.Update(elapsed_time);
+         mWalkLeftAnimation.Reset();
+         mWalkRightAnimation.Reset();
+         break;
+      case Direction::Left:
+         mWalkUpAnimation.Reset();
+         mWalkDownAnimation.Reset();
+         mWalkLeftAnimation.Update(elapsed_time);
+         mWalkRightAnimation.Reset();
+         break;
+      case Direction::Right:
+         mWalkUpAnimation.Reset();
+         mWalkDownAnimation.Reset();
+         mWalkLeftAnimation.Reset();
+         mWalkRightAnimation.Update(elapsed_time);
+         break;
+   }
 }
 
 bool Player::CanMove(const Direction dir, const int distance) const
@@ -211,6 +267,28 @@ void Player::IncreaseSpeed()
 {
    if (mMovementSpeed > 2) {
       mMovementSpeed -= 2;
+
+      mWalkAnimationLength -= 60;
+      mWalkUpAnimation.SetLength(mWalkAnimationLength);
+      mWalkDownAnimation.SetLength(mWalkAnimationLength);
+      mWalkLeftAnimation.SetLength(mWalkAnimationLength);
+      mWalkRightAnimation.SetLength(mWalkAnimationLength);
    }
    // The player is already at maximum speed.
+}
+
+const Animation& Player::GetCurrentDirectionAnimation() const
+{
+   switch (mDirection)
+   {
+      case Direction::Up:
+         return mWalkUpAnimation;
+      case Direction::Down:
+         return mWalkDownAnimation;
+      case Direction::Left:
+         return mWalkLeftAnimation;
+      case Direction::Right:
+         return mWalkRightAnimation;
+   }
+   return mWalkDownAnimation;
 }

@@ -2,6 +2,7 @@
 #define PLAYER_HPP
 
 #include "SceneObject.hpp"
+#include "Animation.hpp"
 #include "../input/InputDevice.hpp"
 #include "../utils/Utils.hpp"
 
@@ -11,23 +12,6 @@
 class InputDevice;
 class Cell;
 class Bomb;
-
-//enum class PlayerOrientation
-//{
-//   Up,
-//   Down,
-//   Left,
-//   Right
-//};
-
-//// Determines where the Player will be placed on the map at startup.
-//enum class PlayerId
-//{
-//   Player_1,
-//   Player_2,
-//   Player_3,
-//   Player_4
-//};
 
 class Player : public SceneObject
 {
@@ -46,15 +30,19 @@ public:
    void SetParentCell(const std::shared_ptr<Cell>& cell);
 
    Direction GetDirection() const;
+   int GetAnimationFrame() const;
 
 private:
    void UpdateMovement(int elapsed_time);
    void UpdateBombing(int elapsed_time);
+   void UpdateAnimation(int elapsed_time);
 
    bool CanMove(Direction dir, int distance) const;
    bool CanPlantBomb();
 
    void IncreaseSpeed();
+
+   const Animation& GetCurrentDirectionAnimation() const;
 
    std::shared_ptr<InputDevice> mInput;
    std::shared_ptr<Cell> mParentCell;
@@ -66,11 +54,20 @@ private:
    // How many milliseconds does the player have to wait to plant another bomb?
    int mPlantingSpeed = 200;
 
+   int mWalkAnimationFrames = 2;
+   int mWalkAnimationLength = mMovementSpeed * 40;
+
    int mBombRange = 1;
    int mBombSupply = 1;
    std::vector<std::shared_ptr<Bomb>> mPlantedBombs;
 
    Direction mDirection = Direction::Down;
+   Animation mWalkUpAnimation;
+   Animation mWalkDownAnimation;
+   Animation mWalkLeftAnimation;
+   Animation mWalkRightAnimation;
+//   Animation mDeathAnimation;
+//   Animation mWinAnimation;
 };
 
 #endif // PLAYER_HPP

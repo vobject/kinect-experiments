@@ -32,15 +32,19 @@ ResourceCache::ResourceCache()
                             mResDir + "/sprite/explosion_4.png"});
 
    LoadDirectedSprite("player_1",
-                      {mResDir + "/sprite/player_1_up.png"},
-                      {mResDir + "/sprite/player_1_down.png"},
-                      {mResDir + "/sprite/player_1_left.png"},
-                      {mResDir + "/sprite/player_1_right.png"});
-   LoadDirectedSprite("player_2",
-                      {mResDir + "/sprite/player_2_up.png"},
-                      {mResDir + "/sprite/player_2_down.png"},
-                      {mResDir + "/sprite/player_2_left.png"},
-                      {mResDir + "/sprite/player_2_right.png"});
+                      {mResDir + "/sprite/player_1_up_1.png",
+                       mResDir + "/sprite/player_1_up_2.png"},
+                      {mResDir + "/sprite/player_1_down_1.png",
+                       mResDir + "/sprite/player_1_down_2.png"},
+                      {mResDir + "/sprite/player_1_left_1.png",
+                       mResDir + "/sprite/player_1_left_2.png"},
+                      {mResDir + "/sprite/player_1_right_1.png",
+                       mResDir + "/sprite/player_1_right_2.png"});
+//   LoadDirectedSprite("player_2",
+//                      {mResDir + "/sprite/player_2_up.png"},
+//                      {mResDir + "/sprite/player_2_down.png"},
+//                      {mResDir + "/sprite/player_2_left.png"},
+//                      {mResDir + "/sprite/player_2_right.png"});
 }
 
 ResourceCache::~ResourceCache()

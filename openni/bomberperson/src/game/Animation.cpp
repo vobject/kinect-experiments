@@ -30,6 +30,11 @@ void Animation::Update(const int elapsed_time)
    mElapsedTime += elapsed_time;
 }
 
+void Animation::Reset()
+{
+   mElapsedTime = 0;
+}
+
 int Animation::GetCurrentFrame() const
 {
    // An animation must always consist of one frame or more.
