@@ -62,6 +62,11 @@ void SimpleGlRenderer::PostRender()
    SDL_GL_SwapBuffers();
 }
 
+void SimpleGlRenderer::Render(const std::shared_ptr<Background>& bg)
+{
+
+}
+
 void SimpleGlRenderer::Render(const std::shared_ptr<Match>& match)
 {
    // TODO: Implement Me!

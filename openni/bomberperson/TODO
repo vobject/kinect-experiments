@@ -23,3 +23,7 @@
    - player-colored bombs and explosions
 - Network support
 - AI
+- Make player walk speed dependent on the arena size, not on ms/pixel.
+
+Optimization:
+- Do not make the arena borders out of cells - but limit it somehow "naturally"

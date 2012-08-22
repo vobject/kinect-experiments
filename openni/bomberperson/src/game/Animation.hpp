@@ -22,7 +22,7 @@ public:
 
 private:
    int mFrameCount = 0;
-   int mLength = 1000_ms;
+   int mLength = 0_ms; // Will crash when not initialized. But we want that!
    bool mLooping = false;
    int mElapsedTime = 0;
 };

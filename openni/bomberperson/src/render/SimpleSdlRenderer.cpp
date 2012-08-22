@@ -52,6 +52,11 @@ void SimpleSdlRenderer::PostRender()
    SDL_Flip(mScreen);
 }
 
+void SimpleSdlRenderer::Render(const std::shared_ptr<Background>& bg)
+{
+
+}
+
 void SimpleSdlRenderer::Render(const std::shared_ptr<Match>& match)
 {
    Render(match->GetArena());

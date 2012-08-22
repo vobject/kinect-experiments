@@ -7,6 +7,7 @@
 class SDL_KeyboardEvent;
 
 class Renderer;
+class Background;
 class ArenaGenerator;
 class Match;
 
@@ -27,6 +28,7 @@ public:
 
 private:
    std::shared_ptr<Renderer> mRenderer;
+   std::shared_ptr<Background> mBackground;
    std::shared_ptr<ArenaGenerator> mFieldGen;
    std::shared_ptr<Match> mMatch;
 };

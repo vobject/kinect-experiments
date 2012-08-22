@@ -42,8 +42,9 @@ private:
    std::tuple<int, int> IndexToArenaPos(int index) const;
    int ArenaPosToIndex(int cell_x, int cell_y) const;
 
-   int mXCells;
-   int mYCells;
+   int mXCells = 0;
+   int mYCells = 0;
+   Size mCellSize = { 0, 0 };
    std::vector<std::shared_ptr<Cell>> mCells;
 };
 

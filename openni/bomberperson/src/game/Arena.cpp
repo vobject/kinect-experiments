@@ -26,12 +26,7 @@ void Arena::SetDimensions(const int cells_x, const int cells_y)
 {
    mXCells = cells_x;
    mYCells = cells_y;
-}
-
-Size Arena::GetCellSize() const
-{
-   const Size arena_size = GetSize();
-   return { arena_size.Width / mXCells, arena_size.Height / mYCells };
+   mCellSize = { GetSize().Width / mXCells, GetSize().Height / mYCells };
 }
 
 void Arena::SetCells(const std::vector<std::shared_ptr<Cell>>& cells)
@@ -46,8 +41,8 @@ std::vector<std::shared_ptr<Cell>> Arena::GetCells() const
 
 std::shared_ptr<Cell> Arena::GetCellFromPosition(const Point& pos) const
 {
-   const auto cell_x = (pos.X - GetPosition().X) / GetCellSize().Width;
-   const auto cell_y = (pos.Y - GetPosition().Y) / GetCellSize().Height;
+   const auto cell_x = (pos.X - GetPosition().X) / mCellSize.Width;
+   const auto cell_y = (pos.Y - GetPosition().Y) / mCellSize.Height;
    return GetCellFromCoordinates(cell_x, cell_y);
 }
 
@@ -93,5 +88,5 @@ std::tuple<int, int> Arena::IndexToArenaPos(const int index) const
 
 int Arena::ArenaPosToIndex(const int cell_x, const int cell_y) const
 {
-   return (cell_x + (cell_y * mYCells));
+   return (cell_x + (cell_y * mXCells));
 }

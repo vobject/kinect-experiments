@@ -3,6 +3,7 @@
 
 #include <memory>
 
+class Background;
 class Match;
 class Arena;
 class Cell;
@@ -21,6 +22,7 @@ public:
 
    virtual void PreRender() { }
    virtual void PostRender() { }
+   virtual void Render(const std::shared_ptr<Background>& match) = 0;
    virtual void Render(const std::shared_ptr<Match>& match) = 0;
    virtual void Render(const std::shared_ptr<Arena>& field) = 0;
    virtual void Render(const std::shared_ptr<Cell>& cell) = 0;

@@ -1,5 +1,6 @@
 #include "BomberPersonApp.hpp"
 #include "WindowFrame.hpp"
+#include "Options.hpp"
 #include "nui/Kinect.hpp"
 #include "nui/KinectDummy.hpp"
 #include "render/SimpleGlRenderer.hpp"
@@ -37,7 +38,8 @@ void BomberPersonApp::Mainloop()
 //   auto stead = std::chrono::steady_clock::now();
 //   auto high = std::chrono::high_resolution_clock::now();
 
-   const int delta_time = 2_ms; // Milliseconds to wait for a game update.
+   // Milliseconds to wait for a game update.
+   const int delta_time = DefaultOptions::MAINLOOP_UPDATE_DELTA;
    int old_time = SDL_GetTicks();
    int game_time = 0;
    int accumulator = 0;
@@ -71,8 +73,10 @@ void BomberPersonApp::Initialize()
 
    InitNui();
 
-   mRenderer = std::make_shared<SdlRenderer>(Size(800_px, 600_px));
-   mWndFrame = std::make_shared<WindowFrame>("BomberPerson");
+   const Size screen_size = { DefaultOptions::SCREEN_WIDTH,
+                              DefaultOptions::SCREEN_HEIGHT };
+   mRenderer = std::make_shared<SdlRenderer>(screen_size);
+   mWndFrame = std::make_shared<WindowFrame>(DefaultOptions::APP_NAME);
    mLogic = std::make_shared<Logic>(mRenderer);
 }
 

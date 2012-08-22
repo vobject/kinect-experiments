@@ -26,9 +26,30 @@ struct Size
 {
    constexpr Size(int width, int height) : Width(width), Height(height) { }
 
+   bool operator!() const
+   { return !Width && !Height; }
+
+   Size operator-(const Size other)
+   { return { Width - other.Width, Height - other.Height }; }
+
+   Size operator+(const Size other)
+   { return { Width + other.Width, Height + other.Height }; }
+
+   Size operator*(const int n)
+   { return { Width * n, Height * n }; }
+
    int Width;
    int Height;
 };
+
+//static Size operator-(const Size s1, const Size s2)
+//{ return { s1.Width - s2.Width, s1.Height - s2.Height }; }
+//
+//static Size operator+(const Size s1, const Size s2)
+//{ return { s1.Width + s2.Width, s1.Height + s2.Height }; }
+//
+//static Size operator*(const Size s1, const int n)
+//{ return { s1.Width * n, s1.Height * n }; }
 
 struct Rect
 {

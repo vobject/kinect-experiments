@@ -2,6 +2,7 @@
 #define WINDOW_FRAME_HPP
 
 #include "utils/Utils.hpp"
+#include "Options.hpp"
 
 #include <SDL.h>
 
@@ -21,7 +22,7 @@ protected:
 
    std::string mTitle;
 
-   const int FRAME_TIMER_UPDATE_RATE = 1000_ms;
+   const int mFrameTimerUpdateRate = DefaultOptions::FPS_UPDATE_RATE;
    SDL_TimerID mFrameTimer = nullptr;
 
    int mUpdateCount = 0; // Internal game updates (input, physics, etc.)

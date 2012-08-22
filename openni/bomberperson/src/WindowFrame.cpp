@@ -1,7 +1,6 @@
 #include "WindowFrame.hpp"
 
 #include <sstream>
-#include <iostream>
 
 WindowFrame::WindowFrame(const std::string& title)
    : mTitle(title)
@@ -15,7 +14,7 @@ WindowFrame::WindowFrame(const std::string& title)
 #endif
       throw "Cannot init SDL timer subsystem.";
    }
-   mFrameTimer = SDL_AddTimer(FRAME_TIMER_UPDATE_RATE,
+   mFrameTimer = SDL_AddTimer(mFrameTimerUpdateRate,
                               DefaultFrameTimerCallback,
                               this);
 }
@@ -39,10 +38,10 @@ Uint32 WindowFrame::DefaultFrameTimerCallback(const Uint32 interval, void* param
 {
    WindowFrame* obj = static_cast<WindowFrame*>(param);
 
-   obj->mUPS = (obj->mUpdateCount / static_cast<float>(interval)) * obj->FRAME_TIMER_UPDATE_RATE;
+   obj->mUPS = (obj->mUpdateCount / static_cast<float>(interval)) * obj->mFrameTimerUpdateRate;
    obj->mUpdateCount = 0;
 
-   obj->mFPS = (obj->mFrameCount / static_cast<float>(interval)) * obj->FRAME_TIMER_UPDATE_RATE;
+   obj->mFPS = (obj->mFrameCount / static_cast<float>(interval)) * obj->mFrameTimerUpdateRate;
    obj->mFrameCount = 0;
 
    std::ostringstream caption;
@@ -57,7 +56,5 @@ Uint32 WindowFrame::DefaultFrameTimerCallback(const Uint32 interval, void* param
    caption << obj->mFPS << " FPS";
 
    SDL_WM_SetCaption(caption.str().c_str(), NULL);
-//   LOG(logDEBUG) << caption.str();
-
    return interval;
 }

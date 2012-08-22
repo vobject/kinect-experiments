@@ -1,4 +1,5 @@
 #include "SdlRenderer.hpp"
+#include "../game/Background.hpp"
 #include "../game/Match.hpp"
 #include "../game/Arena.hpp"
 #include "../game/Cell.hpp"
@@ -11,7 +12,6 @@
 #include "../utils/Utils.hpp"
 
 #include <SDL.h>
-#include <SDL_rotozoom.h>
 
 SdlRenderer::SdlRenderer(const Size res)
 {
@@ -20,17 +20,16 @@ SdlRenderer::SdlRenderer(const Size res)
    }
    atexit(SDL_Quit);
 
-   const auto screen = SDL_SetVideoMode(res.Width,
-                                        res.Height,
-                                        32,
-                                        SDL_ANYFORMAT |
-                                           SDL_SWSURFACE |
-                                           SDL_DOUBLEBUF |
-                                           SDL_RESIZABLE);
-   if (!screen) {
+   mScreen = SDL_SetVideoMode(res.Width,
+                              res.Height,
+                              32,
+                              SDL_ANYFORMAT |
+                                 SDL_SWSURFACE |
+                                 SDL_DOUBLEBUF |
+                                 SDL_RESIZABLE);
+   if (!mScreen) {
       throw "SDL_SetVideoMode() failed.";
    }
-   mClearColor = SDL_MapRGB(screen->format, 0, 0, 0);
 
    // The return value of SDL_SetVideoMode() (-> screen) should not be freed
    //  by the caller. The man page tells us to rely on SDL_Quit() to do this.
@@ -46,22 +45,24 @@ SdlRenderer::SdlRenderer(const Size res)
 
 SdlRenderer::~SdlRenderer()
 {
-   for (auto& kev_value : mScaledSurfaces) {
-      SDL_FreeSurface(kev_value.second);
-   }
+
 }
 
 void SdlRenderer::PreRender()
 {
-   // Screen size might have changed.
-   mScreen = SDL_GetVideoSurface();
 
-   SDL_FillRect(mScreen, NULL, mClearColor);
 }
 
 void SdlRenderer::PostRender()
 {
    SDL_Flip(mScreen);
+}
+
+void SdlRenderer::Render(const std::shared_ptr<Background>& bg)
+{
+   const auto name = bg->GetResourceId();
+   const auto frame = mResCache->GetBgResource(name).GetFrame(0);
+   Render(bg, frame);
 }
 
 void SdlRenderer::Render(const std::shared_ptr<Match>& match)
@@ -82,8 +83,9 @@ void SdlRenderer::Render(const std::shared_ptr<Match>& match)
 
 void SdlRenderer::Render(const std::shared_ptr<Arena>& arena)
 {
-   // Use the generic render method for SceneObjects.
-   Render(std::static_pointer_cast<SceneObject>(arena));
+//   const auto name = arena->GetResourceId();
+//   const auto frame = mResCache->GetArenaResource(name).GetFrame(0);
+//   Render(arena, frame);
 
    for (const auto& cell : arena->GetCells())
    {
@@ -93,143 +95,94 @@ void SdlRenderer::Render(const std::shared_ptr<Arena>& arena)
 
 void SdlRenderer::Render(const std::shared_ptr<Cell>& cell)
 {
-   Render(std::static_pointer_cast<SceneObject>(cell));
+//   const auto name = cell->GetResourceId();
+//   const auto frame = mResCache->GetCellResource(name).GetFrame(0);
+//   Render(cell, frame);
 
-   if (cell->HasWall()) {
-      Render(cell->GetWall());
+   if (cell->HasWall())
+   {
+      const auto wall = cell->GetWall();
+      if (wall->IsDestructible())
+      {
+         // Indestructible wall are always part of the background image.
+         Render(wall);
+      }
       return;
    }
 
-   if (cell->HasExtra()) {
+   if (cell->HasExtra())
+   {
       Render(cell->GetExtra());
    }
 
-   if (cell->HasBomb()) {
+   if (cell->HasBomb())
+   {
       Render(cell->GetBomb());
    }
 
-   if (cell->HasExplosion()) {
+   if (cell->HasExplosion())
+   {
       Render(cell->GetExplosion());
    }
 }
 
 void SdlRenderer::Render(const std::shared_ptr<Wall>& wall)
 {
-   Render(std::static_pointer_cast<SceneObject>(wall));
+   const auto name = wall->GetResourceId();
+   const auto frame = mResCache->GetWallResource(name).GetFrame(0);
+   Render(wall, frame);
 }
 
 void SdlRenderer::Render(const std::shared_ptr<Extra>& extra)
 {
-   Render(std::static_pointer_cast<SceneObject>(extra));
+   const auto name = extra->GetResourceId();
+   const auto frame = mResCache->GetExtraResource(name).GetFrame(0);
+   Render(extra, frame);
 }
 
 void SdlRenderer::Render(const std::shared_ptr<Bomb>& bomb)
 {
-   Render(bomb, bomb->GetAnimationFrame());
+   const auto name = bomb->GetResourceId();
+   const auto index = bomb->GetAnimationFrame();
+   const auto frame = mResCache->GetBombResource(name).GetFrame(index);
+   Render(bomb, frame);
 }
 
 void SdlRenderer::Render(const std::shared_ptr<Explosion>& explosion)
 {
-   Render(explosion, explosion->GetAnimationFrame());
+   const auto name = explosion->GetResourceId();
+   const auto index = explosion->GetAnimationFrame();
+   const auto frame = mResCache->GetExplosionResource(name).GetFrame(index);
+   Render(explosion, frame);
 }
 
 void SdlRenderer::Render(const std::shared_ptr<Player>& player)
 {
-   const auto pos = player->GetPosition();
-   const auto size = player->GetSize();
-   const auto dir = player->GetDirection();
-   const auto frame_index = player->GetAnimationFrame();
    const auto name = player->GetResourceId();
-   auto cached_name = name;
+   const auto dir = player->GetDirection();
+   const auto index = player->GetAnimationFrame();
 
-   switch (dir)
-   {
-      case Direction::Up:
-         cached_name += "_up";
-         break;
-      case Direction::Down:
-         cached_name += "_down";
-         break;
-      case Direction::Left:
-         cached_name += "_left";
-         break;
-      case Direction::Right:
-         cached_name += "_right";
-         break;
-   }
-
-   std::ostringstream os;
-   os << "_" << frame_index;
-   cached_name += os.str();
-
-   const auto src_frame = mResCache->GetDirectedSprite(name).GetFrame(dir, frame_index);
-   if (!src_frame) {
-      throw "No texture associated with resource id.";
-   }
-   const auto frame = GetScaledSurface(cached_name, size, src_frame);
-
-   SDL_Rect rect = { static_cast<Sint16>(pos.X),
-                     static_cast<Sint16>(pos.Y),
-                     static_cast<Uint16>(size.Width),
-                     static_cast<Uint16>(size.Height) };
-   SDL_BlitSurface(frame, NULL, mScreen, &rect);
+   const auto res = mResCache->GetPlayerResource(name);
+   const auto frame = res.GetWalkFrame(dir, index);
+   Render(player, frame);
 }
 
 void SdlRenderer::Render(const std::shared_ptr<SceneObject>& obj)
 {
-   Render(obj, 0);
+   LOG(logDEBUG) << "SdlRenderer::Render(SceneObject) not implemented!";
 }
 
 void SdlRenderer::Render(
    const std::shared_ptr<SceneObject>& obj,
-   const int frame_index
+   SDL_Surface* frame
 )
 {
    const auto pos = obj->GetPosition();
    const auto size = obj->GetSize();
-   const auto name = obj->GetResourceId();
-   auto cached_name = name;
-
-   // FIXME: This eats A LOT of performance. Reengineer the resource system.
-   std::ostringstream os;
-   os << "_" << frame_index;
-   cached_name += os.str();
-
-   // TODO: fix frame index when introducing animations!
-   const auto src_frame = mResCache->GetSprite(name).GetFrame(frame_index);
-   if (!src_frame) {
-      throw "No texture associated with resource id.";
-   }
-   const auto frame = GetScaledSurface(cached_name, size, src_frame);
 
    SDL_Rect rect = { static_cast<Sint16>(pos.X),
                      static_cast<Sint16>(pos.Y),
                      static_cast<Uint16>(size.Width),
                      static_cast<Uint16>(size.Height) };
    SDL_BlitSurface(frame, NULL, mScreen, &rect);
-}
-
-SDL_Surface* SdlRenderer::GetScaledSurface(
-   const std::string& cache_name,
-   const Size& size,
-   SDL_Surface* frame
-)
-{
-   const auto cached_surface = mScaledSurfaces[cache_name];
-   if (cached_surface) {
-      return cached_surface;
-   }
-
-   // Stretch the image to the appropriate size.
-   const double x_zoom = static_cast<double>(size.Width) / frame->w;
-   const double y_zoom = static_cast<double>(size.Height) / frame->h;
-   const auto zoomed_frame = zoomSurface(frame, x_zoom, y_zoom, 1);
-
-   const auto colorkey = SDL_MapRGB(zoomed_frame->format, 0, 0, 0);
-   if (SDL_SetColorKey(zoomed_frame, SDL_RLEACCEL | SDL_SRCCOLORKEY, colorkey)) {
-      throw "SDL_SetColorKey failed";
-   }
-
-   mScaledSurfaces[cache_name] = zoomed_frame;
-   return zoomed_frame;
 }

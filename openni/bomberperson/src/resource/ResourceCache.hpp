@@ -2,7 +2,7 @@
 #define RESOURCE_CACHE_HPP
 
 #include "SpriteResource.hpp"
-#include "DirectedSpriteResource.hpp"
+#include "PlayerResource.hpp"
 #include "../utils/Utils.hpp"
 
 #include <string>
@@ -24,8 +24,17 @@ public:
    // SetTheme();
 
 //   BackgroundResource GetBackground(const std::string& id);
-   SpriteResource GetSprite(const std::string& id);
-   DirectedSpriteResource GetDirectedSprite(const std::string& id);
+//   SpriteResource GetSprite(const std::string& id);
+
+   SpriteResource GetBgResource(const std::string& id) const;
+//   SpriteResource GetArenaResource(const std::string& id) const;
+   SpriteResource GetCellResource(const std::string& id) const;
+   SpriteResource GetWallResource(const std::string& id) const;
+   SpriteResource GetExtraResource(const std::string& id) const;
+   SpriteResource GetBombResource(const std::string& id) const;
+   SpriteResource GetExplosionResource(const std::string& id) const;
+   PlayerResource GetPlayerResource(const std::string& id) const;
+
 //   Texture GetPlayer(const Kinect& kinect);
    // std::shared_ptr<...> GetAudioSample(const std::string& id);
 
@@ -33,23 +42,30 @@ public:
 //   SDL_Surface* GetResource(const std::string& id);
 
 private:
-//   void LoadBackground(const std::string& file, const std::string& id);
-   void LoadSprite(const std::string& id,
-                   const std::vector<std::string>& files);
-   void LoadDirectedSprite(const std::string& id,
-                           const std::vector<std::string>& files_up,
-                           const std::vector<std::string>& files_down,
-                           const std::vector<std::string>& files_left,
-                           const std::vector<std::string>& files_right);
+//   void LoadSprites(const std::string& id,
+//                   const std::vector<std::string>& files, const Size& size);
 
-   SDL_Surface* LoadTexture(const std::string& file);
+   void LoadBackgroundResources();
+//   void LoadArenaResources();
+   void LoadCellResources();
+   void LoadWallResources();
+   void LoadExtraResources();
+   void LoadBombResources();
+   void LoadExplosionResources();
+   void LoadPlayerResources();
+
+   SDL_Surface* LoadTexture(const std::string& file, const Size& size);
 
    std::string mResDir;
-//   std::map<const std::string, BackgroundResource> mBackgrounds;
-   std::map<std::string, SpriteResource> mSprites;
-   std::map<std::string, DirectedSpriteResource> mDirectedSprites;
+   std::map<std::string, SpriteResource> mBackgroundRes;
+//   std::map<std::string, SpriteResource> mArenaRes;
+   std::map<std::string, SpriteResource> mCellRes;
+   std::map<std::string, SpriteResource> mWallRes;
+   std::map<std::string, SpriteResource> mExtraRes;
+   std::map<std::string, SpriteResource> mBombRes;
+   std::map<std::string, SpriteResource> mExplosionRes;
+   std::map<std::string, PlayerResource> mPlayerRes;
    std::vector<SDL_Surface*> mSurfaceCache;
-//   SDL_Surface* mPlayer;
 };
 
 #endif // RESOURCE_CACHE_HPP

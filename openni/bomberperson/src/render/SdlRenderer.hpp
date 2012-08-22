@@ -24,6 +24,7 @@ public:
    void PreRender() override;
    void PostRender() override;
 
+   void Render(const std::shared_ptr<Background>& bg) override;
    void Render(const std::shared_ptr<Match>& match) override;
    void Render(const std::shared_ptr<Arena>& field) override;
    void Render(const std::shared_ptr<Cell>& cell) override;
@@ -35,21 +36,13 @@ public:
    void Render(const std::shared_ptr<SceneObject>& obj) override;
 
 private:
-   void Render(const std::shared_ptr<SceneObject>& obj, int frame_index);
-   SDL_Surface* GetScaledSurface(const std::string& cache_name,
-                                 const Size& size,
-                                 SDL_Surface* frame);
-
-   // The screen will be cleared to this color before each render cycle.
-   int mClearColor; // Will be initilized after the screen was set up in ctor.
+   void Render(const std::shared_ptr<SceneObject>& obj, SDL_Surface* frame);
 
    // Writing to the video surface is ok since we use double buffering.
    SDL_Surface* mScreen = nullptr;
 
    // Must be initialized after the video system has been set up.
    std::shared_ptr<ResourceCache> mResCache = nullptr;
-
-   std::map<std::string, SDL_Surface*> mScaledSurfaces;
 };
 
 #endif // SDL_RENDERER_HPP

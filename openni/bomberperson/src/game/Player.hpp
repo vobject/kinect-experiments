@@ -50,7 +50,7 @@ private:
    int mBombIdleTime = 0;
 
    // Number of milliseconds the player has to wait to move another pixel.
-   int mMovementSpeed = 12;
+   int mMovementSpeed = 8;
    // How many milliseconds does the player have to wait to plant another bomb?
    int mPlantingSpeed = 200;
 

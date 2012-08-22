@@ -29,13 +29,14 @@ public:
 
 private:
    std::vector<std::shared_ptr<Cell>> CreateDefaultCells(int cells_x,
-         int cells_y, const std::shared_ptr<Arena>& field) const;
+         int cells_y, const std::shared_ptr<Arena>& arena) const;
 
    Size GetCellSize(int cells_x, int cells_y) const;
    bool ShouldCreateItem() const;
-   CellItem GetRandomCellItem() const;
 
+   // Absolute position on the screen.
    Point mPos = { 0, 0 };
+   // Size of the playing field.
    Size mSize = { 0, 0 };
 };
 
